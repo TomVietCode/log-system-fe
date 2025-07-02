@@ -4,8 +4,12 @@ import apiClient from "@/lib/api"
 // Auth API functions
 export const authAPI = {
   login: async (data: LoginDto): Promise<AuthResponse> => {
-    const response = await apiClient.post('/auth/login', data)
-    return response.data
+    try {
+      const response = await apiClient.post('/auth/login', data)
+      return response.data
+    } catch (error) {
+      throw error
+    }
   },
 
   register: async (data: RegisterDto): Promise<AuthResponse> => {

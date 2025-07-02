@@ -1,5 +1,6 @@
 import "./globals.css";
 import { AuthProvider } from "@/context/auth.context";
+import MuiProvider from "@/components/provider/MuiProvider";
 
 export default function RootLayout({
   children,
@@ -9,9 +10,11 @@ export default function RootLayout({
   return (
     <html lang="vi">
       <body>
-        <AuthProvider>
-          {children}
-        </AuthProvider>
+        <MuiProvider>
+          <AuthProvider>
+            {children}
+          </AuthProvider>
+        </MuiProvider>
       </body>
     </html>
   );

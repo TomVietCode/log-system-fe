@@ -26,9 +26,11 @@ export function AuthProvider({ children }: { children: React.ReactNode}) {
 
       const response = await authAPI.profile()
       setUser(response.data)
+      setLoading(false)
     } catch (error) {
       localStorage.removeItem("accessToken")
       setUser(null)
+      setLoading(false)
     }
   }
 
@@ -43,6 +45,7 @@ export function AuthProvider({ children }: { children: React.ReactNode}) {
     } catch (error) {
       localStorage.removeItem("accessToken")
       setUser(null)
+      throw error
     }
   }
 
