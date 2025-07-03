@@ -7,7 +7,12 @@ import { ReactNode } from "react";
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#1976d2"
+      main: "#6B98C8",
+      light: "#F5F5FE",
+      dark: "#000000",
+    },
+    background: {
+      default: "#F5F5FE"
     }
   },
   typography: {
