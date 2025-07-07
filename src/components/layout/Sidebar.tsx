@@ -37,8 +37,10 @@ export default function Sidebar({ menuItems }: { menuItems: MenuItem[] }) {
       {/* Menu items */}
       <List sx={{ pt: 2 }}>
         {menuItems.map((item) => {
-          const Icon = item.icon
-          const isActive = pathname === item.path
+          if (item.status === "hidden") return null;
+          
+          const Icon = item.icon;
+          const isActive = pathname === item.path;
 
           return (
             <ListItem key={item.path} disablePadding sx={{ mb: 0.5 }}>
@@ -62,7 +64,7 @@ export default function Sidebar({ menuItems }: { menuItems: MenuItem[] }) {
                 <ListItemIcon
                   sx={{
                     minWidth: 40,
-                    color: isActive ? "#ffffff" : "primary.dark",
+                    color: isActive ? "#ffffff" : "text.primary",
                   }}
                 >
                   <Icon />
@@ -70,12 +72,12 @@ export default function Sidebar({ menuItems }: { menuItems: MenuItem[] }) {
                 <ListItemText
                   primary={item.label}
                   sx={{
-                    color: isActive ? "#ffffff" : "primary.dark",
+                    color: isActive ? "#ffffff" : "text.primary",
                   }}
                 />
               </ListItemButton>
             </ListItem>
-          )
+          );
         })}
       </List>
     </Drawer>

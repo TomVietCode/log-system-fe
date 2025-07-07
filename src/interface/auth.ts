@@ -20,9 +20,10 @@ export interface User {
   id: string
   email: string
   personalEmail?: string
+  phoneNumber?: string
   fullName: string
   phone?: string
-  citizenId?: string
+  citizenID?: string
   accountNumber?: string
   dob?: string,
   role: 'ADMIN' | 'HCNS' | 'LEADER' | 'DEV'

@@ -12,7 +12,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const menuItems = user && getMenuByRole(user.role)
   return (
     <ProtectedRoute>
-      <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+      <Box sx={{ display: 'flex', minHeight: '100vh', backgroundColor: "background.default" }}>
         <Header user={user} logout={logout}/>
         <Sidebar menuItems={menuItems || []} />
         <Box

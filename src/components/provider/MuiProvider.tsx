@@ -9,10 +9,15 @@ const theme = createTheme({
     primary: {
       main: "#6B98C8",
       light: "#F5F5FE",
-      dark: "#000000",
+      dark: "#648fba"
+    },
+    text: {
+      primary: "#000000",
+      secondary: "#F5F5FE"
     },
     background: {
-      default: "#F5F5FE"
+      default: "#F5F5FE",
+      paper: "#ffffff"
     }
   },
   typography: {

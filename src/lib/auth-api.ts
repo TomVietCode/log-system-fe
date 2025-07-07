@@ -1,5 +1,6 @@
 import { AuthResponse, LoginDto, ProfileResponse, RegisterDto } from "@/interface/auth"
 import apiClient from "@/lib/api"
+import { ProfileFormData } from "./validation"
 
 // Auth API functions
 export const authAPI = {
@@ -19,6 +20,11 @@ export const authAPI = {
 
   profile: async (): Promise<ProfileResponse> => {
     const response = await apiClient.get('/users/profile')
+    return response.data
+  },
+
+  updateProfile: async (data: ProfileFormData): Promise<ProfileResponse> => {
+    const response = await apiClient.patch('/users/profile', data)
     return response.data
   }
 }

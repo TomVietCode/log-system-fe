@@ -4,11 +4,13 @@ import { getMenuByRole } from "@/config/menu"
 import { User } from "@/interface/auth"
 import { AppBar, Menu, MenuItem, Toolbar, Typography } from "@mui/material"
 import { usePathname } from "next/navigation"
-import router from "next/router"
+import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { KeyboardArrowUpOutlined, KeyboardArrowDownOutlined } from '@mui/icons-material'
 
 export default function Header({ user, logout }: { user: User | null, logout: () => void }) {
+  const router = useRouter()
+  
   const menuItems = user && getMenuByRole(user.role)
   const labelNames = menuItems?.map((item) => item.label)
   const pathname = usePathname()
@@ -35,7 +37,7 @@ export default function Header({ user, logout }: { user: User | null, logout: ()
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           {labelNames?.find(
             (label) => label === menuItems?.find((item) => item.path === pathname)?.label
-          )}
+          )}  
         </Typography>
         {user && (  
           <>

@@ -17,3 +17,14 @@ export const registerSchema = z.object({
 
 export type LoginFormData = z.infer<typeof loginSchema>
 export type RegisterFormData = z.infer<typeof registerSchema>
+
+export const profileSchema = z.object({
+  phone: z.string().min(1, "Số điện thoại không được để trống"),
+  citizenID: z.string().min(1, "CCCD/CMND không được để trống"),
+  personalEmail: z.string().email("Email không hợp lệ").min(1, "Email cá nhân không được để trống"),
+  dob: z.string().nullable().optional(),
+  accountNumber: z.string().nullable().optional(),
+  licensePlate: z.string().nullable().optional()
+})
+
+export type ProfileFormData = z.infer<typeof profileSchema>
