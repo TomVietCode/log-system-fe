@@ -19,8 +19,8 @@ export type LoginFormData = z.infer<typeof loginSchema>
 export type RegisterFormData = z.infer<typeof registerSchema>
 
 export const profileSchema = z.object({
-  phone: z.string().min(1, "Số điện thoại không được để trống"),
-  citizenID: z.string().min(1, "CCCD/CMND không được để trống"),
+  phone: z.string().min(1, "Số điện thoại không được để trống").regex(/^[0-9]+$/, "Số điện thoại không hợp lệ"),
+  citizenID: z.string().min(1, "CCCD/CMND không được để trống").regex(/^[0-9]+$/, "CCCD/CMND không hợp lệ"),
   personalEmail: z.string().email("Email không hợp lệ").min(1, "Email cá nhân không được để trống"),
   dob: z.string().nullable().optional(),
   accountNumber: z.string().nullable().optional(),

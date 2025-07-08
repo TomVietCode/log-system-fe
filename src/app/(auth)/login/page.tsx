@@ -1,5 +1,6 @@
 'use client'
 
+import Toast from "@/components/ui/alert"
 import { useAuth } from "@/context/auth.context"
 import { loginSchema, LoginFormData } from "@/lib/validation"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -30,8 +31,10 @@ export default function LoginPage() {
       setError('')
 
       await login(data)
+      Toast.success("Đăng nhập thành công")
       router.push("/dashboard")
     } catch (error: any) {
+      Toast.error(error.response?.data?.message || 'Đăng nhập thất bại')
       setError(error.response?.data?.message || 'Đăng nhập thất bại')
     } finally {
       setLoading(false)
@@ -40,25 +43,6 @@ export default function LoginPage() {
 
   return (
     <Box position="relative" minHeight="100vh">
-      {error && (
-        <Collapse in={!!error} timeout={3000}>
-          <Box
-            position="fixed"
-            top={24}
-            right={24}
-            zIndex={1300}
-            minWidth={300}
-          >
-            <Alert severity="error" onClose={() => setError('')} sx={{
-                boxShadow: 3,
-                borderRadius: 2
-              }}>
-              {error}
-            </Alert>
-          </Box>
-        </Collapse>
-      )}
-
       <Container maxWidth="sm">
         <Box className="flex min-h-screen items-center justify-center">
           <Card className="w-full">
@@ -67,7 +51,7 @@ export default function LoginPage() {
                 <Typography variant="h4" component="h1">
                   Đăng nhập
                 </Typography>
-                <Typography variant="body1" color="text.secondary">
+                <Typography variant="body1">
                   Hệ thống quản lý DevLog
                 </Typography>
               </Box>
