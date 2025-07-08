@@ -1,6 +1,7 @@
 import "./globals.css";
 import { AuthProvider } from "@/context/auth.context";
 import MuiProvider from "@/components/provider/MuiProvider";
+import { ToastContainer } from "@/components/ui/alert";
 
 export default function RootLayout({
   children,
@@ -13,6 +14,7 @@ export default function RootLayout({
         <MuiProvider>
           <AuthProvider>
             {children}
+            <ToastContainer />
           </AuthProvider>
         </MuiProvider>
       </body>

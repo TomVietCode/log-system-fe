@@ -1,26 +1,38 @@
 "use client"
 
-import { Alert, Avatar, Box, Button, CircularProgress, Collapse, Container, FormHelperText, Grid, OutlinedInput, Typography } from "@mui/material"
-import React, { useState } from "react"
+import {
+  Alert,
+  Avatar,
+  Box,
+  Button,
+  CircularProgress,
+  Collapse,
+  Container,
+  FormHelperText,
+  Grid,
+  OutlinedInput,
+  Typography,
+} from "@mui/material"
+import React, { useEffect, useState } from "react"
 import { useAuth } from "@/context/auth.context"
-import { ProfileFormData, profileSchema } from "@/lib/validation"
+import { profileSchema } from "@/lib/validation"
 import { authAPI } from "@/lib/auth-api"
+import Toast from "@/components/ui/alert"
 
 export default function ProfilePage() {
   const { user } = useAuth()
   const [form, setForm] = useState<any>(user)
   const [errors, setErrors] = useState<any>({})
   const [loading, setLoading] = useState<boolean>(false)
-  const [backendError, setBackendError] = useState<string>('')
+  const [backendError, setBackendError] = useState<string>("")
 
-  const validate = () => {
-    const newErrors: any = {}
-    if (!form.phone) newErrors.phone = "Số điện thoại là bắt buộc"
-    if (!form.citizenID) newErrors.citizenID = "CCCD/CMND là bắt buộc"
-    if (!form.personalEmail) newErrors.personalEmail = "Email cá nhân là bắt buộc"
-
-    return newErrors
-  }
+  useEffect(() => {
+    if (backendError) {
+      Toast.error(backendError);
+      // Clear error sau khi hiển thị
+      setBackendError("");
+    }
+  }, [backendError]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm((prev: any) => ({
@@ -31,40 +43,32 @@ export default function ProfilePage() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const newErrors = validate()
-    setErrors(newErrors)
-    if (Object.keys(newErrors).length === 0) {
-      setLoading(true)
-      try {
-        const validatedForm = profileSchema.parse(form)
-        setBackendError('')
-        await authAPI.updateProfile(validatedForm)
-      } catch (error: any) {
-        setBackendError(error.response?.data?.message || 'Có lỗi xảy ra')
-      } finally {
+    console.log(form)
+    setLoading(true)
+    try {
+      const { data, success, error } = profileSchema.safeParse(form)
+      if (!success) {
+        const newErrors: any = {}
+        error.errors.map((err: any) => {
+          newErrors[err.path[0]] = err.message
+        }) || "Có lỗi xảy ra"
+        setErrors(newErrors)
         setLoading(false)
+        return
       }
+
+      setBackendError("")
+      await authAPI.updateProfile(data)
+      Toast.success("Cập nhật thành công")
+    } catch (error: any) {
+      setBackendError(error.response?.data?.message || "Có lỗi xảy ra")
+    } finally {
+      setLoading(false)
     }
   }
 
   return (
     <>
-      {backendError && (
-        <Collapse in={!!backendError} timeout={3000}>
-          <Box position="fixed" top={24} right={24} zIndex={1300} minWidth={300}>
-            <Alert
-              severity="error"
-              onClose={() => setBackendError("")}
-              sx={{
-                boxShadow: 3,
-                borderRadius: 2,
-              }}
-            >
-              {backendError}
-            </Alert>
-          </Box>
-        </Collapse>
-      )}
       <Container
         className="flex flex-col justify-center items-center gap-8"
         sx={{ backgroundColor: "background.paper", p: 3, borderRadius: 2 }}
@@ -159,7 +163,7 @@ export default function ProfilePage() {
                 </Typography>
                 <OutlinedInput
                   name="dob"
-                  value={form.dob || ""}
+                  value={form.dob.split("T")[0] || ""}
                   onChange={handleChange}
                   fullWidth
                   sx={{ height: "40px" }}
