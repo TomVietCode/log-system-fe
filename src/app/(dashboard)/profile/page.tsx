@@ -16,7 +16,7 @@ import {
 import React, { useEffect, useState } from "react"
 import { useAuth } from "@/context/auth.context"
 import { profileSchema } from "@/lib/validation"
-import { authAPI } from "@/lib/auth-api"
+import { authAPI } from "@/lib/api/auth-api"
 import Toast from "@/components/ui/alert"
 
 export default function ProfilePage() {
@@ -163,7 +163,7 @@ export default function ProfilePage() {
                 </Typography>
                 <OutlinedInput
                   name="dob"
-                  value={form.dob.split("T")[0] || ""}
+                  value={form.dob?.split("T")[0] || ""}
                   onChange={handleChange}
                   fullWidth
                   sx={{ height: "40px" }}

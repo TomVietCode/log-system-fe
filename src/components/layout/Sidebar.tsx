@@ -40,7 +40,7 @@ export default function Sidebar({ menuItems }: { menuItems: MenuItem[] }) {
           if (item.status === "hidden") return null;
           
           const Icon = item.icon;
-          const isActive = pathname === item.path;
+          const isActive = pathname.startsWith(item.path) && item.path !== "/";
 
           return (
             <ListItem key={item.path} disablePadding sx={{ mb: 0.5 }}>

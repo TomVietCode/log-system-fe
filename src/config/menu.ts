@@ -4,6 +4,7 @@ import {
   AccessTimeOutlined,
   ListAltOutlined,
   PersonOutlineOutlined,
+  AddOutlined,
 } from "@mui/icons-material"
 
 export interface MenuItem {
@@ -42,6 +43,13 @@ export const menuItems: MenuItem[] = [
     path: "/projects",
     roles: ["DEV", "LEADER"],
     status: "show"
+  },
+  {
+    label: "Tạo dự án",
+    icon: AddOutlined,
+    path: "/projects/create",
+    roles: ["LEADER"],
+    status: "hidden"
   },
   {
     label: "Thông tin cá nhân",

@@ -1,0 +1,187 @@
+"use client"
+
+import { ProjectFormData, projectSchema } from "@/lib/validation"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Autocomplete, Box, Button, Container, Grid, TextField, IconButton, Link, CircularProgress } from "@mui/material"
+import { Controller, useForm } from "react-hook-form"
+import { useEffect, useState } from "react"
+import { userApi } from "@/lib/api/user-api"
+import DeleteIcon from '@mui/icons-material/Delete'
+import { projectApi } from "@/lib/api/project-api"
+import Toast from "@/components/ui/alert"
+import { useRouter } from "next/navigation"
+
+export default function CreateProjectPage() {
+  const [users, setUsers] = useState<any[]>([])
+  const [tasks, setTasks] = useState<string[]>([])
+  const [loading, setLoading] = useState(false)
+  const [selectedMembers, setSelectedMembers] = useState<any[]>([])
+  const router = useRouter()
+
+  const {
+    register,
+    handleSubmit,
+    control,
+    setValue,
+    reset,
+    formState: { errors },
+  } = useForm<ProjectFormData>({
+    resolver: zodResolver(projectSchema),
+  })
+  
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const response = await userApi.getListUser("DEV")
+      setUsers(response.data)
+    }
+    fetchUsers()
+  }, [])  
+
+  // Update form value when tasks change
+  useEffect(() => {
+    setValue("tasks", tasks.length > 0 ? tasks : [])
+  }, [tasks, setValue])
+
+  const addTask = () => {
+    setTasks([...tasks, ""])
+  }
+
+  const removeTask = (index: number) => {
+    const newTasks = tasks.filter((_, i) => i !== index)
+    setTasks(newTasks)
+  }
+
+  const updateTask = (index: number, value: string) => {
+    const newTasks = [...tasks]
+    newTasks[index] = value
+    setTasks(newTasks)
+  }
+
+  const onSubmit = async (data: ProjectFormData) => {
+    // Filter out empty tasks before submitting
+    const filteredTasks = tasks.filter(task => task.trim() !== "")
+    const submitData = {
+      ...data,
+      tasks: filteredTasks
+    }
+
+    try { 
+      setLoading(true)
+      const response = await projectApi.createProject(submitData)
+      Toast.success("Tạo dự án thành công")
+      // Reset form values
+      reset()
+      setTasks([])
+      setSelectedMembers([]) // Reset selected members
+      setLoading(false)
+    } catch (error: any) {
+      Toast.error(error.response.data.message)
+      setLoading(false)
+    }
+  }
+
+  return (
+    <Container
+      sx={{ backgroundColor: "background.paper", p: 3, borderRadius: 2, minHeight: "70vh" }}
+    >
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Grid container columns={{ xs: 12, md: 12 }} rowSpacing={3} columnSpacing={10}>
+          <Grid size={{ xs: 12, md: 5 }} className="flex flex-col gap-6">
+            <TextField
+              fullWidth
+              label="Tên dự án *"
+              {...register("name")}
+              error={!!errors.name}
+              helperText={errors.name?.message}
+            />
+
+            <textarea
+              rows={4}
+              className="block p-2.5 w-full text-md rounded-lg border focus:ring-[#6B98C8] focus:border-[#6B98C8]"
+              placeholder="Mô tả dự án"
+              {...register("description")}
+            />
+
+            <Box mt={3}>
+              <Button size="large" variant="outlined" onClick={() => router.push("/projects")} sx={{ mr: 2 }}>
+                Quay lại
+              </Button>
+
+              <Button type="submit" variant="contained" color="primary" size="large">
+                {loading ? <CircularProgress size={20} color="inherit" /> : "Tạo dự án"}
+              </Button>
+            </Box>
+          </Grid>
+
+          <Grid size={{ xs: 12, md: 7 }} className="flex flex-col gap-6">
+            <Controller
+              control={control}
+              name="memberIds"
+              render={({ field: { onChange, value } }) => (
+                <Autocomplete
+                  multiple
+                  options={users}
+                  value={selectedMembers}
+                  onChange={(event, value) => {
+                    setSelectedMembers(value)
+                    const selectedIds = value.map((item: any) => item.id)
+                    onChange(selectedIds)
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Thành viên *"
+                      error={!!errors.memberIds}
+                      helperText={errors.memberIds?.message}
+                    />
+                  )}
+                  getOptionLabel={(option) => `${option.fullName}`}
+                  getOptionKey={(option) => option.id}
+                  disableCloseOnSelect
+                  renderOption={(props, option, { selected }) => {
+                    // Extract key from props to pass it directly to the li element
+                    const { key, ...otherProps } = props
+                    return (
+                      <li key={key} {...otherProps}>
+                        <input
+                          type="checkbox"
+                          style={{ marginRight: 8 }}
+                          checked={selected}
+                          readOnly
+                        />
+                        {`${option.fullName} - ${option.employeeCode}`}
+                      </li>
+                    )
+                  }}
+                />
+              )}
+            />
+
+            <Box>
+              <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
+                <Button variant="contained" color="primary" onClick={addTask}>
+                  Thêm công việc
+                </Button>
+              </Box>
+
+              {tasks.map((task, index) => (
+                <Box key={index} display="flex" alignItems="center" gap={2} mb={2}>
+                  <TextField
+                    fullWidth
+                    label={`Công việc ${index + 1}`}
+                    value={task}
+                    onChange={(e) => updateTask(index, e.target.value)}
+                    placeholder="Nhập tên công việc"
+                  />
+                  <IconButton color="error" onClick={() => removeTask(index)} size="small">
+                    <DeleteIcon />
+                  </IconButton>
+                </Box>
+              ))}
+            </Box>
+          </Grid>
+        </Grid>
+      </form>
+    </Container>
+  )
+}

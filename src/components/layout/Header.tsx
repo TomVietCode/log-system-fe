@@ -30,6 +30,7 @@ export default function Header({ user, logout }: { user: User | null, logout: ()
 
   const handleProfile = () => {
     router.push("/profile")
+    handleMenuClose()
   }
   return (
     <AppBar position="fixed" elevation={1} sx={{ minHeight: "50px" }}>

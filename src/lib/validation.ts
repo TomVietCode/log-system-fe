@@ -28,3 +28,12 @@ export const profileSchema = z.object({
 })
 
 export type ProfileFormData = z.infer<typeof profileSchema>
+
+export const projectSchema = z.object({
+  name: z.string().min(1, "Tên dự án không được để trống"),
+  description: z.string().nullable().optional(),
+  memberIds: z.array(z.string()).min(1, "Cần chọn ít nhất một thành viên"),
+  tasks: z.array(z.string()).optional(),
+})
+
+export type ProjectFormData = z.infer<typeof projectSchema>

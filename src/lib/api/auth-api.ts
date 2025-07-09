@@ -1,6 +1,6 @@
 import { AuthResponse, LoginDto, ProfileResponse, RegisterDto } from "@/interface/auth"
-import apiClient from "@/lib/api"
-import { ProfileFormData } from "./validation"
+import apiClient from "@/lib/api/api"
+import { ProfileFormData } from "@/lib/validation"
 
 // Auth API functions
 export const authAPI = {

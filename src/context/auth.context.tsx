@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { AuthContextType, LoginDto, RegisterDto, User } from "@/interface/auth";
-import { authAPI } from "@/lib/auth-api";
+import { authAPI } from "@/lib/api/auth-api";
 
 const AuthContext = createContext<AuthContextType | undefined> (undefined)
 

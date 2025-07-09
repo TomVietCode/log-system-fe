@@ -5,8 +5,6 @@ import { useAuth } from "@/context/auth.context"
 import { loginSchema, LoginFormData } from "@/lib/validation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Box, Button, Card, CardContent, CircularProgress, Container, TextField, Typography } from "@mui/material"
-import Alert from "@mui/material/Alert"
-import Collapse from "@mui/material/Collapse"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
@@ -14,7 +12,6 @@ import { useForm } from "react-hook-form"
 export default function LoginPage() {
   const { login } = useAuth()
   const router = useRouter()
-  const [error, setError] = useState<string>('')
   const [loading, setLoading] = useState(false)
 
   const {
@@ -28,14 +25,12 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginFormData) => {
     try {
       setLoading(true)
-      setError('')
 
       await login(data)
       Toast.success("Đăng nhập thành công")
       router.push("/dashboard")
     } catch (error: any) {
       Toast.error(error.response?.data?.message || 'Đăng nhập thất bại')
-      setError(error.response?.data?.message || 'Đăng nhập thất bại')
     } finally {
       setLoading(false)
     }
