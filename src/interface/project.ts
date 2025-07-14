@@ -10,10 +10,22 @@ export interface createProjectDto {
   name: string
   description?: string | null
   memberIds?: string[] 
-  tasks?: string[]
+  tasks?: Task[]
+}
+
+export interface updateProjectDto {
+  name?: string
+  description?: string | null
+  memberIds?: string[] 
+  tasks?: Task[]
 }
 
 export interface ProjectResponse {
-  data: Project | boolean
+  data: Project 
   message: string
+}
+
+export interface Task {
+  id?: string | null
+  name: string
 }

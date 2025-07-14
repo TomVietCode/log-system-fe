@@ -7,10 +7,9 @@ import { usePathname } from "next/navigation"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { KeyboardArrowUpOutlined, KeyboardArrowDownOutlined } from '@mui/icons-material'
+import Link from "next/link"
 
 export default function Header({ user, logout }: { user: User | null, logout: () => void }) {
-  const router = useRouter()
-  
   const menuItems = user && getMenuByRole(user.role)
   const labelNames = menuItems?.map((item) => item.label)
   const pathname = usePathname()
@@ -28,10 +27,6 @@ export default function Header({ user, logout }: { user: User | null, logout: ()
     logout()
   }
 
-  const handleProfile = () => {
-    router.push("/profile")
-    handleMenuClose()
-  }
   return (
     <AppBar position="fixed" elevation={1} sx={{ minHeight: "50px" }}>
       <Toolbar sx={{ px: 2, ml: { sm: "250px" }, minHeight: "50px" }}>
@@ -65,14 +60,19 @@ export default function Header({ user, logout }: { user: User | null, logout: ()
               transformOrigin={{ vertical: "top", horizontal: "right" }}
             >
               <MenuItem>
-                <Typography variant="body2" sx={{ cursor: "pointer" }} onClick={handleProfile}>
-                  Thông tin tài khoản
-                </Typography>
+                <Link href="/profile" onClick={() => handleMenuClose()}>
+                  <Typography variant="body2" sx={{ cursor: "pointer" }}>
+                    Thông tin tài khoản 
+                  </Typography>
+                </Link>
               </MenuItem>
               <MenuItem>
-                <Typography variant="body2" sx={{ cursor: "pointer" }} onClick={handleLogout}>
-                  Đăng xuất
-                </Typography>
+                <Link href="/login" onClick={() => handleLogout()}>
+                  <Typography variant="body2" sx={{ cursor: "pointer" }} >
+                    Đăng xuất
+                  </Typography>
+                </Link>
+
               </MenuItem>
             </Menu>
           </>

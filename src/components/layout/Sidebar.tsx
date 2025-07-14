@@ -3,18 +3,15 @@
 import { MenuItem } from "@/config/menu"
 import { ChevronLeft } from "@mui/icons-material"
 import { Box, Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography } from "@mui/material"
+import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { useState } from "react"
 
 const SIDEBAR_WIDTH = 250
 
 export default function Sidebar({ menuItems }: { menuItems: MenuItem[] }) {
-  const router = useRouter()
   const pathname = usePathname()
   const [open, setOpen] = useState(true)
-  const handleNavigation = (path: string) => {
-    router.push(path)
-  }
 
   return (
     <Drawer
@@ -44,38 +41,42 @@ export default function Sidebar({ menuItems }: { menuItems: MenuItem[] }) {
 
           return (
             <ListItem key={item.path} disablePadding sx={{ mb: 0.5 }}>
-              <ListItemButton
-                onClick={() => handleNavigation(item.path)}
-                sx={{
-                  borderTopRightRadius: 30,
-                  borderBottomRightRadius: 30,
-                  "&:hover": {
-                    backgroundColor: "background.default",
-                    color: "primary.dark",
-                  },
-                  ...(isActive && {
-                    backgroundColor: "primary.main",
-                    "&:hover": {
-                      backgroundColor: "primary.main",
-                    },
-                  }),
-                }}
+              <Link
+                href={item.path}
+                style={{ textDecoration: 'none', width: '100%' }}
               >
-                <ListItemIcon
+                <ListItemButton
                   sx={{
-                    minWidth: 40,
-                    color: isActive ? "#ffffff" : "text.primary",
+                    borderTopRightRadius: 30,
+                    borderBottomRightRadius: 30,
+                    "&:hover": {
+                      backgroundColor: "background.default",
+                      color: "primary.dark",
+                    },
+                    ...(isActive && {
+                      backgroundColor: "primary.main",
+                      "&:hover": {
+                        backgroundColor: "primary.main",
+                      },
+                    }),
                   }}
                 >
-                  <Icon />
-                </ListItemIcon>
-                <ListItemText
-                  primary={item.label}
-                  sx={{
-                    color: isActive ? "#ffffff" : "text.primary",
-                  }}
-                />
-              </ListItemButton>
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 40,
+                      color: isActive ? "#ffffff" : "text.primary",
+                    }}
+                  >
+                    <Icon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={item.label}
+                    sx={{
+                      color: isActive ? "#ffffff" : "text.primary",
+                    }}
+                  />
+                </ListItemButton>
+              </Link>
             </ListItem>
           );
         })}

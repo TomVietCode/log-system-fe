@@ -10,9 +10,13 @@ import { userApi } from "@/lib/api/user-api"
 import DeleteIcon from '@mui/icons-material/Delete'
 import { projectApi } from "@/lib/api/project-api"
 import Toast from "@/components/ui/alert"
+import { useParams } from "next/navigation"
 import { Task } from "@/interface/project"
 
-export default function CreateProjectPage() {
+export default function UpdateProjectPage() {
+  const params = useParams()
+  const projectId = params.id as string
+
   const [users, setUsers] = useState<any[]>([])
   const [tasks, setTasks] = useState<Array<Task>>([])
   const [loading, setLoading] = useState(false)
@@ -23,18 +27,33 @@ export default function CreateProjectPage() {
     handleSubmit,
     control,
     setValue,
-    reset,
+    watch,
     formState: { errors },
   } = useForm<ProjectFormData>({
     resolver: zodResolver(projectSchema),
   })
   
   useEffect(() => {
-    const fetchUsers = async () => {
-      const response = await userApi.getListUser("DEV")
-      setUsers(response.data)
-    }
-    fetchUsers()
+    const fetchData = async () => {
+      const [userResponse, projectResponse] = await Promise.all([
+        userApi.getListUser("DEV"),
+        projectApi.getProject(projectId)
+      ])
+      
+      setUsers(userResponse.data)
+      const projectData = projectResponse.data
+
+      setValue("name", projectData.name)
+      setValue("description", projectData.description)
+      const selectedMems = userResponse.data.filter((user: any) =>
+        projectData.ProjectMembers.some((member: any) => member.userId === user.id)
+      )
+      setSelectedMembers(selectedMems)
+
+      setValue("memberIds", selectedMems.map((member: any) => member.id))
+      setTasks(projectData.tasks.map((task: Task) => ({ id: task.id, name: task.name })))
+    } 
+    fetchData()
   }, [])  
 
   // Update form value when tasks change
@@ -59,7 +78,7 @@ export default function CreateProjectPage() {
 
   const onSubmit = async (data: ProjectFormData) => {
     // Filter out empty tasks before submitting
-    const filteredTasks = tasks.filter(task => task.name?.trim() !== "")
+    const filteredTasks = tasks.filter(task => task.name.trim() !== "")
     const submitData = {
       ...data,
       tasks: filteredTasks
@@ -67,12 +86,9 @@ export default function CreateProjectPage() {
 
     try { 
       setLoading(true)
-      const response = await projectApi.createProject(submitData)
-      Toast.success("Tạo dự án thành công")
+      const response = await projectApi.updateProject(projectId, submitData)
+      Toast.success("Cập nhật dự án thành công")
       // Reset form values
-      reset()
-      setTasks([])
-      setSelectedMembers([]) // Reset selected members
       setLoading(false)
     } catch (error: any) {
       Toast.error(error.response.data.message)
@@ -90,6 +106,7 @@ export default function CreateProjectPage() {
             <TextField
               fullWidth
               label="Tên dự án *"
+              slotProps={{ inputLabel: { shrink: !!watch("name") } }}
               {...register("name")}
               error={!!errors.name}
               helperText={errors.name?.message}
@@ -110,7 +127,7 @@ export default function CreateProjectPage() {
               </Link>
 
               <Button type="submit" variant="contained" color="primary" size="large">
-                {loading ? <CircularProgress size={20} color="inherit" /> : "Tạo dự án"}
+                {loading ? <CircularProgress size={20} color="inherit" /> : "Cập nhật"}
               </Button>
             </Box>
           </Grid>
