@@ -36,5 +36,14 @@ export const projectApi = {
     } catch (error) {
       throw error
     }
+  },
+
+  deleteProject: async (projectId: string) => {
+    try {
+      const response = await apiClient.delete(`/projects/${projectId}`)
+      return response.data
+    } catch (error) {
+      throw error
+    }
   }
 }

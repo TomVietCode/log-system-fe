@@ -1,12 +1,13 @@
 "use client"
 
-import { Box, Button, Container, Paper, Typography, IconButton, Stack } from "@mui/material"
+import { Box, Button, Container, Paper, Typography, IconButton, Stack, CircularProgress } from "@mui/material"
 import { DataGrid, GridColDef } from "@mui/x-data-grid"
 import { EditNote, Delete } from '@mui/icons-material';
 import { useEffect, useState } from "react"
 import { projectApi } from "@/lib/api/project-api";
 import Link from "next/link";
 import moment from "moment"
+import Toast from "@/components/ui/alert";
 
 export default function ProjectsPage() {
   const [data, setData] = useState<any[]>([])
@@ -19,7 +20,6 @@ export default function ProjectsPage() {
       try {
         setLoading(true)
         const response = await projectApi.getProjects()
-        console.log(response.data)
         const rowData: any = response.data.map((project: any) => ({
           id: project.id,
           name: project.name,
@@ -41,9 +41,17 @@ export default function ProjectsPage() {
     fetchData()
   }, [])
 
-  const handleDelete = (id: number) => {
-    // Add confirmation dialog or delete logic here
-    console.log(`Delete project with id: ${id}`)
+  const handleDelete = async (id: string) => {
+    try {
+      setLoading(true)
+      await projectApi.deleteProject(id)
+      Toast.success("Xóa dự án thành công")
+      setData(data.filter((project) => project.id !== id))
+    } catch (error) {
+      Toast.error("Xóa dự án thất bại")
+    } finally {
+      setLoading(false)
+    }
   }
   
   const columns: GridColDef[] = [
