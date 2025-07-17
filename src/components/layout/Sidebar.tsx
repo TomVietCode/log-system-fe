@@ -1,10 +1,9 @@
 "use client"
 
 import { MenuItem } from "@/config/menu"
-import { ChevronLeft } from "@mui/icons-material"
-import { Box, Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography } from "@mui/material"
+import { Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material"
 import Link from "next/link"
-import { usePathname, useRouter } from "next/navigation"
+import { usePathname } from "next/navigation"
 import { useState } from "react"
 
 const SIDEBAR_WIDTH = 250

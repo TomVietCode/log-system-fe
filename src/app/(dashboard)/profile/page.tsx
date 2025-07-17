@@ -8,6 +8,10 @@ import {
   CircularProgress,
   Collapse,
   Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   FormHelperText,
   Grid,
   OutlinedInput,
@@ -25,6 +29,14 @@ export default function ProfilePage() {
   const [errors, setErrors] = useState<any>({})
   const [loading, setLoading] = useState<boolean>(false)
   const [backendError, setBackendError] = useState<string>("")
+  const [showChangePassword, setShowChangePassword] = useState<boolean>(false)
+  const [passwordForm, setPasswordForm] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  })
+  const [passwordErrors, setPasswordErrors] = useState<any>({})
+  const [passwordLoading, setPasswordLoading] = useState<boolean>(false)
 
   useEffect(() => {
     if (backendError) {
@@ -36,6 +48,13 @@ export default function ProfilePage() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm((prev: any) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }))
+  }
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPasswordForm((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
     }))
@@ -64,6 +83,51 @@ export default function ProfilePage() {
       setBackendError(error.response?.data?.message || "Có lỗi xảy ra")
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleChangePassword = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setPasswordLoading(true)
+    
+    // Reset errors
+    setPasswordErrors({})
+    
+    // Validate passwords
+    const newErrors: any = {}
+    if (!passwordForm.currentPassword) {
+      newErrors.currentPassword = "Mật khẩu hiện tại là bắt buộc"
+    }
+    if (!passwordForm.newPassword) {
+      newErrors.newPassword = "Mật khẩu mới là bắt buộc"
+    }
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      newErrors.confirmPassword = "Mật khẩu xác nhận không khớp"
+    }
+    
+    if (Object.keys(newErrors).length > 0) {
+      setPasswordErrors(newErrors)
+      setPasswordLoading(false)
+      return
+    }
+    
+    try {
+      await authAPI.changePassword({
+        oldPassword: passwordForm.currentPassword,
+        newPassword: passwordForm.newPassword
+      })
+      Toast.success("Đổi mật khẩu thành công")
+      setShowChangePassword(false)
+      // Reset form
+      setPasswordForm({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      })
+    } catch (error: any) {
+      setBackendError(error.response?.data?.message || "Có lỗi xảy ra khi đổi mật khẩu")
+    } finally {
+      setPasswordLoading(false)
     }
   }
 
@@ -241,7 +305,12 @@ export default function ProfilePage() {
               </Box>
             </Grid>
 
-            <Grid size={{ xs: 12, md: 12 }} className="flex justify-center">
+            <Grid size={{ xs: 12, md: 12 }} className="flex justify-center gap-4">
+              <Button variant="outlined" sx={{ borderRadius: 10 }} onClick={() => {
+                setShowChangePassword(true)
+              }}>
+                Đổi mật khẩu
+              </Button>
               <Button type="submit" variant="contained" sx={{ borderRadius: 10 }}>
                 {loading ? <CircularProgress size={24} color="inherit" /> : "Cập nhật"}
               </Button>
@@ -249,6 +318,74 @@ export default function ProfilePage() {
           </Grid>
         </form>
       </Container>
+
+      {/* Change Password Dialog */}
+      <Dialog open={showChangePassword} onClose={() => setShowChangePassword(false)} maxWidth="sm" fullWidth>
+        <DialogTitle>Đổi mật khẩu</DialogTitle>
+        <form onSubmit={handleChangePassword}>
+          <DialogContent>
+            <Box mb={2}>
+              <Typography fontWeight={500} mb={0.5}>
+                Mật khẩu hiện tại: <span className="text-red-500">*</span>
+              </Typography>
+              <OutlinedInput
+                name="currentPassword"
+                type="password"
+                value={passwordForm.currentPassword}
+                onChange={handlePasswordChange}
+                fullWidth
+                sx={{ height: "40px" }}
+                error={!!passwordErrors.currentPassword}
+              />
+              {passwordErrors.currentPassword && (
+                <FormHelperText error>{passwordErrors.currentPassword}</FormHelperText>
+              )}
+            </Box>
+            
+            <Box mb={2}>
+              <Typography fontWeight={500} mb={0.5}>
+                Mật khẩu mới: <span className="text-red-500">*</span>
+              </Typography>
+              <OutlinedInput
+                name="newPassword"
+                type="password"
+                value={passwordForm.newPassword}
+                onChange={handlePasswordChange}
+                fullWidth
+                sx={{ height: "40px" }}
+                error={!!passwordErrors.newPassword}
+              />
+              {passwordErrors.newPassword && (
+                <FormHelperText error>{passwordErrors.newPassword}</FormHelperText>
+              )}
+            </Box>
+            
+            <Box mb={2}>
+              <Typography fontWeight={500} mb={0.5}>
+                Xác nhận mật khẩu mới: <span className="text-red-500">*</span>
+              </Typography>
+              <OutlinedInput
+                name="confirmPassword"
+                type="password"
+                value={passwordForm.confirmPassword}
+                onChange={handlePasswordChange}
+                fullWidth
+                sx={{ height: "40px" }}
+                error={!!passwordErrors.confirmPassword}
+              />
+              {passwordErrors.confirmPassword && (
+                <FormHelperText error>{passwordErrors.confirmPassword}</FormHelperText>
+              )}
+            </Box>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setShowChangePassword(false)}>Hủy</Button>
+            <Button type="submit" variant="contained" disabled={passwordLoading}>
+              {passwordLoading ? <CircularProgress size={24} color="inherit" /> : "Xác nhận"}
+            </Button>
+          </DialogActions>
+        </form>
+      </Dialog>
     </>
   )
 }

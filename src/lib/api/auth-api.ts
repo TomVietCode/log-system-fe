@@ -1,6 +1,6 @@
 import { AuthResponse, LoginDto, ProfileResponse, RegisterDto } from "@/interface/auth"
 import apiClient from "@/lib/api/api"
-import { ProfileFormData } from "@/lib/validation"
+import { ChangePasswordFormData, ProfileFormData } from "@/lib/validation"
 
 // Auth API functions
 export const authAPI = {
@@ -25,6 +25,11 @@ export const authAPI = {
 
   updateProfile: async (data: ProfileFormData): Promise<ProfileResponse> => {
     const response = await apiClient.patch('/users/profile', data)
+    return response.data
+  },
+
+  changePassword: async (data: ChangePasswordFormData): Promise<AuthResponse> => {
+    const response = await apiClient.patch('/users/change-password', data)
     return response.data
   }
 }

@@ -33,7 +33,7 @@ export const menuItems: MenuItem[] = [
   {
     label: "Lịch sử nhập Devlogs",
     icon: AccessTimeOutlined,
-    path: "/devlogs/history",
+    path: "/devlog-history",
     roles: ["DEV", "LEADER"],
     status: "show"
   },

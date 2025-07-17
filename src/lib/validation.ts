@@ -45,3 +45,10 @@ export const projectSchema = z.object({
 })
 
 export type ProjectFormData = z.infer<typeof projectSchema>
+
+export const changePasswordSchema = z.object({
+  oldPassword: z.string().min(1, "Mật khẩu hiện tại không được để trống"),
+  newPassword: z.string().min(1, "Mật khẩu mới không được để trống"),
+})
+
+export type ChangePasswordFormData = z.infer<typeof changePasswordSchema>
