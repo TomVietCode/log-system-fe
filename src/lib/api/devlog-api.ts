@@ -8,5 +8,14 @@ export const devLogApi = {
     } catch (error) {
       throw error
     }
+  },
+
+  getDevLogs: async (month: number, year: number) => {
+    try {
+      const result = await apiClient.get(`/devlogs?month=${month}&year=${year}`)
+      return result.data
+    } catch (error) {
+      throw error
+    }
   }
 }
