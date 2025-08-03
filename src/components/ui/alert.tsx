@@ -54,6 +54,7 @@ class ToastService {
     ), { duration })
   }
 
+
   info(message: string, duration: number = 3000) {
     toast((t) => (
       <div className="flex items-center justify-between">

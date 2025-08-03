@@ -39,7 +39,8 @@ export default function UpdateProjectPage() {
         userApi.getListUser("DEV"),
         projectApi.getProject(projectId)
       ])
-      
+      console.log(projectResponse)
+
       setUsers(userResponse.data)
       const projectData = projectResponse.data
 
@@ -55,7 +56,6 @@ export default function UpdateProjectPage() {
     } 
     fetchData()
   }, [])  
-
   // Update form value when tasks change
   useEffect(() => {
     setValue("tasks", tasks.length > 0 ? tasks : [])

@@ -37,6 +37,16 @@ export const projectApi = {
       throw error
     }
   },
+  
+  getProjectMembers: async (projectId: string) => {
+    try {
+      const response = await apiClient.get(`/projects/${projectId}/members`)
+      return response.data
+    } catch (error) {
+      throw error
+    }
+  },
+  
   updateProject: async (projectId: string, data: updateProjectDto) => {
     try {
       const response = await apiClient.patch(`/projects/${projectId}`, data)

@@ -1,8 +1,8 @@
 "use client"
 
-import { Box, Button, Container, Paper, Typography, IconButton, Stack, CircularProgress } from "@mui/material"
+import { Box, Button, Container, Paper, IconButton, Stack, CircularProgress, Tooltip } from "@mui/material"
 import { DataGrid, GridColDef } from "@mui/x-data-grid"
-import { EditNote, Delete } from '@mui/icons-material';
+import { EditNote, Delete, VisibilityOutlined } from '@mui/icons-material';
 import { useEffect, useState } from "react"
 import { projectApi } from "@/lib/api/project-api";
 import Link from "next/link";
@@ -67,27 +67,32 @@ export default function ProjectsPage() {
       width: 120,
       sortable: false,
       renderCell: (params) => (
-        <Stack direction="row" spacing={1} sx={{ height: "100%" }}>
-          <Link href={`/projects/${params.row.id}`}>
-            <IconButton 
-              size="medium" 
-              color="primary" 
-              aria-label="edit"
+        <Stack direction="row" sx={{ height: "100%" }}>
+          <Tooltip title="Theo dõi DevLog">
+            <IconButton size="small" color="default" aria-label="edit">
+              <VisibilityOutlined fontSize="medium" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Chỉnh sửa dự án">
+            <Link href={`/projects/${params.row.id}`}>
+              <IconButton size="small" color="primary" aria-label="edit">
+                <EditNote fontSize="medium" />
+              </IconButton>
+            </Link>
+          </Tooltip>
+          <Tooltip title="Xóa dự án">
+            <IconButton
+              size="small"
+              color="error"
+              onClick={() => handleDelete(params.row.id)}
+              aria-label="delete"
             >
-              <EditNote fontSize="medium" />
-            </IconButton> 
-          </Link>
-          <IconButton 
-            size="medium" 
-            color="error" 
-            onClick={() => handleDelete(params.row.id)}
-            aria-label="delete"
-          >
-            <Delete fontSize="medium" />
-          </IconButton>
+              <Delete fontSize="medium" />
+            </IconButton>
+          </Tooltip>
         </Stack>
-      )
-    }
+      ),
+    },
   ]
 
   return (
