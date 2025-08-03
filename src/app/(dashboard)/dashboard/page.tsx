@@ -75,7 +75,7 @@ export default function DashboardPage() {
   return (
     <Box>
       <Typography variant="h4" gutterBottom>
-        Tổng quan {data?.year}-{data?.month}
+        Biểu đồ Devlog tháng {data?.month}-{data?.year}
       </Typography>
       
       <Card sx={{ borderRadius: 4, boxShadow: 2 }}>

@@ -27,7 +27,7 @@ export default function DevLogsHistoryPage() {
   const [loading, setLoading] = useState<boolean>(false)
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs>(dayjs())
   const rowCount = (devLogs && devLogs?.tasks.length + 3) || 2
-  const colCount = dayjs().daysInMonth() || 28
+  const colCount = dayjs().daysInMonth()
   const router = useRouter()
   const fetchDevLogs = async (month: number, year: number) => {
     try {
@@ -111,7 +111,7 @@ export default function DevLogsHistoryPage() {
             </div>
 
             {/* Data Cols */}
-            <div className={`grid grid-cols-${colCount}`}>
+            <div style={{ display: 'grid', gridTemplateColumns: `repeat(${colCount}, minmax(0, 1fr))` }}>
               {devLogs &&
                 [...Array(colCount)].map((_, index) => {
                   const day = devLogs.days[index]
