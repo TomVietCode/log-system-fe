@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { devLogApi } from "@/lib/api/devlog-api"
-import { Box, Button, CircularProgress, Paper } from "@mui/material"
+import { Autocomplete, Box, Button, CircularProgress, Paper, TextField } from "@mui/material"
 import { DatePicker } from "@mui/x-date-pickers/DatePicker"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
@@ -11,6 +11,8 @@ import { getColBackground, getDayOfWeek } from "@/lib/utils/date"
 import dayjs from "dayjs"
 import Toast from "@/components/ui/alert"
 import { useRouter } from "next/navigation"
+import { useAuth } from "@/context/auth.context"
+import { userApi } from "@/lib/api/user-api"
 
 export interface DevLog {
   days: number[]
@@ -23,16 +25,37 @@ export interface DevLog {
 }
 
 export default function DevLogsHistoryPage() {
+  const { user } = useAuth()
   const [devLogs, setDevLogs] = useState<DevLog>()
   const [loading, setLoading] = useState<boolean>(false)
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs>(dayjs())
+  const [users, setUsers] = useState<any[]>([])
+  const [selectedUser, setSelectedUser] = useState<any>(null)
   const rowCount = (devLogs && devLogs?.tasks.length + 3) || 2
   const colCount = dayjs().daysInMonth()
   const router = useRouter()
+
+  const canViewOtherUsersLogs = user?.role === 'ADMIN' || user?.role === 'LEADER' || user?.role === 'HCNS'
+
+  // Get users list
+  useEffect(() => {
+    if(canViewOtherUsersLogs) {
+      const fetchUsers = async () => {
+        try {
+          const response = await userApi.getListUser("DEV")
+          setUsers(response.data)
+        } catch (error: any) {
+          Toast.error(error.response?.data?.message || "Không thể lấy danh sách người dùng")
+        }
+      }
+      fetchUsers()
+    }
+  }, [canViewOtherUsersLogs])
+
   const fetchDevLogs = async (month: number, year: number) => {
     try {
       setLoading(true)
-      const response = await devLogApi.getDevLogs(month, year)
+      const response = await devLogApi.getDevLogs(selectedUser?.id || user?.id, month, year)
       setDevLogs(response.data)
     } catch (error: any) {
       Toast.error(error.response?.data?.message || "Không thể lấy dữ liệu")
@@ -43,16 +66,19 @@ export default function DevLogsHistoryPage() {
 
   useEffect(() => {
     // Load current month data by default
-    const currentMonth = selectedDate.month() + 1 // dayjs months are 0-indexed
+    const currentMonth = selectedDate.month() + 1 
     const currentYear = selectedDate.year()
     fetchDevLogs(currentMonth, currentYear)
-  }, [selectedDate])
+  }, [selectedDate, selectedUser])
 
   const handleSelectMonth = (date: dayjs.Dayjs) => {
     if (date) {
       setSelectedDate(date)
     }
-    fetchDevLogs(date.month() + 1, date.year())
+  }
+
+  const handleUserChange = (newValue: any) => {
+    setSelectedUser(newValue)
   }
 
   return (
@@ -82,6 +108,18 @@ export default function DevLogsHistoryPage() {
             Sửa Devlog
           </Button>
         </div>
+
+        {canViewOtherUsersLogs && (
+          <Autocomplete
+            options={users}
+            getOptionLabel={(option) => option.fullName}
+            sx={{ width: 250, alignSelf: "flex-end", marginLeft: "auto" }}
+            renderInput={(params) => <TextField {...params} label="Chọn Dev" />}
+            onChange={(_event, newValue) => handleUserChange(newValue)}
+            value={selectedUser}
+          />
+        )}
+
       </Box>
       {/* Data table */}
       <div className={`mt-5 h-[80%] grid grid-cols-[20%_120%_6%] overflow-x-auto relative`}>
@@ -111,7 +149,12 @@ export default function DevLogsHistoryPage() {
             </div>
 
             {/* Data Cols */}
-            <div style={{ display: 'grid', gridTemplateColumns: `repeat(${colCount}, minmax(0, 1fr))` }}>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: `repeat(${colCount}, minmax(0, 1fr))`,
+              }}
+            >
               {devLogs &&
                 [...Array(colCount)].map((_, index) => {
                   const day = devLogs.days[index]

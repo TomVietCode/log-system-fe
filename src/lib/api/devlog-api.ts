@@ -10,9 +10,9 @@ export const devLogApi = {
     }
   },
 
-  getDevLogs: async (month: number, year: number) => {
+  getDevLogs: async (userId: string, month: number, year: number) => {
     try {
-      const result = await apiClient.get(`/devlogs?month=${month}&year=${year}`)
+      const result = await apiClient.get(`/devlogs/${userId}?month=${month}&year=${year}`)
       return result.data
     } catch (error) {
       throw error
