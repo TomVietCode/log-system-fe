@@ -38,6 +38,7 @@ export default function DevLogsPage() {
     control,
     watch,
     setValue,
+    getValues,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -46,7 +47,7 @@ export default function DevLogsPage() {
       totalHour: 8,
       isOvertime: false,
       content: "",
-      logDate: new Date()
+      logDate: (new Date()).toISOString()
     }
   })
 
@@ -87,8 +88,14 @@ export default function DevLogsPage() {
   }
 
   const handleDateChange = (newValue: Dayjs | null) => {
-    setValue("logDate", newValue?.toDate() || new Date())
+    if (newValue) {
+      setValue("logDate", newValue.toDate().toLocaleString());
+      console.log(getValues("logDate"))
+    } else {
+      setValue("logDate", (new Date()).toLocaleString());
+    }
   }
+  
   return (
     <Container disableGutters>
       <Grid container spacing={2}>
