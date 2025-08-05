@@ -18,49 +18,49 @@ export interface MenuItem {
 
 export const menuItems: MenuItem[] = [
   {
-    label: "Trang chủ",
+    label: "navigation.dashboard",
     icon: HomeOutlined,
     path: "/dashboard",
     roles: ["LEADER", "DEV"],
     status: "show"
   },
   {
-    label: "Nhập Devlogs",
+    label: "navigation.devlogs",
     icon: EditNoteOutlined,
     path: "/devlogs",
     roles: ["DEV", "LEADER"], 
     status: "show"
   },
   {
-    label: "Devlogs List",
+    label: "navigation.devlogHistory",
     icon: AccessTimeOutlined,
     path: "/devlog-history",
     roles: ["DEV", "LEADER"],
     status: "show"
   },
   {
-    label: "Dự án",
+    label: "navigation.projects",
     icon: ListAltOutlined,
     path: "/projects",
     roles: ["DEV", "LEADER"],
     status: "show"
   },
   {
-    label: "Tạo dự án",
+    label: "navigation.createProject",
     icon: AddOutlined,
     path: "/projects/create",
     roles: ["LEADER"],
     status: "hidden"
   },
   {
-    label: "Thông tin cá nhân",
+    label: "navigation.profile",
     icon: PersonOutlineOutlined,
     path: "/profile",
     roles: ["ADMIN", "LEADER", "HCNS", "DEV"],
     status: "hidden"
   },
   {
-    label: "Tài khoản",
+    label: "navigation.accounts",
     icon: Group,
     path: "/accounts",
     roles: ["ADMIN", "HCNS"],

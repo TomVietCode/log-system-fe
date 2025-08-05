@@ -2,13 +2,14 @@
 
 import { getMenuByRole } from "@/config/menu"
 import { User } from "@/interface/auth"
-import { AppBar, Menu, MenuItem, Toolbar, Typography } from "@mui/material"
+import { AppBar, Box, Menu, MenuItem, Toolbar, Typography } from "@mui/material"
 import { usePathname } from "next/navigation"
-import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { KeyboardArrowUpOutlined, KeyboardArrowDownOutlined } from '@mui/icons-material'
 import Link from "next/link"
 import NotificationBell from "../ui/NotificationBell"
+import { useCommonTranslations } from "@/lib/hook/useTranslations"
+import LanguageSwitcher from "../ui/LanguageSwitcher"
 
 export default function Header({ user, logout }: { user: User | null, logout: () => void }) {
   const menuItems = user && getMenuByRole(user.role)
@@ -16,6 +17,7 @@ export default function Header({ user, logout }: { user: User | null, logout: ()
   const pathname = usePathname()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
+  const t = useCommonTranslations()
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
@@ -28,14 +30,22 @@ export default function Header({ user, logout }: { user: User | null, logout: ()
     logout()
   }
 
+  //Get current page title
+  const currentMenuItem = menuItems?.find((item) => item.path === pathname)
+  const pageTitle = currentMenuItem ? t(currentMenuItem.label) : null
   return (
     <AppBar position="fixed" elevation={1} sx={{ minHeight: "50px" }}>
       <Toolbar sx={{ px: 2, ml: { sm: "250px" }, minHeight: "50px" }}>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          {labelNames?.find(
-            (label) => label === menuItems?.find((item) => item.path === pathname)?.label
-          )}  
+          {pageTitle}
         </Typography>
+
+        {/* Language switcher */}
+        <Box sx={{ mr: 2 }}>
+          <LanguageSwitcher />
+        </Box>
+
+        {/* User menu */}
         {user && (  
           <>
             <NotificationBell />

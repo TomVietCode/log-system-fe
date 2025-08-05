@@ -1,0 +1,24 @@
+{
+  "navigation": {
+    "dashboard": "Trang chủ",
+    "devlogs": "Nhập Devlogs", 
+    "devlogHistory": "Devlogs List",
+    "projects": "Dự án",
+    "accounts": "Tài khoản",
+    "profile": "Thông tin cá nhân"
+  },
+  "actions": {
+    "create": "Tạo mới",
+    "edit": "Chỉnh sửa",
+    "delete": "Xóa",
+    "save": "Lưu",
+    "cancel": "Hủy",
+    "search": "Tìm kiếm"
+  },
+  "status": {
+    "loading": "Đang tải..."
+  },
+  "projects": {
+    "create": "Tạo dự án"
+  }
+}

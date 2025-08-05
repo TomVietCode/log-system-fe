@@ -1,6 +1,7 @@
 "use client"
 
 import { MenuItem } from "@/config/menu"
+import { useCommonTranslations } from "@/lib/hook/useTranslations"
 import { Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
@@ -11,6 +12,7 @@ const SIDEBAR_WIDTH = 250
 export default function Sidebar({ menuItems }: { menuItems: MenuItem[] }) {
   const pathname = usePathname()
   const [open, setOpen] = useState(true)
+  const t = useCommonTranslations()
 
   return (
     <Drawer
@@ -69,7 +71,7 @@ export default function Sidebar({ menuItems }: { menuItems: MenuItem[] }) {
                     <Icon />
                   </ListItemIcon>
                   <ListItemText
-                    primary={item.label}
+                    primary={t(item.label)}
                     sx={{
                       color: isActive ? "#ffffff" : "text.primary",
                     }}

@@ -1,0 +1,24 @@
+{
+  "navigation": {
+    "dashboard": "Dashboard",
+    "devlogs": "Dev Logs",
+    "devlogHistory": "Dev Logs List", 
+    "projects": "Projects",
+    "accounts": "Accounts",
+    "profile": "Profile"
+  },
+  "actions": {
+    "create": "Create",
+    "edit": "Edit", 
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "search": "Search"
+  },
+  "status": {
+    "loading": "Loading..."
+  },
+  "projects": {
+    "create": "Create Project"
+  }
+}

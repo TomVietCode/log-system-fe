@@ -2,6 +2,7 @@
 
 import Toast from "@/components/ui/alert"
 import { useAuth } from "@/context/auth.context"
+import { useAuthTranslations, useCommonTranslations } from "@/lib/hook/useTranslations"
 import { loginSchema, LoginFormData } from "@/lib/validation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Box, Button, Card, CardContent, CircularProgress, Container, TextField, Typography } from "@mui/material"
@@ -13,6 +14,10 @@ export default function LoginPage() {
   const { login } = useAuth()
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+
+  // Translation hooks
+  const t = useAuthTranslations()
+  const common = useCommonTranslations()
 
   const {
     register,
@@ -27,14 +32,14 @@ export default function LoginPage() {
       setLoading(true)
 
       const user = await login(data)
-      Toast.success("Đăng nhập thành công")
+      Toast.success(t("messages.loginSuccess"))
       if(user.role === "ADMIN" || user.role === "HCNS") {
         router.push("/")
       } else {
         router.push("/dashboard")
       }
     } catch (error: any) {
-      Toast.error(error.response?.data?.message || 'Đăng nhập thất bại')
+      Toast.error(error.response?.data?.message || t("messages.loginError"))
     } finally {
       setLoading(false)
     }
@@ -48,10 +53,10 @@ export default function LoginPage() {
             <CardContent className="p-8 bg-gray-50">
               <Box className="text-center mb-8">
                 <Typography variant="h4" component="h1">
-                  Đăng nhập
+                  {t("login.title")}
                 </Typography>
                 <Typography variant="body1">
-                  Hệ thống quản lý DevLog
+                  {t("login.subtitle")}
                 </Typography>
               </Box>
 
@@ -59,9 +64,9 @@ export default function LoginPage() {
                 <Box display="flex" flexDirection="column" gap={2}>
                   <TextField
                     {...register('email')}
-                    label="Email"
+                    label={t("login.email")}
                     type="email"
-                    placeholder="example@vikoisoft.com"
+                    placeholder={t("login.placeholder.email")}
                     fullWidth
                     error={!!errors.email}
                     helperText={errors.email?.message}
@@ -69,7 +74,7 @@ export default function LoginPage() {
 
                   <TextField
                     {...register("password")}
-                    label="Mật khẩu"
+                    label={t("login.password")}
                     type="password"
                     error={!!errors.password}
                     helperText={errors.password?.message}
@@ -86,7 +91,7 @@ export default function LoginPage() {
                     {loading ? (
                       <CircularProgress size={24}/>
                     ) : (
-                      'Đăng nhập'
+                      t("login.button")
                     )}
                   </Button>
                 </Box>
