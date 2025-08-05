@@ -1,0 +1,23 @@
+{
+  "title": "Notifications",
+  "noNotifications": "No notifications",
+  "markAsRead": "Mark as read",
+  "markAllAsRead": "Mark all as read",
+  "messages": {
+    "reminderSent": "Reminder sent to user successfully",
+    "reminderError": "Failed to send reminder",
+    "markReadSuccess": "Notification marked as read",
+    "markReadError": "Failed to mark notification as read",
+    "fetchError": "Failed to load notifications"
+  },
+  "types": {
+    "reminder": "Reminder",
+    "info": "Information",
+    "warning": "Warning",
+    "error": "Error"
+  },
+  "actions": {
+    "viewDetails": "View Details",
+    "dismiss": "Dismiss"
+  }
+}

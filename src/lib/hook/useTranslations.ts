@@ -1,11 +1,11 @@
 import { useTranslations as useNextIntlTranslations } from 'next-intl';
 
 export function useCommonTranslations() {
-  return useNextIntlTranslations('common')
+  return useNextIntlTranslations('common');
 }
 
 export function useAuthTranslations() {
-  return useNextIntlTranslations('auth')
+  return useNextIntlTranslations('auth');
 }
 
 export function useDashboardTranslations() {
@@ -26,4 +26,8 @@ export function useProjectTranslations() {
 
 export function useAccountTranslations() {
   return useNextIntlTranslations('account');
+}
+
+export function useNotificationTranslations() {
+  return useNextIntlTranslations('notification');
 }

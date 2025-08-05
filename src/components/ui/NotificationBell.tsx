@@ -1,6 +1,7 @@
 "use client"
 
 import { useNotification } from "@/context/notification.context"
+import { useNotificationTranslations } from "@/lib/hook/useTranslations"
 import { Notifications } from "@mui/icons-material"
 import { Badge, Box, IconButton, ListItemText, ListItem, List, Popover, Typography } from "@mui/material"
 import moment from "moment"
@@ -11,6 +12,7 @@ export default function NotificationBell() {
   const router = useRouter()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const { notifications, unreadCount, markAsRead } = useNotification()
+  const t = useNotificationTranslations()
 
   const open = Boolean(anchorEl)
 
@@ -52,7 +54,7 @@ export default function NotificationBell() {
             {notifications.length === 0 ?
               (
                 <ListItem>
-                  <ListItemText primary="Không có thông báo" />
+                  <ListItemText primary={t("noNotifications")} />
                 </ListItem>
               ) : 
               notifications.map((noti) => {
@@ -81,14 +83,13 @@ export default function NotificationBell() {
                       }
                       secondary={
                         <>
-                          <Typography 
-                            variant="body2" 
-                            sx={{ 
+                          <span 
+                            style={{ 
                               color: noti.isRead ? 'text.secondary' : 'text.primary'
                             }}
                           >
                             {noti.content}
-                          </Typography>
+                          </span>
                           <Box component="span" sx={{ display: 'block', fontSize: '0.75rem', color: 'text.secondary', mt: 0.5 }}>
                             {moment(noti.createdAt).format("DD/MM/YYYY HH:mm")}
                           </Box>

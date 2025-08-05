@@ -1,0 +1,23 @@
+{
+  "title": "Thông báo",
+  "noNotifications": "Không có thông báo",
+  "markAsRead": "Đánh dấu đã đọc",
+  "markAllAsRead": "Đánh dấu tất cả đã đọc",
+  "messages": {
+    "reminderSent": "Đã gửi thông báo đến người dùng",
+    "reminderError": "Không thể gửi thông báo",
+    "markReadSuccess": "Đã đánh dấu thông báo đã đọc",
+    "markReadError": "Không thể đánh dấu thông báo",
+    "fetchError": "Không thể tải thông báo"
+  },
+  "types": {
+    "reminder": "Nhắc nhở",
+    "info": "Thông tin",
+    "warning": "Cảnh báo",
+    "error": "Lỗi"
+  },
+  "actions": {
+    "viewDetails": "Xem chi tiết",
+    "dismiss": "Bỏ qua"
+  }
+}

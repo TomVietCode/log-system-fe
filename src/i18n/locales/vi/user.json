@@ -1,4 +1,7 @@
 {
+  "profile": {
+    "changePassword": "Change Password"
+  },
   "fields": {
     "fullName": "Họ và tên",
     "email": "Email",
@@ -27,7 +30,8 @@
   "actions": {
     "update": "Cập nhật",
     "cancel": "Huỷ",
-    "confirm": "Xác nhận"
+    "confirm": "Xác nhận",
+    "changePassword": "Đổi mật khẩu"
   },
   "accounts": {
     "title": "Quản lý tài khoản",

@@ -278,7 +278,7 @@ export default function AccountsPage() {
                       onChange={() => handleSelectUser(user.id)}
                       disabled={user.role === "ADMIN" || user.role === "HCNS"}
                     />
-                  </TableCell>{" "}
+                  </TableCell>
                   <TableCell>{user.employeeCode}</TableCell>
                   <TableCell>{user.fullName}</TableCell>
                   <TableCell>

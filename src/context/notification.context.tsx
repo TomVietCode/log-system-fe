@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useState } from "react"
 import { useAuth } from "./auth.context"
 import { notificationApi } from "@/lib/api/noti-api"
 import Toast from "@/components/ui/alert"
+import { useNotificationTranslations } from "@/lib/hook/useTranslations"
 
 interface AppNotification {
   id: string
@@ -26,6 +27,7 @@ const NotificationContext = createContext<NotificationContextType | undefined>(u
 export const NotificationProvider = ({ children }: { children: React.ReactNode }) => {
   const [notifications, setNotifications] = useState<AppNotification[]>([])
   const { user } = useAuth()
+  const t = useNotificationTranslations()
 
   const unreadCount = notifications.filter((notification) => !notification.isRead).length
 
@@ -35,24 +37,29 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
       setNotifications(response)
     } catch (error) {
       console.error('Error fetching notifications:', error)
+      Toast.error(t('messages.fetchError'))
     }
   }
 
   const markAsRead = async (id: string) => {
     try {
       await notificationApi.markAsRead(id)
-      setNotifications((prev) => prev.map((notification) => notification.id === id ? { ...notification, isRead: true } : notification))
+      setNotifications((prev) => prev.map((notification) => 
+        notification.id === id ? { ...notification, isRead: true } : notification
+      ))
+
     } catch (error) {
       console.error('Error marking notification as read:', error)
+      Toast.error(t('messages.markReadError'))
     }
   }
   
   const sendReminder = async (userId: string, projectId: string) => {
     try {
       await notificationApi.sendReminder(userId, projectId)
-      Toast.success("Đã gửi thông báo đến người dùng")
+      Toast.success(t('messages.reminderSent'))   
     } catch (error: any) {
-      Toast.error(error.response?.data?.message || "Không thể gửi thông báo");
+      Toast.error(error.response?.data?.message || t('messages.reminderError'))
     }
   }
 

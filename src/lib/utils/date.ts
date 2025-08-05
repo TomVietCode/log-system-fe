@@ -6,7 +6,7 @@ const dayNames = {
 }
 
 export type Language = keyof typeof dayNames
-const locale = typeof document !== 'undefined' ? document.cookie.split('; ').find(row => row.startsWith('='))?.split('locale=')[1] || 'en' : 'en'
+const locale = typeof document !== 'undefined' ? document.cookie.split('; ').find(row => row.startsWith('locale'))?.split('locale=')[1] : 'en'
 
 export const getDayOfWeek = (
   day: number, 

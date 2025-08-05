@@ -70,23 +70,22 @@ export default function Header({ user, logout }: { user: User | null, logout: ()
               anchorEl={anchorEl}
               open={open}
               onClose={handleMenuClose}
-              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-              transformOrigin={{ vertical: "top", horizontal: "right" }}
+              anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+              transformOrigin={{ vertical: "top", horizontal: "left" }}
             >
               <MenuItem>
                 <Link href="/profile" onClick={() => handleMenuClose()}>
                   <Typography variant="body2" sx={{ cursor: "pointer" }}>
-                    Thông tin tài khoản 
+                    {t("userMenu.profile")}
                   </Typography>
                 </Link>
               </MenuItem>
               <MenuItem>
                 <Link href="/login" onClick={() => handleLogout()}>
                   <Typography variant="body2" sx={{ cursor: "pointer" }} >
-                    Đăng xuất
+                    {t("userMenu.logout")}
                   </Typography>
                 </Link>
-
               </MenuItem>
             </Menu>
           </>

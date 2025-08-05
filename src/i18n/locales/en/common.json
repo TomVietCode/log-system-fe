@@ -4,7 +4,6 @@
     "devlogs": "Dev Logs",
     "devlogHistory": "Dev Logs List", 
     "projects": "Projects",
-    "createProject": "Create Project",
     "accounts": "Accounts",
     "profile": "Profile"
   },
@@ -14,12 +13,19 @@
     "delete": "Delete",
     "save": "Save",
     "cancel": "Cancel",
-    "search": "Search"
+    "search": "Search",
+    "logout": "Logout"
   },
   "status": {
     "loading": "Loading..."
   },
   "projects": {
     "create": "Create Project"
+  },
+  "userMenu": {
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Logout",
+    "welcome": "Welcome, {name}!"
   }
 }

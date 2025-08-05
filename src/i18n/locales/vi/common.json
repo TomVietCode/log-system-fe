@@ -4,7 +4,6 @@
     "devlogs": "Nhập Devlogs", 
     "devlogHistory": "Devlogs List",
     "projects": "Dự án",
-    "createProject": "Tạo dự án",
     "accounts": "Tài khoản",
     "profile": "Thông tin cá nhân"
   },
@@ -14,12 +13,18 @@
     "delete": "Xóa",
     "save": "Lưu",
     "cancel": "Hủy",
-    "search": "Tìm kiếm"
+    "search": "Tìm kiếm",
+    "logout": "Đăng xuất"
   },
   "status": {
     "loading": "Đang tải..."
   },
   "projects": {
     "create": "Tạo dự án"
+  },
+  "userMenu": {
+    "profile": "Thông tin tài khoản",
+    "settings": "Cài đặt",
+    "logout": "Đăng xuất"
   }
 }

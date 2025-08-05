@@ -10,13 +10,16 @@ export default getRequestConfig(async () => {
   if (!locales.includes(locale as any)) {
     return {
       locale: defaultLocale,
-      messages: (await import(`./locales/${defaultLocale}.json`)).default,
-      auth: (await import(`./locales/${defaultLocale}/auth.json`)).default,
-      dashboard: (await import(`./locales/${defaultLocale}/dashboard.json`)).default,
-      user: (await import(`./locales/${defaultLocale}/user.json`)).default,
-      devlog: (await import(`./locales/${defaultLocale}/devlog.json`)).default,
-      project: (await import(`./locales/${defaultLocale}/project.json`)).default,
-      account: (await import(`./locales/${defaultLocale}/account.json`)).default,
+      messages: {
+        common: (await import(`./locales/${defaultLocale}/common.json`)).default,
+        auth: (await import(`./locales/${defaultLocale}/auth.json`)).default,
+        dashboard: (await import(`./locales/${defaultLocale}/dashboard.json`)).default,
+        user: (await import(`./locales/${defaultLocale}/user.json`)).default,
+        devlog: (await import(`./locales/${defaultLocale}/devlog.json`)).default,
+        project: (await import(`./locales/${defaultLocale}/project.json`)).default,
+        account: (await import(`./locales/${defaultLocale}/account.json`)).default,
+        notification: (await import(`./locales/${defaultLocale}/notification.json`)).default,
+      }
     }
   }
 
@@ -30,6 +33,7 @@ export default getRequestConfig(async () => {
       devlog: (await import(`./locales/${locale}/devlog.json`)).default,
       project: (await import(`./locales/${locale}/project.json`)).default,
       account: (await import(`./locales/${locale}/account.json`)).default,
+      notification: (await import(`./locales/${locale}/notification.json`)).default,
     }
   }
 })
