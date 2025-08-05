@@ -2,7 +2,8 @@
 
 import Toast from "@/components/ui/alert"
 import { useAuth } from "@/context/auth.context"
-import { useAuthTranslations, useCommonTranslations } from "@/lib/hook/useTranslations"
+import { useAuthTranslations } from "@/lib/hook/useTranslations"
+import { useValidationSchemas } from "@/lib/hook/useValidation"
 import { loginSchema, LoginFormData } from "@/lib/validation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Box, Button, Card, CardContent, CircularProgress, Container, TextField, Typography } from "@mui/material"
@@ -17,7 +18,7 @@ export default function LoginPage() {
 
   // Translation hooks
   const t = useAuthTranslations()
-  const common = useCommonTranslations()
+  const { loginSchema } = useValidationSchemas() 
 
   const {
     register,

@@ -30,8 +30,10 @@ import {
 } from "@mui/material"
 import Link from "next/link"
 import { useEffect, useState } from "react"
+import { useAccountTranslations } from "@/lib/hook/useTranslations"
 
 export default function AccountsPage() {
+  const t = useAccountTranslations()
   const { user } = useAuth()
   const [users, setUsers] = useState<User[]>([])
   const [filteredUsers, setFilteredUsers] = useState<User[]>([])
@@ -53,7 +55,7 @@ export default function AccountsPage() {
       setFilteredUsers(filteredUsers)
       setLoading(false)
     } catch (error: any) {
-      Toast.error(error.response?.data?.message || "Không thể lấy dữ liệu")
+      Toast.error(t("messages.fetchError"))
     } finally {
       setLoading(false)
     }
@@ -124,9 +126,9 @@ export default function AccountsPage() {
       setUsers(users.map((u) => (u.id === userId ? response.data : u)))
       setEditMode({ ...editMode, [userId]: false })
       delete editData[userId]
-      Toast.success("Cập nhật thành công")
+      Toast.success(t("messages.updateSuccess"))
     } catch (error: any) {
-      Toast.error(error.response?.data?.message || "Không thể lưu dữ liệu")
+      Toast.error(t("messages.updateError"))
     } finally {
       setLoading(false)
     }
@@ -143,9 +145,9 @@ export default function AccountsPage() {
   async function handleExport() {
     try {
       await devLogApi.exportDevLogs(selectedUsers)
-      Toast.success("Xuất file thành công")
+      Toast.success(t("messages.exportSuccess"))
     } catch (error: any) {
-      Toast.error(error.response?.data?.message || "Không thể xuất file")
+      Toast.error(t("messages.exportError"))
     } finally {
       setLoading(false)
     }
@@ -154,14 +156,14 @@ export default function AccountsPage() {
   return (
     <Container sx={{ backgroundColor: "background.paper", p: 3, borderRadius: 2 }}>
       <Box className="flex justify-center mb-4">
-        <Typography variant="h6">DANH SÁCH NHÂN VIÊN</Typography>
+        <Typography variant="h6">{t("title")}</Typography>
       </Box>
       <Divider sx={{ mb: 3 }} />
       <Grid container spacing={2} sx={{ mb: 3 }}>
         <Grid sx={{ xs: 12, md: 6 }}>
           <TextField
             fullWidth
-            placeholder="Tìm kiếm..."
+            placeholder={t("actions.search")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             InputProps={{
@@ -177,7 +179,7 @@ export default function AccountsPage() {
         <Grid sx={{ xs: 12, md: 6 }}>
           <FormControl fullWidth size="small">
             <Select value={roleFilter} onChange={(e) => setRoleFilter(e.target.value)} displayEmpty>
-              <MenuItem value="ALL">Tất cả vai trò</MenuItem>
+              <MenuItem value="ALL">{t("actions.filter.all")}</MenuItem>
               <MenuItem value="DEV">Developer</MenuItem>
               <MenuItem value="LEADER">Leader</MenuItem>
               <MenuItem value="HCNS">HCNS</MenuItem>
@@ -195,7 +197,7 @@ export default function AccountsPage() {
               onClick={() => handleExport()}
               disabled={loading}
             >
-              Xuất file
+              {t("actions.export")}
             </Button>
           </Grid>
         )}
@@ -203,7 +205,7 @@ export default function AccountsPage() {
           <Grid sx={{ xs: 12, md: 6, display: "flex", justifyContent: "flex-end" }}>
             <Link href="/accounts/create">
               <Button variant="contained" color="primary">
-                Tạo tài khoản
+                {t("actions.createAccount")}
               </Button>
             </Link>
           </Grid>
@@ -239,40 +241,32 @@ export default function AccountsPage() {
                 />
               </TableCell>
               <TableCell>
-                <strong>MÃ NV</strong>
+                <strong>{t("table.code")}</strong>
               </TableCell>
               <TableCell>
-                <strong>HỌ TÊN</strong>
+                <strong>{t("table.name")}</strong>
               </TableCell>
               <TableCell>
-                <strong>EMAIL</strong>
+                <strong>{t("table.email")}</strong>
               </TableCell>
               <TableCell>
-                <strong>MẬT KHẨU</strong>
+                <strong>{t("table.password")}</strong>
               </TableCell>
               <TableCell>
-                <strong>VAI TRÒ</strong>
+                <strong>{t("table.role")}</strong>
               </TableCell>
               {isAdmin && (
                 <TableCell>
-                  <strong>HÀNH ĐỘNG</strong>
+                  <strong>{t("table.action")}</strong>
                 </TableCell>
               )}
             </TableRow>
           </TableHead>
           <TableBody>
-            {loading ? (
+            {filteredUsers.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={7} align="center">
-                  <Box sx={{ display: "flex", justifyContent: "center", p: 3 }}>
-                    <CircularProgress />
-                  </Box>
-                </TableCell>
-              </TableRow>
-            ) : filteredUsers.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={7} align="center">
-                  <Typography variant="body1">Không tìm thấy nhân viên nào</Typography>
+                  <Typography variant="body1">{t("messages.noData")}</Typography>
                 </TableCell>
               </TableRow>
             ) : (
@@ -306,7 +300,7 @@ export default function AccountsPage() {
                         size="small"
                         sx={{ maxWidth: 150 }}
                         type="password"
-                        placeholder="Mật khẩu mới"
+                        placeholder={t("form.newPassword")}
                       />
                     ) : (
                       "********"
@@ -334,25 +328,25 @@ export default function AccountsPage() {
                     <TableCell>
                       {editMode[user.id] ? (
                         <Box className="flex gap-2">
-                          {loading ? (
-                            <CircularProgress size={20} />
-                          ) : (
-                            <Button
-                              variant="contained"
-                              color="primary"
-                              onClick={() => handleSave(user.id)}
-                              size="small"
-                            >
-                              Lưu
-                            </Button>
-                          )}
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => handleSave(user.id)}
+                            size="small"
+                          >
+                            {loading ? (
+                              <CircularProgress color="inherit" size={20} />
+                            ) : (
+                              t("actions.save")
+                            )}
+                          </Button>
                           <Button
                             variant="outlined"
                             color="error"
                             onClick={() => handleCancel(user.id)}
                             size="small"
                           >
-                            Hủy
+                            {t("actions.cancel")}
                           </Button>
                         </Box>
                       ) : (
@@ -363,7 +357,7 @@ export default function AccountsPage() {
                             onClick={() => handleEdit(user.id)}
                             size="small"
                           >
-                            Sửa
+                            {t("table.edit")}
                           </Button>
                         </Box>
                       )}

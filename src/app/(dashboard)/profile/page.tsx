@@ -23,9 +23,11 @@ import { profileSchema } from "@/lib/validation"
 import { authAPI } from "@/lib/api/auth-api"
 import Toast from "@/components/ui/alert"
 import { useUserTranslations } from "@/lib/hook/useTranslations"
+import { useValidationSchemas } from "@/lib/hook/useValidation"
 
 export default function ProfilePage() {
   const t = useUserTranslations()
+  const { profileSchema } = useValidationSchemas()
   const { user } = useAuth()
   const [form, setForm] = useState<any>(user)
   const [errors, setErrors] = useState<any>({})
@@ -64,7 +66,6 @@ export default function ProfilePage() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    console.log(form)
     setLoading(true)
     try {
       const { data, success, error } = profileSchema.safeParse(form)

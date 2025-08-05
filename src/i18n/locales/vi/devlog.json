@@ -1,0 +1,46 @@
+{
+  "create": {
+    "title": "Nhập DevLog",
+    "subtitle": "Ghi lại thời gian làm việc hàng ngày",
+    "form": {
+      "project": "Dự án",
+      "task": "Công việc",
+      "totalHour": "Số giờ làm",
+      "isOvertime": "OT",
+      "content": "Ghi chú",
+      "logDate": "Ngày ghi log",
+      "selectProject": "Chọn dự án",
+      "selectTask": "Chọn công việc"
+    },
+    "button": "Lưu DevLog",
+    "messages": {
+      "success": "Ghi nhận DevLog thành công",
+      "error": "Ghi nhận DevLog thất bại"
+    }
+  },
+  "history": {
+    "title": "Lịch sử DevLog",
+    "filters": {
+      "month": "Tháng",
+      "user": "Người dùng",
+      "viewLogs": "Xem DevLog",
+      "selectDev": "Chọn Dev"
+    },
+    "actions": {
+      "update": "Sửa DevLog"
+    },
+    "table": {
+      "taskName": "Tên công việc",
+      "total": "Tổng",
+      "day": "Ngày {day}",
+      "noData": "Chưa có dữ liệu DevLog"
+    },
+    "messages": {
+      "error": "Không thể lấy danh sách người dùng",
+      "noProject": "Nhân viên này chưa tham gia dự án nào"
+    }
+  },
+  "export": {
+    "title": "Xuất DevLog"
+  }
+}

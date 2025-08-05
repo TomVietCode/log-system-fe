@@ -24,10 +24,11 @@ import dayjs, { Dayjs } from "dayjs";
 import { useEffect, useState } from "react";
 import { projectApi } from "@/lib/api/project-api";
 import { devLogApi } from "@/lib/api/devlog-api";
-import { toast } from "react-hot-toast";
 import Toast from "@/components/ui/alert";
+import { useDevlogTranslations } from "@/lib/hook/useTranslations";
 
 export default function DevLogsPage() {
+  const t = useDevlogTranslations()
   const [projects, setProjects] = useState<any[]>([])
   const [tasks, setTasks] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
@@ -38,7 +39,6 @@ export default function DevLogsPage() {
     control,
     watch,
     setValue,
-    getValues,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -75,12 +75,12 @@ export default function DevLogsPage() {
     try {
       setLoading(true)
       const response = await devLogApi.addDevLog(data)
-      Toast.success("Thêm devlog thành công")
+      Toast.success(t("create.messages.success"))
     } catch (error: any) {
       Toast.error(
         Array.isArray(error.response.data.message)
           ? error.response.data.message[0]
-          : error.response.data.message
+          : error.response.data.message || t("create.messages.error")
       )
     } finally {
       setLoading(false)
@@ -90,7 +90,6 @@ export default function DevLogsPage() {
   const handleDateChange = (newValue: Dayjs | null) => {
     if (newValue) {
       setValue("logDate", newValue.toDate().toLocaleString());
-      console.log(getValues("logDate"))
     } else {
       setValue("logDate", (new Date()).toLocaleString());
     }
@@ -107,7 +106,7 @@ export default function DevLogsPage() {
                 <Grid size={{ xs: 12, md: 6 }} className="flex gap-4">
                   <FormControl fullWidth>
                     <InputLabel id="project-select-label">
-                      Chọn dự án <span className="text-red-500">*</span>
+                      {t("create.form.selectProject")} <span className="text-red-500">*</span>
                     </InputLabel>
                     <Controller
                       name="projectId"
@@ -131,7 +130,7 @@ export default function DevLogsPage() {
                   </FormControl>
                   <FormControl fullWidth>
                     <InputLabel id="task-select-label">
-                      Chọn công việc <span className="text-red-500">*</span>
+                      {t("create.form.selectTask")} <span className="text-red-500">*</span>
                     </InputLabel>
                     <Controller
                       name="taskId"
@@ -159,7 +158,7 @@ export default function DevLogsPage() {
                 {/* Hour input */}
                 <Grid size={{ xs: 12, md: 4 }} className="flex gap-4">
                   <TextField
-                    label="Số giờ"
+                    label={t("create.form.totalHour")}
                     type="number"
                     variant="standard"
                     slotProps={{
@@ -173,7 +172,7 @@ export default function DevLogsPage() {
                   />
                   <FormControlLabel
                     control={<Checkbox />}
-                    label="OT"
+                    label={t("create.form.isOvertime")}
                     {...register("isOvertime")}
                   />
                 </Grid>
@@ -182,7 +181,7 @@ export default function DevLogsPage() {
               {/* Content input */}
               <Grid size={{ xs: 12, md: 12 }} className="flex gap-4 mt-4">
                 <TextareaAutosize
-                  placeholder="Ghi chú"
+                  placeholder={t("create.form.content")}
                   className="w-full border-2 border-gray-300 rounded-md p-2"
                   minRows={3}
                   maxRows={10}
@@ -191,7 +190,7 @@ export default function DevLogsPage() {
               </Grid>
               <Box className="mt-5">
                 <Button type="submit" variant="contained" size="large" className="mt-4" disabled={loading}>
-                  {loading ? <CircularProgress size={20} /> : "Lưu devlog"}
+                  {loading ? <CircularProgress size={20} /> : t("create.button")}
                 </Button>
               </Box>
             </form>

@@ -15,3 +15,15 @@ export function useDashboardTranslations() {
 export function useUserTranslations() {
   return useNextIntlTranslations('user');
 }
+
+export function useDevlogTranslations() {
+  return useNextIntlTranslations('devlog');
+}
+
+export function useProjectTranslations() {
+  return useNextIntlTranslations('project');
+}
+
+export function useAccountTranslations() {
+  return useNextIntlTranslations('account');
+}

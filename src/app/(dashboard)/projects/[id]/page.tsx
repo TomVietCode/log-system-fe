@@ -1,6 +1,6 @@
 "use client"
 
-import { ProjectFormData, projectSchema } from "@/lib/validation"
+import { ProjectFormData } from "@/lib/validation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Autocomplete, Box, Button, Container, Grid, TextField, IconButton, CircularProgress } from "@mui/material"
 import Link from "next/link"
@@ -12,11 +12,14 @@ import { projectApi } from "@/lib/api/project-api"
 import Toast from "@/components/ui/alert"
 import { useParams } from "next/navigation"
 import { Task } from "@/interface/project"
+import { useProjectTranslations } from "@/lib/hook/useTranslations"
+import { useValidationSchemas } from "@/lib/hook/useValidation"
 
 export default function UpdateProjectPage() {
   const params = useParams()
   const projectId = params.id as string
-
+  const t = useProjectTranslations()
+  const { projectSchema } = useValidationSchemas()
   const [users, setUsers] = useState<any[]>([])
   const [tasks, setTasks] = useState<Array<Task>>([])
   const [loading, setLoading] = useState(false)
@@ -87,11 +90,11 @@ export default function UpdateProjectPage() {
     try { 
       setLoading(true)
       const response = await projectApi.updateProject(projectId, submitData)
-      Toast.success("Cập nhật dự án thành công")
+      Toast.success(t("messages.updateSuccess"))
       // Reset form values
       setLoading(false)
     } catch (error: any) {
-      Toast.error(error.response.data.message)
+      Toast.error(t("messages.updateError"))
       setLoading(false)
     }
   }
@@ -105,7 +108,7 @@ export default function UpdateProjectPage() {
           <Grid size={{ xs: 12, md: 5 }} className="flex flex-col gap-6">
             <TextField
               fullWidth
-              label="Tên dự án *"
+              label={t("form.name")}
               slotProps={{ inputLabel: { shrink: !!watch("name") } }}
               {...register("name")}
               error={!!errors.name}
@@ -115,19 +118,19 @@ export default function UpdateProjectPage() {
             <textarea
               rows={4}
               className="block p-2.5 w-full text-md rounded-lg border focus:ring-[#6B98C8] focus:border-[#6B98C8]"
-              placeholder="Mô tả dự án"
+              placeholder={t("form.description")}
               {...register("description")}
             />
 
             <Box mt={3}>
               <Link href="/projects">
                 <Button size="large" variant="outlined" sx={{ mr: 2 }}>
-                  Quay lại
+                  {t("actions.back")}
                 </Button>
               </Link>
 
               <Button type="submit" variant="contained" color="primary" size="large">
-                {loading ? <CircularProgress size={20} color="inherit" /> : "Cập nhật"}
+                {loading ? <CircularProgress size={20} color="inherit" /> : t("actions.update")}
               </Button>
             </Box>
           </Grid>
@@ -149,7 +152,7 @@ export default function UpdateProjectPage() {
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label="Thành viên *"
+                      label={t("form.members")}
                       error={!!errors.memberIds}
                       helperText={errors.memberIds?.message}
                     />
@@ -158,7 +161,6 @@ export default function UpdateProjectPage() {
                   getOptionKey={(option) => option.id}
                   disableCloseOnSelect
                   renderOption={(props, option, { selected }) => {
-                    // Extract key from props to pass it directly to the li element
                     const { key, ...otherProps } = props
                     return (
                       <li key={key} {...otherProps}>
@@ -179,7 +181,7 @@ export default function UpdateProjectPage() {
             <Box>
               <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
                 <Button variant="contained" color="primary" onClick={addTask}>
-                  Thêm công việc
+                  {t("form.addTask")}
                 </Button>
               </Box>
 
@@ -187,10 +189,10 @@ export default function UpdateProjectPage() {
                 <Box key={index} display="flex" alignItems="center" gap={2} mb={2}>
                   <TextField
                     fullWidth
-                    label={`Công việc ${index + 1}`}
+                    label={`${t("form.taskName")} ${index + 1}`}
                     value={task.name}
                     onChange={(e) => updateTask(index, e.target.value)}
-                    placeholder="Nhập tên công việc"
+                    placeholder={t("form.taskName")}
                   />
                   <IconButton color="error" onClick={() => removeTask(index)} size="small">
                     <DeleteIcon />

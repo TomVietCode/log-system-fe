@@ -1,0 +1,47 @@
+{
+  "create": {
+    "title": "Create DevLog",
+    "subtitle": "Record your daily working hours",
+    "form": {
+      "project": "Project",
+      "task": "Task",
+      "totalHour": "Total Hours",
+      "isOvertime": "Overtime",
+      "content": "Work Content",
+      "logDate": "Log Date",
+      "selectProject": "Select Project",
+      "selectTask": "Select Task"
+    },
+    "button": "Submit DevLog",
+    "messages": {
+      "success": "DevLog submitted successfully",
+      "error": "Failed to submit DevLog"
+    }
+  },
+  "history": {
+    "title": "DevLog History",
+    "subtitle": "Review your working hours",
+    "filters": {
+      "month": "Month",
+      "user": "User",
+      "viewLogs": "View DevLogs",
+      "selectDev": "Select Dev"
+    },
+    "actions": {
+      "update": "Update DevLog"
+    },
+    "table": {
+      "taskName": "Task Name",
+      "total": "Total",
+      "day": "Day {day}",
+      "noData": "No DevLog data available"
+    },
+    "messages": {
+      "error": "Cannot get user list",
+      "noProject": "This user is not a member of any project"
+    }
+  },
+  "export": {
+    "title": "Export DevLog"
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "title": "Employee List",
+  "table": {
+    "code": "Employee Code",
+    "name": "Name",
+    "email": "Email",
+    "password": "Password",
+    "role": "Role",
+    "action": "Action",
+    "edit": "Edit"
+  },
+  "actions": {
+    "search": "Search...",
+    "filter": {
+      "all": "All roles"
+    },
+    "createAccount": "Create account",
+    "cancel": "Cancel",
+    "update": "Update",
+    "save": "Save",
+    "export": "Export"
+  },
+  "form": {
+    "fullName": "Full name",
+    "phone": "Phone number",
+    "email": "Company email",
+    "citizenId": "Citizen ID",
+    "role": "Role",
+    "password": "Password",
+    "newPassword": "New password"
+  },
+  "validate": {
+    "fullNameRequired": "Full name is required",
+    "emailRequired": "Email is required",
+    "emailInvalid": "Email is invalid",
+    "phoneRequired": "Phone number is required",
+    "phoneInvalid": "Phone number is invalid",
+    "citizenIdRequired": "Citizen ID is required",
+    "roleRequired": "Role is required",
+    "passwordRequired": "Password is required"
+  },
+  "messages": {
+    "createSuccess": "Account created successfully",
+    "createError": "Failed to create account",
+    "updateSuccess": "Account updated successfully",
+    "updateError": "Failed to update account",
+    "exportSuccess": "Exported successfully",
+    "exportError": "Failed to export",
+    "fetchError": "Unable to fetch data"
+  }
+}

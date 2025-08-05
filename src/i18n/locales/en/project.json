@@ -1,0 +1,51 @@
+{
+  "form": {
+    "name": "Project Name",
+    "description": "Description",
+    "members": "Members",
+    "tasks": "Task List",
+    "addTask": "Add Task",
+    "taskName": "Task Name",
+    "createdAt": "Created At",
+    "updatedAt": "Last Updated",
+    "actions": "Actions"
+  },
+  "actions": {
+    "create": "New Project",
+    "trackDevlog": "Track DevLog",
+    "editProject": "Edit Project",
+    "deleteProject": "Delete Project",
+    "sendNoti": "Send Notification",
+    "add": "Add",
+    "close": "Close",
+    "back": "Back",
+    "update": "Update"
+  },
+  "track": {
+    "title": "Employee DevLog Track",
+    "projectName": "Project",
+    "date": "Date",
+    "employeeCode": "Employee Code",
+    "employeeName": "Employee Name",
+    "position": "Position",
+    "status": "Status",
+    "action": "Action",
+    "logged": "Logged",
+    "notLogged": "Not Logged"
+  },
+  "messages": {
+    "fetchError": "Cannot get data",
+    "createSuccess": "Project created successfully",
+    "createError": "Failed to create project",
+    "updateSuccess": "Project updated successfully",
+    "updateError": "Failed to update project",
+    "deleteSuccess": "Project deleted successfully",
+    "deleteError": "Failed to delete project",
+    "noData": "No Data"
+  },
+  "validation": {
+    "nameRequired": "Project name is required",
+    "membersRequired": "At least one member is required"
+  },
+  "loading": "Loading..."
+}

@@ -1,11 +1,21 @@
 import dayjs from "dayjs"
 
-const vietnameseDays = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"]
+const dayNames = {
+  vi: ["CN", "T2", "T3", "T4", "T5", "T6", "T7"],
+  en: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+}
 
-export const getDayOfWeek = (day: number, month: number, year: number) => {
+export type Language = keyof typeof dayNames
+const locale = typeof document !== 'undefined' ? document.cookie.split('; ').find(row => row.startsWith('='))?.split('locale=')[1] || 'en' : 'en'
+
+export const getDayOfWeek = (
+  day: number, 
+  month: number, 
+  year: number, 
+) => {
   const date = dayjs(`${year}-${month}-${day}`)
   const dayOfWeek = date.day()
-  return vietnameseDays[dayOfWeek]
+  return dayNames[locale as Language][dayOfWeek]
 }
 
 const isToday = (day: number, month: number, year: number) => {
@@ -16,7 +26,11 @@ const isToday = (day: number, month: number, year: number) => {
 }
 
 export const isWeekend = (dayOfWeek: string) => {
-  return dayOfWeek === "T7" || dayOfWeek === "CN"
+  if (locale === "vi") {
+    return dayOfWeek === "T7" || dayOfWeek === "CN"
+  } else {
+    return dayOfWeek === "Sat" || dayOfWeek === "Sun"
+  }
 }
 
 export const getColBackground = (day: number, month: number, year: number, dayOfWeek: string) => {

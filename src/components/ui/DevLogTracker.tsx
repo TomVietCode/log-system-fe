@@ -1,4 +1,5 @@
 import { useNotification } from "@/context/notification.context"
+import { useProjectTranslations } from "@/lib/hook/useTranslations"
 import { Dialog, Typography, DialogContent, DialogTitle, Button, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, Chip, DialogActions } from "@mui/material"
 import dayjs from "dayjs"
 import { useState } from "react"
@@ -10,6 +11,7 @@ interface DevLogTrackerProps {
 }
 
 export default function DevLogTracker({ open, onClose, project }: DevLogTrackerProps) {
+  const t = useProjectTranslations()
   const [data, setData] = useState<any[]>(project.members)
   const [loading, setLoading] = useState(false)
   const today = dayjs().format("DD/MM/YYYY")
@@ -22,15 +24,15 @@ export default function DevLogTracker({ open, onClose, project }: DevLogTrackerP
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
       <DialogTitle>
         <Typography className="text-center">
-          Theo dõi DevLog nhân viên
+          {t("track.title")}
         </Typography>
         <div className="flex justify-between items-center">
           <Typography variant="h6">
-            <span className="font-bold">Tên dự án: </span>
+            <span className="font-bold">{t("track.projectName")}: </span>
             <span className="text-gray-600 text-[1rem]">{project.name}</span>
           </Typography>
           <Typography variant="h6">
-            <span className="font-bold">Ngày: </span>
+            <span className="font-bold">{t("track.date")}: </span>
             <span className="text-gray-600 text-[1rem]">{today}</span>
           </Typography>
         </div>
@@ -41,19 +43,19 @@ export default function DevLogTracker({ open, onClose, project }: DevLogTrackerP
             <TableHead>
               <TableRow>
                 <TableCell>
-                  <strong>MÃ NV</strong>
+                  <strong>{t("track.employeeCode")}</strong>
                 </TableCell>
                 <TableCell>
-                  <strong>TÊN NV</strong>
+                  <strong>{t("track.employeeName")}</strong>
                 </TableCell>
                 <TableCell>
-                  <strong>VỊ TRÍ</strong>
+                  <strong>{t("track.position")}</strong>
                 </TableCell>
                 <TableCell>
-                  <strong>TRẠNG THÁI</strong>
+                  <strong>{t("track.status")}</strong>
                 </TableCell>
                 <TableCell>
-                  <strong>HÀNH ĐỘNG</strong>
+                  <strong>{t("track.action")}</strong>
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -61,13 +63,13 @@ export default function DevLogTracker({ open, onClose, project }: DevLogTrackerP
               {loading ? (
                 <TableRow>
                   <TableCell colSpan={5} align="center">
-                    Đang tải...
+                    {t("loading")}
                   </TableCell>
                 </TableRow>
               ) : data.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={5} align="center">
-                    Không có thành viên nào
+                    {t("messages.noData")}
                   </TableCell>
                 </TableRow>
               ) : (
@@ -78,9 +80,9 @@ export default function DevLogTracker({ open, onClose, project }: DevLogTrackerP
                     <TableCell>{member.role}</TableCell>
                     <TableCell>
                       {member.logDate ? (
-                        <Chip label="Đã nhập" color="success" />
+                        <Chip label={t("track.logged")} color="success" />
                       ) : (
-                        <Chip label="Chưa nhập" color="warning" />
+                        <Chip label={t("track.notLogged")} color="warning" />
                       )}
                     </TableCell>
                     <TableCell>
@@ -90,7 +92,7 @@ export default function DevLogTracker({ open, onClose, project }: DevLogTrackerP
                         disabled={member.logDate || member.role === "LEADER"}
                         onClick={() => handleSendReminder(member.id)}
                       >
-                        Gửi thông báo
+                        {t("actions.sendNoti")}
                       </Button>
                     </TableCell>
                   </TableRow>
@@ -101,7 +103,7 @@ export default function DevLogTracker({ open, onClose, project }: DevLogTrackerP
         </TableContainer>
         <DialogActions sx={{ paddingX: 0, paddingY: 2 }}>
           <Button variant="contained" onClick={onClose}>
-            Đóng
+            {t("actions.close")}
           </Button>
         </DialogActions>
       </DialogContent>

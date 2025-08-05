@@ -1,4 +1,3 @@
-// nextjs/log-sys-fe/src/app/(dashboard)/accounts/create/page.tsx
 "use client"
 
 import { useState } from "react"
@@ -22,19 +21,22 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import Toast from "@/components/ui/alert"
 import Link from "next/link"
-
-const createUserSchema = z.object({
-  fullName: z.string().min(1, "Họ tên là bắt buộc"),
-  email: z.string().email("Email không hợp lệ").min(1, "Email là bắt buộc"),
-  phone: z.string().min(9, "Số điện thoại không hợp lệ"),
-  citizenID: z.string().min(1, "CMND/CCCD là bắt buộc"),
-  role: z.enum(["ADMIN", "LEADER", "HCNS", "DEV"]),
-  password: z.string().min(1, "Mật khẩu không được để trống")
-})
-
-type CreateUserFormData = z.infer<typeof createUserSchema>
+import { useAccountTranslations } from "@/lib/hook/useTranslations"
 
 export default function CreateAccountPage() {
+  const t = useAccountTranslations()
+
+  const createUserSchema = z.object({
+    fullName: z.string().min(1, t("form.fullNameRequired")),
+    email: z.string().email(t("validate.emailInvalid")).min(1, t("validate.emailRequired")),
+    phone: z.string().min(9, t("validate.phoneInvalid")),
+    citizenID: z.string().min(1, t("validate.citizenIdRequired")),
+    role: z.enum(["ADMIN", "LEADER", "HCNS", "DEV"]),
+    password: z.string().min(1, t("validate.passwordRequired"))
+  })
+  
+  type CreateUserFormData = z.infer<typeof createUserSchema>
+  
   const [loading, setLoading] = useState(false)
   
   const { 
@@ -54,7 +56,7 @@ export default function CreateAccountPage() {
     try {
       setLoading(true)
       await userApi.createUser(data)
-      Toast.success("Tạo tài khoản thành công")
+      Toast.success(t("messages.createSuccess"))
       reset({
         fullName: "",
         email: "",
@@ -64,7 +66,7 @@ export default function CreateAccountPage() {
         password: ""
       })
     } catch (error: any) {
-      Toast.error(error.response?.data?.message || "Không thể tạo tài khoản")
+      Toast.error(t("messages.createError"))
     } finally {
       setLoading(false)
     }
@@ -72,7 +74,7 @@ export default function CreateAccountPage() {
 
   return (
     <Container sx={{ backgroundColor: "background.paper", p: 3, borderRadius: 2 }}>
-      <Typography variant="h5" gutterBottom>Tạo tài khoản mới</Typography>
+      <Typography variant="h5" gutterBottom>{t("title")}</Typography>
       
       <Paper sx={{ p: 3, mt: 2 }}>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -86,7 +88,7 @@ export default function CreateAccountPage() {
                     {...field}
                     label={
                       <span>
-                        Họ tên 
+                        {t("form.fullName")}
                         <span style={{ color: 'red' }}> *</span>
                       </span>
                     }
@@ -107,7 +109,7 @@ export default function CreateAccountPage() {
                     {...field}
                     label={
                       <span>
-                        Email công ty
+                        {t("form.email")}
                         <span style={{ color: 'red' }}> *</span>
                       </span>
                     }
@@ -128,7 +130,7 @@ export default function CreateAccountPage() {
                     {...field}
                     label={
                       <span>
-                        Số điện thoại
+                        {t("form.phone")}
                         <span style={{ color: 'red' }}> *</span>
                       </span>
                     }
@@ -149,7 +151,7 @@ export default function CreateAccountPage() {
                     {...field}
                     label={
                       <span>
-                        CCCD/CMND 
+                        {t("form.citizenId")}
                         <span style={{ color: 'red' }}> *</span>
                       </span>
                     }
@@ -167,8 +169,8 @@ export default function CreateAccountPage() {
                 control={control}
                 render={({ field }) => (
                   <FormControl fullWidth error={!!errors.role}>
-                    <InputLabel>Chức vụ</InputLabel>
-                    <Select {...field} label="Chức vụ">
+                    <InputLabel>{t("form.role")}</InputLabel>
+                    <Select {...field} label={t("form.role")}>
                       <MenuItem value="DEV">DEV</MenuItem>
                       <MenuItem value="LEADER">LEADER</MenuItem>
                       <MenuItem value="HCNS">HCNS</MenuItem>
@@ -188,7 +190,7 @@ export default function CreateAccountPage() {
                     {...field}
                     label={
                       <span>
-                        Mật khẩu
+                        {t("form.password")}
                         <span style={{ color: 'red' }}> *</span>
                       </span>
                     }
@@ -204,14 +206,14 @@ export default function CreateAccountPage() {
             <Grid size={{ xs: 12 }}>
               <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end', mt: 2 }}>
                 <Link href="/accounts">
-                  <Button variant="outlined">Hủy</Button>
+                  <Button variant="outlined">{t("actions.cancel")}</Button>
                 </Link>
                 <Button 
                   type="submit" 
                   variant="contained" 
                   disabled={loading}
                 >
-                  {loading ? <CircularProgress size={24} /> : "Tạo tài khoản"}
+                  {loading ? <CircularProgress size={24} /> : t("actions.createAccount")}
                 </Button>
               </Box>
             </Grid>

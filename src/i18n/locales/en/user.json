@@ -47,5 +47,15 @@
       "all": "All",
       "role": "Filter by role"
     }
+  },
+  "validation": {
+    "phoneRequired": "Phone number is required",
+    "phoneInvalid": "Phone number is invalid",
+    "citizenIdRequired": "Citizen ID is required", 
+    "citizenIdInvalid": "Citizen ID is invalid",
+    "personalEmailRequired": "Personal email is required",
+    "personalEmailInvalid": "Personal email is invalid",
+    "oldPasswordRequired": "Current password is required",
+    "newPasswordRequired": "New password is required"
   }
 }

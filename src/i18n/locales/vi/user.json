@@ -41,5 +41,15 @@
       "all": "Tất cả",
       "role": "Lọc theo vai trò"
     }
+  },
+  "validation": {
+    "phoneRequired": "Số điện thoại không được để trống",
+    "phoneInvalid": "Số điện thoại không hợp lệ",
+    "citizenIdRequired": "CCCD/CMND không được để trống", 
+    "citizenIdInvalid": "CCCD/CMND không hợp lệ",
+    "personalEmailRequired": "Email cá nhân không được để trống",
+    "personalEmailInvalid": "Email cá nhân không hợp lệ",
+    "oldPasswordRequired": "Mật khẩu hiện tại không được để trống",
+    "newPasswordRequired": "Mật khẩu mới không được để trống"
   }
 }

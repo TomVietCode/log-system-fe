@@ -1,0 +1,51 @@
+{
+  "title": "Danh sách nhân viên",
+  "table": {
+    "code": "Mã NV",
+    "name": "Tên",
+    "email": "Email",
+    "password": "Mật khẩu",
+    "role": "Vai trò",
+    "action": "Hành động",
+    "edit": "Sửa"
+  },
+  "actions": {
+    "search": "Tìm kiếm...",
+    "filter": {
+      "all": "Tất cả vai trò"
+    },
+    "createAccount": "Tạo tài khoản",
+    "cancel": "Huỷ",
+    "update": "Cập nhật",
+    "save": "Lưu",
+    "export": "Xuất file"
+  },
+  "form": {
+    "fullName": "Họ tên",
+    "phone": "Số điện thoại",
+    "email": "Email công ty",
+    "citizenId": "CCCD/CMND",
+    "role": "Chức vụ",
+    "password": "Mật khẩu",
+    "newPassword": "Mật khẩu mới"
+  },
+  "validate": {
+    "fullNameRequired": "Họ tên là bắt buộc",
+    "emailRequired": "Email là bắt buộc",
+    "emailInvalid": "Email không hợp lệ",
+    "phoneRequired": "Số điện thoại là bắt buộc",
+    "phoneInvalid": "Số điện thoại không hợp lệ",
+    "citizenIdRequired": "CCCD/CMND là bắt buộc",
+    "roleRequired": "Vai trò là bắt buộc",
+    "passwordRequired": "Mật khẩu là bắt buộc"
+  },
+  "messages": {
+    "createSuccess": "Tạo tài khoản thành công",
+    "createError": "Tạo tài khoản thất bại",
+    "updateSuccess": "Cập nhật tài khoản thành công",
+    "updateError": "Cập nhật tài khoản thất bại",
+    "exportSuccess": "Xuất file thành công",
+    "exportError": "Xuất file thất bại",
+    "fetchError": "Không thể lấy dữ liệu"
+  }
+}

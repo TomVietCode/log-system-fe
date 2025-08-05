@@ -13,6 +13,7 @@ import Toast from "@/components/ui/alert"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/context/auth.context"
 import { userApi } from "@/lib/api/user-api"
+import { useDevlogTranslations } from "@/lib/hook/useTranslations"
 
 export interface DevLog {
   days: number[]
@@ -25,6 +26,7 @@ export interface DevLog {
 }
 
 export default function DevLogsHistoryPage() {
+  const t = useDevlogTranslations()
   const { user } = useAuth()
   const [devLogs, setDevLogs] = useState<DevLog | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
@@ -46,7 +48,7 @@ export default function DevLogsHistoryPage() {
           const response = await userApi.getListUser("DEV")
           setUsers(response.data)
         } catch (error: any) {
-          Toast.error(error.response?.data?.message || "Không thể lấy danh sách người dùng")
+          Toast.error(error.response?.data?.message || t("history.messages.error"))
         }
       }
       fetchUsers()
@@ -60,8 +62,8 @@ export default function DevLogsHistoryPage() {
       setDevLogs(response.data)
     } catch (error: any) {
       if (error.response?.data?.message === "User is not a member of any project")
-        Toast.info("Nhân viên này chưa tham gia dự án nào")
-      else Toast.error(error.response?.data?.message || "Không thể lấy dữ liệu")
+        Toast.info(t("history.messages.noProject"))
+      else Toast.error(error.response?.data?.message || t("history.messages.error"))
     } finally {
       setLoading(false)
     }
@@ -90,7 +92,7 @@ export default function DevLogsHistoryPage() {
         <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="vi">
           <DemoContainer components={["DatePicker"]}>
             <DatePicker
-              label="Chọn tháng"
+              label={t("history.filters.month")}
               views={["month", "year"]}
               onChange={(date) => date && handleSelectMonth(date)}
               value={selectedDate}
@@ -107,7 +109,7 @@ export default function DevLogsHistoryPage() {
               router.push(`/devlogs`)
             }}
           >
-            Sửa Devlog
+            {t("history.actions.update")}
           </Button>
         </div>
 
@@ -116,7 +118,7 @@ export default function DevLogsHistoryPage() {
             options={users}
             getOptionLabel={(option) => option.fullName}
             sx={{ width: 250, alignSelf: "flex-end", marginLeft: "auto" }}
-            renderInput={(params) => <TextField {...params} label="Chọn Dev" />}
+            renderInput={(params) => <TextField {...params} label={t("history.filters.selectDev")} />}
             onChange={(_event, newValue) => handleUserChange(newValue)}
             value={selectedUser}
           />
@@ -135,7 +137,7 @@ export default function DevLogsHistoryPage() {
                   {devLogs?.userName}
                 </div>
                 <div className="flex justify-center items-center px-5 bg-blue-200 border font-semibold">
-                  Tên Task
+                  {t("history.table.taskName")}
                 </div>
                 {devLogs?.tasks.map((task) => (
                   <div
@@ -146,7 +148,7 @@ export default function DevLogsHistoryPage() {
                   </div>
                 ))}
                 <div className="flex justify-center items-center px-5 bg-gray-400 border font-semibold">
-                  Tổng
+                  {t("history.table.total")}
                 </div>
               </div>
 
@@ -198,7 +200,7 @@ export default function DevLogsHistoryPage() {
 
               {/* Summary Col */}
               <div className={`grid grid-rows-${rowCount}  sticky right-0 z-10 bg-gray-400`}>
-                <div className="flex justify-center items-center border font-semibold">Tổng</div>
+                <div className="flex justify-center items-center border font-semibold">{t("history.table.total")}</div>
                 <div className="flex justify-center items-center border">&nbsp;</div>
                 {devLogs &&
                   devLogs?.tasks.map((task) => (

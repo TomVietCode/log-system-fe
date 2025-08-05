@@ -19,8 +19,10 @@ import moment from "moment"
 import Toast from "@/components/ui/alert"
 import { useAuth } from "@/context/auth.context"
 import DevLogTracker from "@/components/ui/DevLogTracker"
+import { useProjectTranslations } from "@/lib/hook/useTranslations"
 
 export default function ProjectsPage() {
+  const t = useProjectTranslations()
   const { user } = useAuth()
   const [data, setData] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
@@ -45,6 +47,7 @@ export default function ProjectsPage() {
         setData(rowData)
       } catch (error) {
         console.error("Error fetching projects:", error)
+        Toast.error(t("messages.error"))
       } finally {
         setLoading(false)
       }
@@ -56,31 +59,31 @@ export default function ProjectsPage() {
     try {
       setLoading(true)
       await projectApi.deleteProject(id)
-      Toast.success("Xóa dự án thành công")
+      Toast.success(t("messages.deleteSuccess"))
       setData(data.filter((project) => project.id !== id))
     } catch (error) {
-      Toast.error("Xóa dự án thất bại")
+      Toast.error(t("messages.deleteSuccess"))
     } finally {
       setLoading(false)
     }
   }
 
   const columns: GridColDef[] = [
-    { field: "name", headerName: "Tên dự án", width: 200 },
-    { field: "description", headerName: "Mô tả", width: 150 },
-    { field: "membersCount", headerName: "Thành viên", width: 150 },
-    { field: "tasksCount", headerName: "Công việc", width: 150 },
-    { field: "createdAt", headerName: "Ngày tạo", width: 150 },
-    { field: "updatedAt", headerName: "Ngày cập nhật", width: 150 },
+    { field: "name", headerName: t("form.name"), width: 200 },
+    { field: "description", headerName: t("form.description"), width: 150 },
+    { field: "membersCount", headerName: t("form.members"), width: 150 },
+    { field: "tasksCount", headerName: t("form.tasks"), width: 150 },
+    { field: "createdAt", headerName: t("form.createdAt"), width: 150 },
+    { field: "updatedAt", headerName: t("form.updatedAt"), width: 150 },
     {
       field: "actions",
-      headerName: "Thao tác",
+      headerName: t("form.actions"),
       width: 120,
       sortable: false,
       renderCell: (params) => (
         <Stack direction="row" sx={{ height: "100%" }}>
           {user?.role === "LEADER" && (
-            <Tooltip title="Theo dõi DevLog">
+            <Tooltip title={t("actions.trackDevlog")}>
               <IconButton
                 size="small"
                 color="default"
@@ -94,14 +97,14 @@ export default function ProjectsPage() {
               </IconButton>
             </Tooltip>
           )}
-          <Tooltip title="Chỉnh sửa dự án">
+          <Tooltip title={t("actions.editProject")}>
             <Link href={`/projects/${params.row.id}`}>
               <IconButton size="small" color="primary" aria-label="edit">
                 <EditNote fontSize="medium" />
               </IconButton>
             </Link>
           </Tooltip>
-          <Tooltip title="Xóa dự án">
+          <Tooltip title={t("actions.deleteProject")}>
             <IconButton
               size="small"
               color="error"
@@ -122,7 +125,7 @@ export default function ProjectsPage() {
       <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
         <Link href="/projects/create">
           <Button variant="contained" size="large" color="primary">
-            Thêm dự án
+            {t("actions.create")}
           </Button>
         </Link>
       </Box>
