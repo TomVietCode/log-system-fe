@@ -1,0 +1,51 @@
+{
+  "profile": {
+    "title": "Profile Information",
+    "personalInfo": "Personal Information", 
+    "workInfo": "Work Information",
+    "changePassword": "Change Password"
+  },
+  "fields": {
+    "fullName": "Full Name",
+    "email": "Email",
+    "personalEmail": "Personal Email",
+    "phone": "Phone Number",
+    "citizenId": "Citizen ID",
+    "employeeCode": "Employee Code",
+    "dob": "Date of Birth",
+    "accountNumber": "Account Number",
+    "licensePlate": "License Plate",
+    "role": "Role",
+    "createdAt": "Created Date",
+    "updatedAt": "Last Updated"
+  },
+  "password": {
+    "current": "Current Password",
+    "new": "New Password", 
+    "confirm": "Confirm New Password"
+  },
+  "messages": {
+    "updateSuccess": "Profile updated successfully",
+    "updateError": "Failed to update profile",
+    "passwordChangeSuccess": "Password changed successfully",
+    "passwordChangeError": "Failed to change password"
+  },
+  "actions": {
+    "update": "Update",
+    "cancel": "Cancel",
+    "confirm": "Confirm"
+  },
+  "accounts": {
+    "title": "Account Management",
+    "list": "Account List",
+    "create": "Create New Account",
+    "edit": "Edit Account",
+    "delete": "Delete Account",
+    "confirmDelete": "Are you sure you want to delete this account?",
+    "search": "Search by name, email...",
+    "filter": {
+      "all": "All",
+      "role": "Filter by role"
+    }
+  }
+}

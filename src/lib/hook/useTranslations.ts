@@ -7,3 +7,11 @@ export function useCommonTranslations() {
 export function useAuthTranslations() {
   return useNextIntlTranslations('auth')
 }
+
+export function useDashboardTranslations() {
+  return useNextIntlTranslations('dashboard');
+}
+
+export function useUserTranslations() {
+  return useNextIntlTranslations('user');
+}

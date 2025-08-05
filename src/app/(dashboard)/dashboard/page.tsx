@@ -7,6 +7,7 @@ import HighchartsReact from "highcharts-react-official"
 import dayjs from "dayjs"
 import Toast from "@/components/ui/alert"
 import { dashboardApi } from "@/lib/api/dashboard-api"
+import { useDashboardTranslations } from "@/lib/hook/useTranslations"
 
 interface StatisticDto {
   year: number
@@ -17,17 +18,19 @@ interface StatisticDto {
 export default function DashboardPage() {
   const [loading, setLoading] = useState<boolean>(true)
   const [data, setData] = useState<StatisticDto>()
-  console.log(data)
+
+  const t = useDashboardTranslations()
   const fetchData = async () => {
     try {
       setLoading(true)
       const result = await dashboardApi.getDashboardData() 
       setData(result.data as StatisticDto)
       setLoading(false)
-    } catch (error) {
-      Toast.error("Không thể lấy dữ liệu")
+    } catch (error: any) {
+      Toast.error(error.response?.data?.message || t("errors.chart"))
     }
   }
+
   useEffect(() => {
     fetchData()
   }, [])
@@ -37,7 +40,7 @@ export default function DashboardPage() {
       type: "column",
     },
     title: {
-      text: `DevLogs`,
+      text: t('charts.title'),
       style: {
         fontSize: "1.3rem",
         fontWeight: "400",
@@ -52,7 +55,7 @@ export default function DashboardPage() {
     yAxis: {
       min: 0,
       title: {
-        text: "Thời gian làm (h)",
+        text: t('charts.hoursPerDay'),
       },
     },
     tooltip: {
@@ -61,7 +64,7 @@ export default function DashboardPage() {
     plotOptions: {},
     series: [
       {
-        name: "Effective",
+        name: t("charts.effective"),
         data: data?.hours || [],
         type: "column",
         color: "#8FB3EE",
@@ -75,7 +78,7 @@ export default function DashboardPage() {
   return (
     <Box>
       <Typography variant="h4" gutterBottom>
-        Biểu đồ Devlog tháng {data?.month}-{data?.year}
+        {t("title")} {data?.month}-{data?.year}
       </Typography>
       
       <Card sx={{ borderRadius: 4, boxShadow: 2 }}>

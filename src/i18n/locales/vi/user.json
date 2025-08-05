@@ -1,0 +1,45 @@
+{
+  "fields": {
+    "fullName": "Họ và tên",
+    "email": "Email",
+    "personalEmail": "Email cá nhân",
+    "phone": "Số điện thoại",
+    "citizenId": "CMND/CCCD",
+    "employeeCode": "Mã nhân viên",
+    "dob": "Ngày sinh",
+    "accountNumber": "Số tài khoản",
+    "licensePlate": "Biển số xe",
+    "role": "Vai trò",
+    "createdAt": "Ngày tạo",
+    "updatedAt": "Cập nhật lần cuối"
+  },
+  "password": {
+    "current": "Mật khẩu hiện tại",
+    "new": "Mật khẩu mới",
+    "confirm": "Xác nhận mật khẩu mới"
+  },
+  "messages": {
+    "updateSuccess": "Cập nhật thông tin thành công",
+    "updateError": "Cập nhật thông tin thất bại",
+    "passwordChangeSuccess": "Đổi mật khẩu thành công",
+    "passwordChangeError": "Đổi mật khẩu thất bại"
+  },
+  "actions": {
+    "update": "Cập nhật",
+    "cancel": "Huỷ",
+    "confirm": "Xác nhận"
+  },
+  "accounts": {
+    "title": "Quản lý tài khoản",
+    "list": "Danh sách tài khoản",
+    "create": "Tạo tài khoản mới",
+    "edit": "Chỉnh sửa tài khoản",
+    "delete": "Xóa tài khoản",
+    "confirmDelete": "Bạn có chắc muốn xóa tài khoản này?",
+    "search": "Tìm kiếm theo tên, email...",
+    "filter": {
+      "all": "Tất cả",
+      "role": "Lọc theo vai trò"
+    }
+  }
+}

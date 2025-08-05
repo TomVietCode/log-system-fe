@@ -31,8 +31,9 @@ export default function Header({ user, logout }: { user: User | null, logout: ()
   }
 
   //Get current page title
-  const currentMenuItem = menuItems?.find((item) => item.path === pathname)
+  const currentMenuItem = menuItems?.find((item) => pathname.includes(item.path))
   const pageTitle = currentMenuItem ? t(currentMenuItem.label) : null
+  
   return (
     <AppBar position="fixed" elevation={1} sx={{ minHeight: "50px" }}>
       <Toolbar sx={{ px: 2, ml: { sm: "250px" }, minHeight: "50px" }}>

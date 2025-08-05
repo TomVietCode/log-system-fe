@@ -1,0 +1,13 @@
+{
+  "title": "DevLog Chart",
+  "charts": {
+    "title": "DevLogs",
+    "hoursPerDay": "Working time (h)",
+    "effective": "Effective",
+    "day": "Day",
+    "hours": "Hours"
+  },
+  "errors": {
+    "chart": "Cannot get data"
+  }
+}

@@ -22,8 +22,10 @@ import { useAuth } from "@/context/auth.context"
 import { profileSchema } from "@/lib/validation"
 import { authAPI } from "@/lib/api/auth-api"
 import Toast from "@/components/ui/alert"
+import { useUserTranslations } from "@/lib/hook/useTranslations"
 
 export default function ProfilePage() {
+  const t = useUserTranslations()
   const { user } = useAuth()
   const [form, setForm] = useState<any>(user)
   const [errors, setErrors] = useState<any>({})
@@ -78,9 +80,9 @@ export default function ProfilePage() {
 
       setBackendError("")
       await authAPI.updateProfile(data)
-      Toast.success("Cập nhật thành công")
+      Toast.success(t("messages.updateSuccess"))
     } catch (error: any) {
-      setBackendError(error.response?.data?.message || "Có lỗi xảy ra")
+      setBackendError(error.response?.data?.message || t("messages.updateError"))
     } finally {
       setLoading(false)
     }
@@ -153,7 +155,7 @@ export default function ProfilePage() {
             <Grid size={{ xs: 12, md: 6 }}>
               <Box>
                 <Typography fontWeight={500} mb={0.5}>
-                  Mã nhân viên:
+                  {t("fields.employeeCode")}:
                 </Typography>
                 <OutlinedInput
                   name="employeeCode"
@@ -169,7 +171,7 @@ export default function ProfilePage() {
             <Grid size={{ xs: 12, md: 6 }}>
               <Box>
                 <Typography fontWeight={500} mb={0.5}>
-                  Số điện thoại: <span className="text-red-500"> *</span>
+                  {t("fields.phone")}: <span className="text-red-500"> *</span>
                 </Typography>
                 <OutlinedInput
                   name="phone"
@@ -187,7 +189,7 @@ export default function ProfilePage() {
             <Grid size={{ xs: 12, md: 6 }}>
               <Box>
                 <Typography fontWeight={500} mb={0.5}>
-                  Họ và tên:
+                  {t("fields.fullName")}:
                 </Typography>
                 <OutlinedInput
                   placeholder="Eg: Nguyễn Văn A"
@@ -205,7 +207,7 @@ export default function ProfilePage() {
             <Grid size={{ xs: 12, md: 6 }}>
               <Box>
                 <Typography fontWeight={500} mb={0.5}>
-                  CCCD/CMND: <span className="text-red-500"> *</span>
+                  {t("fields.citizenId")}: <span className="text-red-500"> *</span>
                 </Typography>
                 <OutlinedInput
                   name="citizenID"
@@ -223,7 +225,7 @@ export default function ProfilePage() {
             <Grid size={{ xs: 12, md: 6 }}>
               <Box>
                 <Typography fontWeight={500} mb={0.5}>
-                  Ngày sinh:
+                  {t("fields.dob")}:
                 </Typography>
                 <OutlinedInput
                   name="dob"
@@ -240,7 +242,7 @@ export default function ProfilePage() {
             <Grid size={{ xs: 12, md: 6 }}>
               <Box>
                 <Typography fontWeight={500} mb={0.5}>
-                  Email cá nhân: <span className="text-red-500"> *</span>
+                  {t("fields.personalEmail")}: <span className="text-red-500"> *</span>
                 </Typography>
                 <OutlinedInput
                   name="personalEmail"
@@ -260,7 +262,7 @@ export default function ProfilePage() {
             <Grid size={{ xs: 12, md: 6 }}>
               <Box>
                 <Typography fontWeight={500} mb={0.5}>
-                  Số tài khoản TCB:
+                  {t("fields.accountNumber")}:
                 </Typography>
                 <OutlinedInput
                   name="accountNumber"
@@ -276,7 +278,7 @@ export default function ProfilePage() {
             <Grid size={{ xs: 12, md: 6 }}>
               <Box>
                 <Typography fontWeight={500} mb={0.5}>
-                  Biển số xe:
+                  {t("fields.licensePlate")}:
                 </Typography>
                 <OutlinedInput
                   name="licensePlate"
@@ -292,7 +294,7 @@ export default function ProfilePage() {
             <Grid size={{ xs: 12, md: 6 }}>
               <Box>
                 <Typography fontWeight={500} mb={0.5}>
-                  Email:
+                  {t("fields.email")}:
                 </Typography>
                 <OutlinedInput
                   name="email"
@@ -309,10 +311,10 @@ export default function ProfilePage() {
               <Button variant="outlined" sx={{ borderRadius: 10 }} onClick={() => {
                 setShowChangePassword(true)
               }}>
-                Đổi mật khẩu
+                {t("profile.changePassword")}
               </Button>
               <Button type="submit" variant="contained" sx={{ borderRadius: 10 }}>
-                {loading ? <CircularProgress size={24} color="inherit" /> : "Cập nhật"}
+                {loading ? <CircularProgress size={24} color="inherit" /> : t("actions.update")}
               </Button>
             </Grid>
           </Grid>
@@ -321,12 +323,12 @@ export default function ProfilePage() {
 
       {/* Change Password Dialog */}
       <Dialog open={showChangePassword} onClose={() => setShowChangePassword(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>Đổi mật khẩu</DialogTitle>
+        <DialogTitle>{t("profile.changePassword")}</DialogTitle>
         <form onSubmit={handleChangePassword}>
           <DialogContent>
             <Box mb={2}>
               <Typography fontWeight={500} mb={0.5}>
-                Mật khẩu hiện tại: <span className="text-red-500">*</span>
+                {t("password.current")}: <span className="text-red-500">*</span>
               </Typography>
               <OutlinedInput
                 name="currentPassword"
@@ -344,7 +346,7 @@ export default function ProfilePage() {
             
             <Box mb={2}>
               <Typography fontWeight={500} mb={0.5}>
-                Mật khẩu mới: <span className="text-red-500">*</span>
+                {t("password.new")}: <span className="text-red-500">*</span>
               </Typography>
               <OutlinedInput
                 name="newPassword"
@@ -362,7 +364,7 @@ export default function ProfilePage() {
             
             <Box mb={2}>
               <Typography fontWeight={500} mb={0.5}>
-                Xác nhận mật khẩu mới: <span className="text-red-500">*</span>
+                {t("password.confirm")}: <span className="text-red-500">*</span>
               </Typography>
               <OutlinedInput
                 name="confirmPassword"
@@ -379,9 +381,9 @@ export default function ProfilePage() {
             </Box>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setShowChangePassword(false)}>Hủy</Button>
+            <Button onClick={() => setShowChangePassword(false)}>{t("actions.cancel")}</Button>
             <Button type="submit" variant="contained" disabled={passwordLoading}>
-              {passwordLoading ? <CircularProgress size={24} color="inherit" /> : "Xác nhận"}
+              {passwordLoading ? <CircularProgress size={24} color="inherit" /> : t("actions.confirm")}
             </Button>
           </DialogActions>
         </form>

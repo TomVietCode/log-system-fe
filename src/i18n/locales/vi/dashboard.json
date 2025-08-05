@@ -1,0 +1,13 @@
+{
+  "title": "Biểu đồ DevLog",
+  "charts": {
+    "title": "DevLogs",
+    "hoursPerDay": "Thời gian làm (h)",
+    "effective": "Hiệu quả",
+    "day": "Ngày",
+    "hours": "Giờ"
+  },
+  "errors": {
+    "chart": "Không thể lấy dữ liệu"
+  }
+}
