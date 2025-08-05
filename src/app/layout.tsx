@@ -2,6 +2,7 @@ import "./globals.css";
 import { AuthProvider } from "@/context/auth.context";
 import MuiProvider from "@/components/provider/MuiProvider";
 import { ToastContainer } from "@/components/ui/alert";
+import { NotificationProvider } from "@/context/notification.context";
 
 export default function RootLayout({
   children,
@@ -13,8 +14,10 @@ export default function RootLayout({
       <body suppressHydrationWarning={true}>
         <MuiProvider>
           <AuthProvider>
-            {children}
-            <ToastContainer />
+            <NotificationProvider>
+              {children}
+              <ToastContainer />  
+            </NotificationProvider>
           </AuthProvider>
         </MuiProvider>
       </body>

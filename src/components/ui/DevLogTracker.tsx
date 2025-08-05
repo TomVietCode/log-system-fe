@@ -1,3 +1,4 @@
+import { useNotification } from "@/context/notification.context"
 import { Dialog, Typography, DialogContent, DialogTitle, Button, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, Chip, DialogActions } from "@mui/material"
 import dayjs from "dayjs"
 import { useState } from "react"
@@ -12,7 +13,11 @@ export default function DevLogTracker({ open, onClose, project }: DevLogTrackerP
   const [data, setData] = useState<any[]>(project.members)
   const [loading, setLoading] = useState(false)
   const today = dayjs().format("DD/MM/YYYY")
+  const { sendReminder } = useNotification()
 
+  const handleSendReminder = async (userId: string) => {
+    await sendReminder(userId, project.id)
+  }
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
       <DialogTitle>
@@ -27,7 +32,7 @@ export default function DevLogTracker({ open, onClose, project }: DevLogTrackerP
           <Typography variant="h6">
             <span className="font-bold">Ngày: </span>
             <span className="text-gray-600 text-[1rem]">{today}</span>
-          </Typography> 
+          </Typography>
         </div>
       </DialogTitle>
       <DialogContent>
@@ -35,11 +40,21 @@ export default function DevLogTracker({ open, onClose, project }: DevLogTrackerP
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell><strong>MÃ NV</strong></TableCell>
-                <TableCell><strong>TÊN NV</strong></TableCell>
-                <TableCell><strong>VỊ TRÍ</strong></TableCell>
-                <TableCell><strong>TRẠNG THÁI</strong></TableCell>
-                <TableCell><strong>HÀNH ĐỘNG</strong></TableCell>
+                <TableCell>
+                  <strong>MÃ NV</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>TÊN NV</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>VỊ TRÍ</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>TRẠNG THÁI</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>HÀNH ĐỘNG</strong>
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -69,7 +84,12 @@ export default function DevLogTracker({ open, onClose, project }: DevLogTrackerP
                       )}
                     </TableCell>
                     <TableCell>
-                      <Button variant="contained" size="small" disabled={member.logDate || member.role === "LEADER"}>
+                      <Button
+                        variant="contained"
+                        size="small"
+                        disabled={member.logDate || member.role === "LEADER"}
+                        onClick={() => handleSendReminder(member.id)}
+                      >
                         Gửi thông báo
                       </Button>
                     </TableCell>

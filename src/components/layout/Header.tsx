@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { KeyboardArrowUpOutlined, KeyboardArrowDownOutlined } from '@mui/icons-material'
 import Link from "next/link"
+import NotificationBell from "../ui/NotificationBell"
 
 export default function Header({ user, logout }: { user: User | null, logout: () => void }) {
   const menuItems = user && getMenuByRole(user.role)
@@ -37,6 +38,8 @@ export default function Header({ user, logout }: { user: User | null, logout: ()
         </Typography>
         {user && (  
           <>
+            <NotificationBell />
+
             <Typography 
               variant="body2" 
               className="px-2 py-1"
