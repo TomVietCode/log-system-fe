@@ -26,9 +26,13 @@ export default function LoginPage() {
     try {
       setLoading(true)
 
-      await login(data)
+      const user = await login(data)
       Toast.success("Đăng nhập thành công")
-      router.push("/dashboard")
+      if(user.role === "ADMIN" || user.role === "HCNS") {
+        router.push("/")
+      } else {
+        router.push("/dashboard")
+      }
     } catch (error: any) {
       Toast.error(error.response?.data?.message || 'Đăng nhập thất bại')
     } finally {

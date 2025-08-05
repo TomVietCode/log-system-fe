@@ -26,7 +26,7 @@ export default function NotificationBell() {
     markAsRead(id)
     router.push("/devlogs")
   }
-  console.log(notifications)
+
   return (
     <>
       <IconButton color="inherit" onClick={handleClick} sx={{ mr: 2 }}>

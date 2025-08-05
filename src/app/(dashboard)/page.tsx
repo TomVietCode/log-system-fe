@@ -1,7 +1,9 @@
+import { Typography } from "@mui/material";
+
 export default function DashboardPage() {
   return (
     <div>
-      <h1>Dashboard</h1>
+      <Typography variant="h3">Hệ thống quản lý Devlog</Typography>
     </div>
   );
 }

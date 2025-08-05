@@ -5,6 +5,7 @@ import {
   ListAltOutlined,
   PersonOutlineOutlined,
   AddOutlined,
+  Group,
 } from "@mui/icons-material"
 
 export interface MenuItem {
@@ -20,7 +21,7 @@ export const menuItems: MenuItem[] = [
     label: "Trang chủ",
     icon: HomeOutlined,
     path: "/dashboard",
-    roles: ["ADMIN", "LEADER", "HCNS", "DEV"],
+    roles: ["LEADER", "DEV"],
     status: "show"
   },
   {
@@ -57,6 +58,13 @@ export const menuItems: MenuItem[] = [
     path: "/profile",
     roles: ["ADMIN", "LEADER", "HCNS", "DEV"],
     status: "hidden"
+  },
+  {
+    label: "Tài khoản",
+    icon: Group,
+    path: "/accounts",
+    roles: ["ADMIN", "HCNS"],
+    status: "show"
   }
 ]
 

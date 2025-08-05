@@ -42,6 +42,7 @@ export function AuthProvider({ children }: { children: React.ReactNode}) {
       localStorage.setItem("accessToken", accessToken)
       const userResponse = await authAPI.profile()
       setUser(userResponse.data)
+      return userResponse.data
     } catch (error) {
       localStorage.removeItem("accessToken")
       setUser(null)

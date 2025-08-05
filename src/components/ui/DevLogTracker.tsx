@@ -21,7 +21,7 @@ export default function DevLogTracker({ open, onClose, project }: DevLogTrackerP
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
       <DialogTitle>
-        <Typography variant="h6" className="text-center">
+        <Typography className="text-center">
           Theo dõi DevLog nhân viên
         </Typography>
         <div className="flex justify-between items-center">
