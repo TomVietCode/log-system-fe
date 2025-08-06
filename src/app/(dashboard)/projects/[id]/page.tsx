@@ -42,7 +42,7 @@ export default function UpdateProjectPage() {
         userApi.getListUser("DEV"),
         projectApi.getProject(projectId)
       ])
-      console.log(projectResponse.data)
+      
       setUsers(userResponse.data)
       const projectData = projectResponse.data
 

@@ -11,7 +11,7 @@ import {
   Tooltip,
 } from "@mui/material"
 import { DataGrid, GridColDef } from "@mui/x-data-grid"
-import { EditNote, Delete, VisibilityOutlined } from "@mui/icons-material"
+import { EditNote, Delete, VisibilityOutlined, AddTask } from "@mui/icons-material"
 import { useEffect, useState } from "react"
 import { projectApi } from "@/lib/api/project-api"
 import Link from "next/link"
@@ -20,6 +20,7 @@ import { useAuth } from "@/context/auth.context"
 import DevLogTracker from "@/components/ui/DevLogTracker"
 import { useProjectTranslations } from "@/lib/hook/useTranslations"
 import dayjs from "dayjs"
+import AddTaskDialog from "@/components/ui/AddTaskDialog"
 
 export default function ProjectsPage() {
   const t = useProjectTranslations()
@@ -28,44 +29,33 @@ export default function ProjectsPage() {
   const [loading, setLoading] = useState(true)
   const [selectedProject, setSelectedProject] = useState<any>(null)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [isAddTaskDialogOpen, setIsAddTaskDialogOpen] = useState(false)
 
   const paginationModel = { page: 0, pageSize: 10 }
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true)
-        const response = await projectApi.getProjects()
-        const rowData: any = response.data.map((project: any) => ({
-          ...project,
-          membersCount: project._count.ProjectMembers,
-          tasksCount: project._count.tasks,
-          createdAt: dayjs(project.createdAt).format("DD/MM/YYYY"),
-          updatedAt: dayjs(project.updatedAt).format("DD/MM/YYYY"),
-        }))
-
-        setData(rowData)
-      } catch (error) {
-        Toast.error(t("messages.fetchError"))
-      } finally {
-        setLoading(false)
-      }
-    }
-    fetchData()
-  }, [])
-
-  const handleDelete = async (id: string) => {
+  const fetchData = async () => {
     try {
       setLoading(true)
-      await projectApi.deleteProject(id)
-      Toast.success(t("messages.deleteSuccess"))
-      setData(data.filter((project) => project.id !== id))
+      const response = await projectApi.getProjects()
+      const rowData: any = response.data.map((project: any) => ({
+        ...project,
+        membersCount: project._count.ProjectMembers,
+        tasksCount: project._count.tasks,
+        createdAt: dayjs(project.createdAt).format("DD/MM/YYYY"),
+        updatedAt: dayjs(project.updatedAt).format("DD/MM/YYYY"),
+      }))
+
+      setData(rowData)
     } catch (error) {
-      Toast.error(t("messages.deleteError"))
+      Toast.error(t("messages.fetchError"))
     } finally {
       setLoading(false)
     }
   }
+  
+  useEffect(() => {
+    fetchData()
+  }, [])
 
   const columns: GridColDef[] = [
     { field: "name", headerName: t("form.name"), width: 200 },
@@ -87,7 +77,7 @@ export default function ProjectsPage() {
                 size="small"
                 color="default"
                 aria-label="edit"
-                onClick={() =>{
+                onClick={() => {
                   setSelectedProject(params.row)
                   setIsDialogOpen(true)
                 }}
@@ -96,58 +86,79 @@ export default function ProjectsPage() {
               </IconButton>
             </Tooltip>
           )}
-          <Tooltip title={t("actions.editProject")}>
-            <Link href={`/projects/${params.row.id}`}>
-              <IconButton size="small" color="primary" aria-label="edit">
-                <EditNote fontSize="medium" />
+          {user?.role === "LEADER" ? (
+            // LEADER: Edit Project (Full Access)
+            <Tooltip title={t("actions.editProject")}>
+              <Link href={`/projects/${params.row.id}`}>
+                <IconButton size="small" color="primary">
+                  <EditNote fontSize="small" />
+                </IconButton>
+              </Link>
+            </Tooltip>
+          ) : user?.role === "DEV" ? (
+            // DEV: Add Tasks (Limited Access)
+            <Tooltip title={t("actions.addTasks")}>
+              <IconButton
+                size="small"
+                color="primary"
+                onClick={() => {
+                  setSelectedProject(params.row)
+                  setIsAddTaskDialogOpen(true)
+                }}
+              >
+                <AddTask fontSize="small" />
               </IconButton>
-            </Link>
-          </Tooltip>
-          {/* <Tooltip title={t("actions.deleteProject")}>
-            <IconButton
-              size="small"
-              color="error"
-              onClick={() => handleDelete(params.row.id)}
-              aria-label="delete"
-            >
-              <Delete fontSize="medium" />
-            </IconButton>
-          </Tooltip> */}
+            </Tooltip>
+          ) : null}
         </Stack>
       ),
     },
   ]
 
   return (
-  <>
-    <Container sx={{ backgroundColor: "background.paper", p: 3, borderRadius: 2 }}>
-      <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
-        <Link href="/projects/create">
-          <Button variant="contained" size="large" color="primary">
-            {t("actions.create")}
-          </Button>
-        </Link>
-      </Box>
-      <Paper sx={{ height: 400, width: "100%" }}>
-        <DataGrid
-          rows={data}
-          columns={columns}
-          initialState={{ pagination: { paginationModel } }}
-          pageSizeOptions={[5, 10]}
-          sx={{ border: 0 }}
-          disableRowSelectionOnClick
-          disableColumnSelector
-          disableColumnMenu
+    <>
+      <Container sx={{ backgroundColor: "background.paper", p: 3, borderRadius: 2 }}>
+        <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
+          <Link href="/projects/create">
+            <Button variant="contained" size="large" color="primary">
+              {t("actions.create")}
+            </Button>
+          </Link>
+        </Box>
+        <Paper sx={{ height: 400, width: "100%" }}>
+          <DataGrid
+            rows={data}
+            columns={columns}
+            initialState={{ pagination: { paginationModel } }}
+            pageSizeOptions={[5, 10]}
+            sx={{ border: 0 }}
+            disableRowSelectionOnClick
+            disableColumnSelector
+            disableColumnMenu
+          />
+        </Paper>
+      </Container>
+      {isDialogOpen && (
+        <DevLogTracker
+          open={isDialogOpen}
+          onClose={() => setIsDialogOpen(false)}
+          project={selectedProject}
         />
-      </Paper>
-    </Container>
-    {isDialogOpen && (
-      <DevLogTracker
-        open={isDialogOpen}
-        onClose={() => setIsDialogOpen(false)}
-        project={selectedProject}
-      />
-    )}
-  </>
+      )}
+      {isAddTaskDialogOpen && selectedProject && (
+        <AddTaskDialog
+          open={isAddTaskDialogOpen}
+          onClose={() => {
+            setIsAddTaskDialogOpen(false)
+            setSelectedProject(null)
+          }}
+          project={selectedProject}
+          onTasksAdded={() => {
+            fetchData() // ✅ Refresh data after adding tasks
+            Toast.success(t("messages.tasksAddedSuccess"))
+          }}
+        />
+      )}
+    </>
   )
 }

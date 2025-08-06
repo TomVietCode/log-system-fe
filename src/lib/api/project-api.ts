@@ -1,5 +1,6 @@
 import { createProjectDto, ProjectResponse, updateProjectDto } from "@/interface/project";
 import apiClient from "@/lib/api/api";
+import { AddTask } from "@mui/icons-material";
 
 export const projectApi = {
   createProject: async (data: createProjectDto): Promise<ProjectResponse> => {
@@ -47,6 +48,14 @@ export const projectApi = {
     }
   },
   
+  addTasks: async (projectId: string, data: { name: string }[]) => {
+    try {
+      const response = await apiClient.post(`/projects/${projectId}/tasks`, data)
+      return response.data
+    } catch (error) {
+      throw error
+    }
+  },
   updateProject: async (projectId: string, data: updateProjectDto) => {
     try {
       const response = await apiClient.patch(`/projects/${projectId}`, data)

@@ -8,7 +8,8 @@
     "taskName": "Tên công việc",
     "createdAt": "Ngày tạo",
     "updatedAt": "Ngày cập nhật",
-    "actions": "Thao tác"
+    "actions": "Thao tác",
+    "taskNamePlaceholder": "Nhập tên công việc"
   },
   "actions": {
     "create": "Tạo dự án",
@@ -19,7 +20,10 @@
     "add": "Thêm",
     "close": "Đóng",
     "back": "Quay lại",
-    "update": "Cập nhật"
+    "update": "Cập nhật",
+    "cancel": "Hủy",
+    "addMoreTask": "Thêm công việc",
+    "addTasks": "Thêm công việc"
   },
   "track": {
     "title": "Theo dõi DevLog nhân viên",
@@ -33,6 +37,10 @@
     "logged": "Đã nhập",
     "notLogged": "Chưa nhập"
   },
+  "dialog": {
+    "addTasksTitle": "Thêm công việc",
+    "project": "Dự án"
+  },
   "messages": {
     "fetchError": "Không thể lấy dữ liệu",
     "createSuccess": "Tạo dự án thành công",
@@ -41,8 +49,11 @@
     "updateError": "Cập nhật dự án thất bại",
     "deleteSuccess": "Xóa dự án thành công",
     "deleteError": "Xóa dự án thất bại",
+    "tasksAddedSuccess": "Thêm công việc thành công",
+    "tasksAddedError": "Thêm công việc thất bại",
     "noData": "Không có dữ liệu"
   },
+  
   "validation": {
     "nameRequired": "Tên dự án không được để trống",
     "membersRequired": "Cần chọn ít nhất một thành viên"

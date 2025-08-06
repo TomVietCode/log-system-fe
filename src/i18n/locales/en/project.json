@@ -8,7 +8,8 @@
     "taskName": "Task Name",
     "createdAt": "Created At",
     "updatedAt": "Last Updated",
-    "actions": "Actions"
+    "actions": "Actions",
+    "taskNamePlaceholder": "Enter task name"
   },
   "actions": {
     "create": "New Project",
@@ -19,7 +20,10 @@
     "add": "Add",
     "close": "Close",
     "back": "Back",
-    "update": "Update"
+    "cancel": "Cancel",
+    "update": "Update",
+    "addMoreTask": "Add more task",
+    "addTasks": "Add Tasks"
   },
   "track": {
     "title": "Employee DevLog Track",
@@ -33,6 +37,10 @@
     "logged": "Logged",
     "notLogged": "Not Logged"
   },
+  "dialog": {
+    "addTasksTitle": "Add Tasks",
+    "project": "Project"
+  },
   "messages": {
     "fetchError": "Cannot get data",
     "createSuccess": "Project created successfully",
@@ -41,6 +49,8 @@
     "updateError": "Failed to update project",
     "deleteSuccess": "Project deleted successfully",
     "deleteError": "Failed to delete project",
+    "tasksAddedSuccess": "Tasks added successfully",
+    "tasksAddedError": "Failed to add tasks",
     "noData": "No Data"
   },
   "validation": {
