@@ -79,7 +79,7 @@ export default function DevLogTracker({ open, onClose, project }: DevLogTrackerP
                     <TableCell>{member.fullName}</TableCell>
                     <TableCell>{member.role}</TableCell>
                     <TableCell>
-                      {member.logDate ? (
+                      {member.logDate && dayjs(member.logDate).format("DD/MM/YYYY") === today ? (
                         <Chip label={t("track.logged")} color="success" />
                       ) : (
                         <Chip label={t("track.notLogged")} color="warning" />

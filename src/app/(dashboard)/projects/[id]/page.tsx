@@ -42,15 +42,14 @@ export default function UpdateProjectPage() {
         userApi.getListUser("DEV"),
         projectApi.getProject(projectId)
       ])
-      console.log(projectResponse)
-
+      console.log(projectResponse.data)
       setUsers(userResponse.data)
       const projectData = projectResponse.data
 
       setValue("name", projectData.name)
       setValue("description", projectData.description)
       const selectedMems = userResponse.data.filter((user: any) =>
-        projectData.ProjectMembers.some((member: any) => member.userId === user.id)
+        projectData.members.some((member: any) => member.id === user.id)
       )
       setSelectedMembers(selectedMems)
 
@@ -58,12 +57,14 @@ export default function UpdateProjectPage() {
       setTasks(projectData.tasks.map((task: Task) => ({ id: task.id, name: task.name })))
     } 
     fetchData()
+    
   }, [])  
+  
   // Update form value when tasks change
   useEffect(() => {
     setValue("tasks", tasks.length > 0 ? tasks : [])
   }, [tasks, setValue])
-
+   
   const addTask = () => {
     setTasks([...tasks, { id: null, name: "" }])
   }
