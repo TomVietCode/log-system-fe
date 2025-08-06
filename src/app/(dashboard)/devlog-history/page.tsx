@@ -13,7 +13,7 @@ import Toast from "@/components/ui/alert"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/context/auth.context"
 import { userApi } from "@/lib/api/user-api"
-import { useDevlogTranslations } from "@/lib/hook/useTranslations"
+import { useCurrentLocale, useDevlogTranslations } from "@/lib/hook/useTranslations"
 
 export interface DevLog {
   days: number[]
@@ -27,6 +27,7 @@ export interface DevLog {
 
 export default function DevLogsHistoryPage() {
   const t = useDevlogTranslations()
+  const locale = useCurrentLocale()
   const { user } = useAuth()
   const [devLogs, setDevLogs] = useState<DevLog | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
@@ -164,12 +165,13 @@ export default function DevLogsHistoryPage() {
                     const day = devLogs.days[index]
                     const month = devLogs.month
                     const year = devLogs.year
-                    const dayOfWeek = getDayOfWeek(day, Number(month), Number(year))
+                    const dayOfWeek = getDayOfWeek(day, Number(month), Number(year), locale)
                     const colBackground = getColBackground(
                       day,
                       Number(month),
                       Number(year),
-                      dayOfWeek
+                      dayOfWeek,
+                      locale
                     )
 
                     return (

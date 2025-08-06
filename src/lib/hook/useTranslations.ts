@@ -1,4 +1,4 @@
-import { useTranslations as useNextIntlTranslations } from 'next-intl';
+import { useLocale, useTranslations as useNextIntlTranslations } from 'next-intl';
 
 export function useCommonTranslations() {
   return useNextIntlTranslations('common');
@@ -30,4 +30,8 @@ export function useAccountTranslations() {
 
 export function useNotificationTranslations() {
   return useNextIntlTranslations('notification');
+}
+
+export function useCurrentLocale() {
+  return useLocale() as 'vi' | 'en';
 }

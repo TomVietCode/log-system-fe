@@ -22,8 +22,8 @@ export default function DevLogTracker({ open, onClose, project }: DevLogTrackerP
   }
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
-      <DialogTitle>
-        <Typography className="text-center">
+      <DialogTitle component="div"> 
+        <Typography className="text-center" variant="h5">
           {t("track.title")}
         </Typography>
         <div className="flex justify-between items-center">

@@ -6,26 +6,19 @@ const dayNames = {
 }
 
 export type Language = keyof typeof dayNames
-const locale = typeof document !== 'undefined' ? document.cookie.split('; ').find(row => row.startsWith('locale'))?.split('locale=')[1] : 'en'
 
-export const getDayOfWeek = (
-  day: number, 
-  month: number, 
-  year: number, 
-) => {
+export const getDayOfWeek = (day: number, month: number, year: number, locale: Language = "vi") => {
   const date = dayjs(`${year}-${month}-${day}`)
   const dayOfWeek = date.day()
-  return dayNames[locale as Language][dayOfWeek]
+  return dayNames[locale][dayOfWeek]
 }
 
 const isToday = (day: number, month: number, year: number) => {
   const today = dayjs()
-  return today.date() === day && 
-         today.month() + 1 === month && 
-         today.year() === year
+  return today.date() === day && today.month() + 1 === month && today.year() === year
 }
 
-export const isWeekend = (dayOfWeek: string) => {
+export const isWeekend = (dayOfWeek: string, locale: Language = "vi") => {
   if (locale === "vi") {
     return dayOfWeek === "T7" || dayOfWeek === "CN"
   } else {
@@ -33,9 +26,9 @@ export const isWeekend = (dayOfWeek: string) => {
   }
 }
 
-export const getColBackground = (day: number, month: number, year: number, dayOfWeek: string) => {
+export const getColBackground = (day: number, month: number, year: number, dayOfWeek: string, locale: Language = "vi") => {
   if (isToday(day, month, year)) return "bg-blue-300"
-  if (isWeekend(dayOfWeek)) return "bg-gray-200"
+  if (isWeekend(dayOfWeek, locale)) return "bg-gray-200"
   return ""
 }
 
