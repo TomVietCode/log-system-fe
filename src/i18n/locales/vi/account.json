@@ -46,6 +46,7 @@
     "updateError": "Cập nhật tài khoản thất bại",
     "exportSuccess": "Xuất file thành công",
     "exportError": "Xuất file thất bại",
-    "fetchError": "Không thể lấy dữ liệu"
+    "fetchError": "Không thể lấy dữ liệu",
+    "noData": "Không có dữ liệu"
   }
 }

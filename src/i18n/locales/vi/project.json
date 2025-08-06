@@ -3,7 +3,7 @@
     "name": "Tên dự án",
     "description": "Mô tả",
     "members": "Thành viên",
-    "tasks": "Danh sách công việc",
+    "tasks": "Công việc",
     "addTask": "Thêm công việc",
     "taskName": "Tên công việc",
     "createdAt": "Ngày tạo",

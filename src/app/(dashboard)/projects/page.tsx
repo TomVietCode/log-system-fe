@@ -15,11 +15,11 @@ import { EditNote, Delete, VisibilityOutlined } from "@mui/icons-material"
 import { useEffect, useState } from "react"
 import { projectApi } from "@/lib/api/project-api"
 import Link from "next/link"
-import moment from "moment"
 import Toast from "@/components/ui/alert"
 import { useAuth } from "@/context/auth.context"
 import DevLogTracker from "@/components/ui/DevLogTracker"
 import { useProjectTranslations } from "@/lib/hook/useTranslations"
+import dayjs from "dayjs"
 
 export default function ProjectsPage() {
   const t = useProjectTranslations()
@@ -40,14 +40,13 @@ export default function ProjectsPage() {
           ...project,
           membersCount: project._count.ProjectMembers,
           tasksCount: project._count.tasks,
-          createdAt: moment(project.createdAt).format("DD/MM/YYYY"),
-          updatedAt: moment(project.updatedAt).format("DD/MM/YYYY"),
+          createdAt: dayjs(project.createdAt).format("DD/MM/YYYY"),
+          updatedAt: dayjs(project.updatedAt).format("DD/MM/YYYY"),
         }))
 
         setData(rowData)
       } catch (error) {
-        console.error("Error fetching projects:", error)
-        Toast.error(t("messages.error"))
+        Toast.error(t("messages.fetchError"))
       } finally {
         setLoading(false)
       }
@@ -62,7 +61,7 @@ export default function ProjectsPage() {
       Toast.success(t("messages.deleteSuccess"))
       setData(data.filter((project) => project.id !== id))
     } catch (error) {
-      Toast.error(t("messages.deleteSuccess"))
+      Toast.error(t("messages.deleteError"))
     } finally {
       setLoading(false)
     }
@@ -104,7 +103,7 @@ export default function ProjectsPage() {
               </IconButton>
             </Link>
           </Tooltip>
-          <Tooltip title={t("actions.deleteProject")}>
+          {/* <Tooltip title={t("actions.deleteProject")}>
             <IconButton
               size="small"
               color="error"
@@ -113,7 +112,7 @@ export default function ProjectsPage() {
             >
               <Delete fontSize="medium" />
             </IconButton>
-          </Tooltip>
+          </Tooltip> */}
         </Stack>
       ),
     },

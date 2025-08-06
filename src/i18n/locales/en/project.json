@@ -3,7 +3,7 @@
     "name": "Project Name",
     "description": "Description",
     "members": "Members",
-    "tasks": "Task List",
+    "tasks": "Tasks",
     "addTask": "Add Task",
     "taskName": "Task Name",
     "createdAt": "Created At",

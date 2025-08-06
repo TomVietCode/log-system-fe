@@ -4,7 +4,7 @@ import { useNotification } from "@/context/notification.context"
 import { useNotificationTranslations } from "@/lib/hook/useTranslations"
 import { Notifications } from "@mui/icons-material"
 import { Badge, Box, IconButton, ListItemText, ListItem, List, Popover, Typography } from "@mui/material"
-import moment from "moment"
+import dayjs from "dayjs"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 
@@ -91,7 +91,7 @@ export default function NotificationBell() {
                             {noti.content}
                           </span>
                           <Box component="span" sx={{ display: 'block', fontSize: '0.75rem', color: 'text.secondary', mt: 0.5 }}>
-                            {moment(noti.createdAt).format("DD/MM/YYYY HH:mm")}
+                            {dayjs(noti.createdAt).format("DD/MM/YYYY HH:mm")}
                           </Box>
                         </>
                       } 

@@ -46,6 +46,7 @@
     "updateError": "Failed to update account",
     "exportSuccess": "Exported successfully",
     "exportError": "Failed to export",
-    "fetchError": "Unable to fetch data"
+    "fetchError": "Unable to fetch data",
+    "noData": "No data"
   }
 }
