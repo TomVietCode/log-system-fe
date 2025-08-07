@@ -25,7 +25,7 @@ export const createRegisterSchema = (t: TranslationFunction) => {
         .email(t('validation.emailInvalid'))
         .min(1, t('validation.emailRequired')),
       password: z.string().min(1, t('validation.passwordRequired')),
-      confirmPassword: z.string(),
+      confirmPassword: z.string().optional().nullable(),
     })
     .refine((data) => data.password === data.confirmPassword, {
       message: t('validation.passwordMismatch'),
