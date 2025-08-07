@@ -59,19 +59,17 @@ export default function UpdateProjectPage() {
     fetchData()
     
   }, [])  
-  
-  // Update form value when tasks change
-  useEffect(() => {
-    setValue("tasks", tasks.length > 0 ? tasks : [])
-  }, [tasks, setValue])
    
   const addTask = () => {
-    setTasks([...tasks, { id: null, name: "" }])
+    const newTasks = [...tasks, { id: null, name: "" }]
+    setTasks(newTasks)
+    setValue("tasks", newTasks)
   }
 
   const removeTask = (index: number) => {
     const newTasks = tasks.filter((_, i) => i !== index)
     setTasks(newTasks)
+    setValue('tasks', newTasks)
   }
 
   const updateTask = (index: number, value: string) => {

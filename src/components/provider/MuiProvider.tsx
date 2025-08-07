@@ -28,9 +28,9 @@ const theme = createTheme({
 
 export default function MuiProvider({ children }: { children: ReactNode}) {
   return (
-    <AppRouterCacheProvider>
+    <AppRouterCacheProvider options={{ enableCssLayer: true }}>
       <ThemeProvider theme={theme}>
-        <CssBaseline />
+        <CssBaseline /> 
         {children}
       </ThemeProvider>
     </AppRouterCacheProvider>

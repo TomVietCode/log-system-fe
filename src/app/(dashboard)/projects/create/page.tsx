@@ -26,6 +26,7 @@ export default function CreateProjectPage() {
     control,
     setValue,
     reset,
+    getValues,
     formState: { errors },
   } = useForm<ProjectFormData>({
     resolver: zodResolver(projectSchema),
@@ -39,24 +40,23 @@ export default function CreateProjectPage() {
     fetchUsers()
   }, [])  
 
-  // Update form value when tasks change
-  useEffect(() => {
-    setValue("tasks", tasks.length > 0 ? tasks : [])
-  }, [tasks, setValue])
-
   const addTask = () => {
-    setTasks([...tasks, { id: null, name: "" }])
+    const newTasks = [...tasks, { id: null, name: "" }]
+    setTasks(newTasks)
+    setValue("tasks", newTasks)
   }
 
   const removeTask = (index: number) => {
     const newTasks = tasks.filter((_, i) => i !== index)
     setTasks(newTasks)
+    setValue("tasks", newTasks)
   }
 
   const updateTask = (index: number, value: string) => {
     const newTasks = [...tasks]
     newTasks[index] = { id: null, name: value }
     setTasks(newTasks)
+    setValue("tasks", newTasks)
   }
 
   const onSubmit = async (data: ProjectFormData) => {

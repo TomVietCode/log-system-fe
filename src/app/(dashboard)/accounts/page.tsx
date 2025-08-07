@@ -4,7 +4,7 @@ import { useAuth } from "@/context/auth.context"
 import { User } from "@/interface/auth"
 import { devLogApi } from "@/lib/api/devlog-api"
 import { userApi } from "@/lib/api/user-api"
-import { Cancel, Download, Edit, Save, Search } from "@mui/icons-material"
+import { Download, Search } from "@mui/icons-material"
 import {
   Box,
   Container,
@@ -22,11 +22,12 @@ import {
   FormControl,
   Select,
   MenuItem,
-  IconButton,
   CircularProgress,
   InputAdornment,
   Grid,
   Divider,
+  IconButton,
+  SelectChangeEvent,
 } from "@mui/material"
 import Link from "next/link"
 import { useEffect, useState } from "react"
@@ -43,7 +44,6 @@ export default function AccountsPage() {
   const [selectedUsers, setSelectedUsers] = useState<string[]>([])
   const [searchTerm, setSearchTerm] = useState("")
   const [roleFilter, setRoleFilter] = useState("ALL")
-
   const isAdmin = user?.role === "ADMIN"
 
   const fetchUsers = async () => {
@@ -64,29 +64,6 @@ export default function AccountsPage() {
   useEffect(() => {
     fetchUsers()
   }, [])
-
-  useEffect(() => {
-    // Apply filters whenever search term or role filter changes
-    let result = users
-
-    // Apply search filter
-    if (searchTerm) {
-      const searchLower = searchTerm.toLowerCase()
-      result = result.filter(
-        (user) =>
-          user.fullName?.toLowerCase().includes(searchLower) ||
-          user.email?.toLowerCase().includes(searchLower) ||
-          user.employeeCode?.toLowerCase().includes(searchLower)
-      )
-    }
-
-    // Apply role filter
-    if (roleFilter !== "ALL") {
-      result = result.filter((user) => user.role === roleFilter)
-    }
-
-    setFilteredUsers(result)
-  }, [searchTerm, roleFilter, users])
 
   const handleEdit = (userId: string) => {
     setEditMode({ ...editMode, [userId]: true })
@@ -134,7 +111,7 @@ export default function AccountsPage() {
     }
   }
 
-  function handleSelectUser(id: string): void {
+  function handleSelectUser(id: string) {
     if (selectedUsers.includes(id)) {
       setSelectedUsers(selectedUsers.filter((u) => u !== id))
     } else {
@@ -153,12 +130,41 @@ export default function AccountsPage() {
     }
   }
 
+  const handleSearch = () => {
+    const filtered = users.filter((user) => {
+      const matchesSearch =
+        searchTerm.trim() === "" ||
+        user.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.employeeCode?.toLowerCase().includes(searchTerm.toLowerCase())
+
+      const matchesRole = roleFilter === "ALL" || user.role === roleFilter
+
+      return matchesSearch && matchesRole
+    })
+
+    setFilteredUsers(filtered)
+  }
+
+  const handleRoleFilter = (e: SelectChangeEvent<string>) => {
+    const role = e.target.value
+    setRoleFilter(role)
+    if (role === "ALL") {
+      setFilteredUsers(users)
+    } else {
+      const result = users.filter((user) => user.role === role)
+      setFilteredUsers(result)
+    }
+  }
+
   return (
     <Container sx={{ backgroundColor: "background.paper", p: 3, borderRadius: 2 }}>
       <Box className="flex justify-center mb-4">
         <Typography variant="h6">{t("title")}</Typography>
       </Box>
       <Divider sx={{ mb: 3 }} />
+
+      {/* Search and filter section */}
       <Grid container spacing={2} sx={{ mb: 3 }}>
         <Grid sx={{ xs: 12, md: 6 }}>
           <TextField
@@ -166,19 +172,26 @@ export default function AccountsPage() {
             placeholder={t("actions.search")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleSearch();
+              }
+            }}
             InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Search />
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={handleSearch} size="small">
+                    <Search />
+                  </IconButton>
                 </InputAdornment>
               ),
             }}
             size="small"
           />
         </Grid>
-        <Grid sx={{ xs: 12, md: 6 }}>
+        <Grid sx={{ xs: 12, md: 3 }}>
           <FormControl fullWidth size="small">
-            <Select value={roleFilter} onChange={(e) => setRoleFilter(e.target.value)} displayEmpty>
+            <Select value={roleFilter} onChange={(e) => handleRoleFilter(e)} displayEmpty>
               <MenuItem value="ALL">{t("actions.filter.all")}</MenuItem>
               <MenuItem value="DEV">Developer</MenuItem>
               <MenuItem value="LEADER">Leader</MenuItem>
@@ -187,6 +200,7 @@ export default function AccountsPage() {
             </Select>
           </FormControl>
         </Grid>
+        <Grid sx={{ xs: 12, md: 3 }}></Grid>
 
         {selectedUsers.length > 0 && (
           <Grid sx={{ xs: 12, md: 6, display: "flex", justifyContent: "flex-end" }}>

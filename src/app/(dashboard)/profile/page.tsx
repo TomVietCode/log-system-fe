@@ -32,7 +32,6 @@ export default function ProfilePage() {
   const [form, setForm] = useState<any>(user)
   const [errors, setErrors] = useState<any>({})
   const [loading, setLoading] = useState<boolean>(false)
-  const [backendError, setBackendError] = useState<string>("")
   const [showChangePassword, setShowChangePassword] = useState<boolean>(false)
   const [passwordForm, setPasswordForm] = useState({
     currentPassword: "",
@@ -41,14 +40,6 @@ export default function ProfilePage() {
   })
   const [passwordErrors, setPasswordErrors] = useState<any>({})
   const [passwordLoading, setPasswordLoading] = useState<boolean>(false)
-
-  useEffect(() => {
-    if (backendError) {
-      Toast.error(backendError);
-      // Clear error sau khi hiển thị
-      setBackendError("");
-    }
-  }, [backendError]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm((prev: any) => ({
@@ -79,11 +70,10 @@ export default function ProfilePage() {
         return
       }
 
-      setBackendError("")
       await authAPI.updateProfile(data)
       Toast.success(t("messages.updateSuccess"))
     } catch (error: any) {
-      setBackendError(error.response?.data?.message || t("messages.updateError"))
+      Toast.error(error.response?.data?.message || t("messages.updateError"))
     } finally {
       setLoading(false)
     }
@@ -128,7 +118,7 @@ export default function ProfilePage() {
         confirmPassword: "",
       })
     } catch (error: any) {
-      setBackendError(error.response?.data?.message || "Có lỗi xảy ra khi đổi mật khẩu")
+      Toast.error(error.response?.data?.message || "Có lỗi xảy ra")
     } finally {
       setPasswordLoading(false)
     }
