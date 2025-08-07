@@ -9,3 +9,10 @@ export const inputStyle = {
     height: '56px'
   }
 }
+
+export const profileInputStyle = {
+  ...inputStyle,
+  '& .MuiInputBase-root': {
+    height: '40px'
+  }
+};

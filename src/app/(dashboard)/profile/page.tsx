@@ -10,9 +10,8 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  FormHelperText,
   Grid,
-  OutlinedInput,
+  TextField,
   Typography,
 } from "@mui/material"
 import React, { useState } from "react"
@@ -21,52 +20,44 @@ import { authAPI } from "@/lib/api/auth-api"
 import Toast from "@/components/ui/alert"
 import { useUserTranslations } from "@/lib/hook/useTranslations"
 import { useValidationSchemas } from "@/lib/hook/useValidation"
+import { Controller, useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { ChangePasswordFormData, changePasswordSchema, ProfileFormData } from "@/lib/validation"
+import { profileInputStyle } from "@/styles/common"
 
 export default function ProfilePage() {
   const t = useUserTranslations()
   const { profileSchema } = useValidationSchemas()
   const { user } = useAuth()
-  const [form, setForm] = useState<any>(user)
-  const [errors, setErrors] = useState<any>({})
   const [loading, setLoading] = useState<boolean>(false)
   const [showChangePassword, setShowChangePassword] = useState<boolean>(false)
-  const [passwordForm, setPasswordForm] = useState({
-    currentPassword: "",
-    newPassword: "",
-    confirmPassword: "",
-  })
-  const [passwordErrors, setPasswordErrors] = useState<any>({})
   const [passwordLoading, setPasswordLoading] = useState<boolean>(false)
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm((prev: any) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }))
-  }
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<any>({
+    resolver: zodResolver(profileSchema),
+    defaultValues: user,
+  })
 
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPasswordForm((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }))
-  }
+  const {
+    control: passwordControl,
+    handleSubmit: handlePasswordSubmit,
+    reset: resetPasswordForm,
+    formState: { errors: passwordErrors }
+  } = useForm<ChangePasswordFormData>({
+    resolver: zodResolver(changePasswordSchema),
+    defaultValues: {
+      oldPassword: '',
+      newPassword: ''
+    }
+  });
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+  const onProfileSubmit = async (data: ProfileFormData) => {
     setLoading(true)
     try {
-      const { data, success, error } = profileSchema.safeParse(form)
-      if (!success) {
-        const newErrors: any = {}
-        error.errors.map((err: any) => {
-          newErrors[err.path[0]] = err.message
-        }) || "Có lỗi xảy ra"
-        setErrors(newErrors)
-        setLoading(false)
-        return
-      }
-
       await authAPI.updateProfile(data)
       Toast.success(t("messages.updateSuccess"))
     } catch (error: any) {
@@ -76,46 +67,15 @@ export default function ProfilePage() {
     }
   }
 
-  const handleChangePassword = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setPasswordLoading(true)
-    
-    // Reset errors
-    setPasswordErrors({})
-    
-    // Validate passwords
-    const newErrors: any = {}
-    if (!passwordForm.currentPassword) {
-      newErrors.currentPassword = "Mật khẩu hiện tại là bắt buộc"
-    }
-    if (!passwordForm.newPassword) {
-      newErrors.newPassword = "Mật khẩu mới là bắt buộc"
-    }
-    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-      newErrors.confirmPassword = "Mật khẩu xác nhận không khớp"
-    }
-    
-    if (Object.keys(newErrors).length > 0) {
-      setPasswordErrors(newErrors)
-      setPasswordLoading(false)
-      return
-    }
-    
+  const onPasswordSubmit = async (data: ChangePasswordFormData) => {
     try {
-      await authAPI.changePassword({
-        oldPassword: passwordForm.currentPassword,
-        newPassword: passwordForm.newPassword
-      })
-      Toast.success("Đổi mật khẩu thành công")
+      setPasswordLoading(true)
+      await authAPI.changePassword(data)
+      Toast.success(t("messages.passwordChangeSuccess"))
       setShowChangePassword(false)
-      // Reset form
-      setPasswordForm({
-        currentPassword: "",
-        newPassword: "",
-        confirmPassword: "",
-      })
+      resetPasswordForm()
     } catch (error: any) {
-      Toast.error(error.response?.data?.message || "Có lỗi xảy ra")
+      Toast.error(error.response?.data?.message || t("messages.passwordChangeError"))
     } finally {
       setPasswordLoading(false)
     }
@@ -131,7 +91,7 @@ export default function ProfilePage() {
           <Avatar sx={{ width: 120, height: 120 }} />
         </Box>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit(onProfileSubmit)}>
           <Grid
             container
             rowSpacing={3}
@@ -145,12 +105,12 @@ export default function ProfilePage() {
                 <Typography fontWeight={500} mb={0.5}>
                   {t("fields.employeeCode")}:
                 </Typography>
-                <OutlinedInput
-                  name="employeeCode"
-                  value={form.employeeCode || ""}
+                <TextField
                   fullWidth
-                  sx={{ height: "40px" }}
+                  value={user?.employeeCode || ""}
+                  sx={profileInputStyle}
                   disabled
+                  helperText=" "
                 />
               </Box>
             </Grid>
@@ -161,15 +121,19 @@ export default function ProfilePage() {
                 <Typography fontWeight={500} mb={0.5}>
                   {t("fields.phone")}: <span className="text-red-500"> *</span>
                 </Typography>
-                <OutlinedInput
+                <Controller
                   name="phone"
-                  value={form.phone || ""}
-                  onChange={handleChange}
-                  fullWidth
-                  sx={{ height: "40px" }}
-                  error={!!errors.phone}
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      fullWidth
+                      sx={profileInputStyle}
+                      error={!!errors.phone}
+                      helperText={errors.phone?.message ? String(errors.phone.message) : " "}
+                    />
+                  )}
                 />
-                {errors.phone && <FormHelperText error>{errors.phone}</FormHelperText>}
               </Box>
             </Grid>
 
@@ -179,14 +143,12 @@ export default function ProfilePage() {
                 <Typography fontWeight={500} mb={0.5}>
                   {t("fields.fullName")}:
                 </Typography>
-                <OutlinedInput
-                  placeholder="Eg: Nguyễn Văn A"
-                  name="fullName"
-                  value={form.fullName || ""}
-                  onChange={handleChange}
+                <TextField
                   fullWidth
-                  sx={{ height: "40px" }}
+                  value={user?.fullName || ""}
+                  sx={profileInputStyle}
                   disabled
+                  helperText=" "
                 />
               </Box>
             </Grid>
@@ -197,15 +159,21 @@ export default function ProfilePage() {
                 <Typography fontWeight={500} mb={0.5}>
                   {t("fields.citizenId")}: <span className="text-red-500"> *</span>
                 </Typography>
-                <OutlinedInput
+                <Controller
                   name="citizenID"
-                  value={form.citizenID || ""}
-                  onChange={handleChange}
-                  fullWidth
-                  sx={{ height: "40px" }}
-                  error={!!errors.citizenID}
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      fullWidth
+                      sx={profileInputStyle}
+                      error={!!errors.citizenID}
+                      helperText={
+                        errors.citizenID?.message ? String(errors.citizenID.message) : " "
+                      }
+                    />
+                  )}
                 />
-                {errors.citizenID && <FormHelperText error>{errors.citizenID}</FormHelperText>}
               </Box>
             </Grid>
 
@@ -215,13 +183,19 @@ export default function ProfilePage() {
                 <Typography fontWeight={500} mb={0.5}>
                   {t("fields.dob")}:
                 </Typography>
-                <OutlinedInput
+                <Controller
                   name="dob"
-                  value={form.dob?.split("T")[0] || ""}
-                  onChange={handleChange}
-                  fullWidth
-                  sx={{ height: "40px" }}
-                  type="date"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      type="date"
+                      fullWidth
+                      sx={profileInputStyle}
+                      error={!!errors.dob}
+                      helperText={errors.dob?.message ? String(errors.dob.message) : " "}
+                    />
+                  )}
                 />
               </Box>
             </Grid>
@@ -232,17 +206,21 @@ export default function ProfilePage() {
                 <Typography fontWeight={500} mb={0.5}>
                   {t("fields.personalEmail")}: <span className="text-red-500"> *</span>
                 </Typography>
-                <OutlinedInput
+                <Controller
                   name="personalEmail"
-                  value={form.personalEmail || ""}
-                  onChange={handleChange}
-                  fullWidth
-                  sx={{ height: "40px" }}
-                  error={!!errors.personalEmail}
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      fullWidth
+                      sx={profileInputStyle}
+                      error={!!errors.personalEmail}
+                      helperText={
+                        errors.personalEmail?.message ? String(errors.personalEmail.message) : " "
+                      }
+                    />
+                  )}
                 />
-                {errors.personalEmail && (
-                  <FormHelperText error>{errors.personalEmail}</FormHelperText>
-                )}
               </Box>
             </Grid>
 
@@ -252,12 +230,18 @@ export default function ProfilePage() {
                 <Typography fontWeight={500} mb={0.5}>
                   {t("fields.accountNumber")}:
                 </Typography>
-                <OutlinedInput
+                <Controller
                   name="accountNumber"
-                  value={form.accountNumber || ""}
-                  onChange={handleChange}
-                  fullWidth
-                  sx={{ height: "40px" }}
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      fullWidth
+                      sx={profileInputStyle}
+                      error={!!errors.accountNumber}
+                      helperText={errors.accountNumber?.message ? String(errors.accountNumber.message) : " "}
+                    />
+                  )}
                 />
               </Box>
             </Grid>
@@ -268,12 +252,18 @@ export default function ProfilePage() {
                 <Typography fontWeight={500} mb={0.5}>
                   {t("fields.licensePlate")}:
                 </Typography>
-                <OutlinedInput
+                <Controller
                   name="licensePlate"
-                  value={form.licensePlate || ""}
-                  onChange={handleChange}
-                  fullWidth
-                  sx={{ height: "40px" }}
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      fullWidth
+                      sx={profileInputStyle}
+                      error={!!errors.licensePlate}
+                      helperText={errors.licensePlate?.message ? String(errors.licensePlate.message) : " "}
+                    />
+                  )}
                 />
               </Box>
             </Grid>
@@ -284,24 +274,32 @@ export default function ProfilePage() {
                 <Typography fontWeight={500} mb={0.5}>
                   {t("fields.email")}:
                 </Typography>
-                <OutlinedInput
-                  name="email"
-                  value={form.email || ""}
-                  onChange={handleChange}
+                <TextField
                   fullWidth
-                  sx={{ height: "40px" }}
+                  value={user?.email || ""}
+                  sx={profileInputStyle}
                   disabled
+                  helperText=" "
                 />
               </Box>
             </Grid>
 
             <Grid size={{ xs: 12, md: 12 }} className="flex justify-center gap-4">
-              <Button variant="outlined" sx={{ borderRadius: 10 }} onClick={() => {
-                setShowChangePassword(true)
-              }}>
+              <Button
+                variant="outlined"
+                sx={{ borderRadius: 10 }}
+                onClick={() => {
+                  setShowChangePassword(true)
+                }}
+              >
                 {t("profile.changePassword")}
               </Button>
-              <Button type="submit" variant="contained" sx={{ borderRadius: 10 }}>
+              <Button
+                type="submit"
+                variant="contained"
+                sx={{ borderRadius: 10 }}
+                disabled={loading}
+              >
                 {loading ? <CircularProgress size={24} color="inherit" /> : t("actions.update")}
               </Button>
             </Grid>
@@ -310,68 +308,68 @@ export default function ProfilePage() {
       </Container>
 
       {/* Change Password Dialog */}
-      <Dialog open={showChangePassword} onClose={() => setShowChangePassword(false)} maxWidth="sm" fullWidth>
+      <Dialog 
+        open={showChangePassword} 
+        onClose={() => setShowChangePassword(false)} 
+        maxWidth="sm" 
+        fullWidth
+      >
         <DialogTitle>{t("profile.changePassword")}</DialogTitle>
-        <form onSubmit={handleChangePassword}>
+        <form onSubmit={handlePasswordSubmit(onPasswordSubmit)}>
           <DialogContent>
             <Box mb={2}>
               <Typography fontWeight={500} mb={0.5}>
                 {t("password.current")}: <span className="text-red-500">*</span>
               </Typography>
-              <OutlinedInput
-                name="currentPassword"
-                type="password"
-                value={passwordForm.currentPassword}
-                onChange={handlePasswordChange}
-                fullWidth
-                sx={{ height: "40px" }}
-                error={!!passwordErrors.currentPassword}
+              <Controller
+                name="oldPassword"
+                control={passwordControl}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    type="password"
+                    fullWidth
+                    sx={profileInputStyle}
+                    error={!!passwordErrors.oldPassword}
+                    helperText={passwordErrors.oldPassword?.message || " "}
+                  />
+                )}
               />
-              {passwordErrors.currentPassword && (
-                <FormHelperText error>{passwordErrors.currentPassword}</FormHelperText>
-              )}
             </Box>
             
             <Box mb={2}>
               <Typography fontWeight={500} mb={0.5}>
                 {t("password.new")}: <span className="text-red-500">*</span>
               </Typography>
-              <OutlinedInput
+              <Controller
                 name="newPassword"
-                type="password"
-                value={passwordForm.newPassword}
-                onChange={handlePasswordChange}
-                fullWidth
-                sx={{ height: "40px" }}
-                error={!!passwordErrors.newPassword}
+                control={passwordControl}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    type="password"
+                    fullWidth
+                    sx={profileInputStyle}
+                    error={!!passwordErrors.newPassword}
+                    helperText={passwordErrors.newPassword?.message || " "}
+                  />
+                )}
               />
-              {passwordErrors.newPassword && (
-                <FormHelperText error>{passwordErrors.newPassword}</FormHelperText>
-              )}
-            </Box>
-            
-            <Box mb={2}>
-              <Typography fontWeight={500} mb={0.5}>
-                {t("password.confirm")}: <span className="text-red-500">*</span>
-              </Typography>
-              <OutlinedInput
-                name="confirmPassword"
-                type="password"
-                value={passwordForm.confirmPassword}
-                onChange={handlePasswordChange}
-                fullWidth
-                sx={{ height: "40px" }}
-                error={!!passwordErrors.confirmPassword}
-              />
-              {passwordErrors.confirmPassword && (
-                <FormHelperText error>{passwordErrors.confirmPassword}</FormHelperText>
-              )}
             </Box>
           </DialogContent>
+          
           <DialogActions>
-            <Button onClick={() => setShowChangePassword(false)}>{t("actions.cancel")}</Button>
-            <Button type="submit" variant="contained" disabled={passwordLoading}>
-              {passwordLoading ? <CircularProgress size={24} color="inherit" /> : t("actions.confirm")}
+            <Button onClick={() => setShowChangePassword(false)}>
+              {t("actions.cancel")}
+            </Button>
+            <Button 
+              type="submit" 
+              variant="contained" 
+              disabled={passwordLoading}
+            >
+              {passwordLoading ? 
+                <CircularProgress size={24} color="inherit" /> : 
+                t("actions.confirm")}
             </Button>
           </DialogActions>
         </form>
