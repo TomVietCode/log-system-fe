@@ -14,6 +14,7 @@ import { useParams } from "next/navigation"
 import { Task } from "@/interface/project"
 import { useProjectTranslations } from "@/lib/hook/useTranslations"
 import { useValidationSchemas } from "@/lib/hook/useValidation"
+import { inputStyle } from "@/styles/common"
 
 export default function UpdateProjectPage() {
   const params = useParams()
@@ -112,6 +113,7 @@ export default function UpdateProjectPage() {
               {...register("name")}
               error={!!errors.name}
               helperText={errors.name?.message}
+              sx={inputStyle}
             />
 
             <textarea
@@ -143,6 +145,7 @@ export default function UpdateProjectPage() {
                   multiple
                   options={users}
                   value={selectedMembers}
+                  sx={inputStyle}
                   onChange={(event, value) => {
                     setSelectedMembers(value)
                     const selectedIds = value.map((item: any) => item.id)

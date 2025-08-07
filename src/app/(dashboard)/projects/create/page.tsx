@@ -12,6 +12,7 @@ import { projectApi } from "@/lib/api/project-api"
 import Toast from "@/components/ui/alert"
 import { Task } from "@/interface/project"
 import { useProjectTranslations } from "@/lib/hook/useTranslations"
+import { inputStyle } from "@/styles/common"
 
 export default function CreateProjectPage() {
   const t = useProjectTranslations()
@@ -94,6 +95,7 @@ export default function CreateProjectPage() {
               {...register("name")}
               error={!!errors.name}
               helperText={errors.name?.message}
+              sx={inputStyle}
             />
 
             <textarea
@@ -125,6 +127,7 @@ export default function CreateProjectPage() {
                   multiple
                   options={users}
                   value={selectedMembers}
+                  sx={inputStyle}
                   onChange={(event, value) => {
                     setSelectedMembers(value)
                     const selectedIds = value.map((item: any) => item.id)

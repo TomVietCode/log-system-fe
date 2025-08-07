@@ -22,12 +22,13 @@ import { z } from "zod"
 import Toast from "@/components/ui/alert"
 import Link from "next/link"
 import { useAccountTranslations } from "@/lib/hook/useTranslations"
+import { inputStyle } from "@/styles/common"
 
 export default function CreateAccountPage() {
   const t = useAccountTranslations()
 
   const createUserSchema = z.object({
-    fullName: z.string().min(1, t("form.fullNameRequired")),
+    fullName: z.string().min(1, t("validate.fullNameRequired")),
     email: z.string().email(t("validate.emailInvalid")).min(1, t("validate.emailRequired")),
     phone: z.string().min(9, t("validate.phoneInvalid")),
     citizenID: z.string().min(1, t("validate.citizenIdRequired")),
@@ -74,7 +75,7 @@ export default function CreateAccountPage() {
 
   return (
     <Container sx={{ backgroundColor: "background.paper", p: 3, borderRadius: 2 }}>
-      <Typography variant="h5" gutterBottom>{t("title")}</Typography>
+      <Typography variant="h5" gutterBottom>{t("actions.createAccount")}</Typography>
       
       <Paper sx={{ p: 3, mt: 2 }}>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -95,6 +96,7 @@ export default function CreateAccountPage() {
                     fullWidth
                     error={!!errors.fullName}
                     helperText={errors.fullName?.message}
+                    sx={inputStyle}
                   />
                 )}
               />
@@ -116,6 +118,7 @@ export default function CreateAccountPage() {
                     fullWidth
                     error={!!errors.email}
                     helperText={errors.email?.message}
+                    sx={inputStyle}
                   />
                 )}
               />
@@ -137,6 +140,7 @@ export default function CreateAccountPage() {
                     fullWidth
                     error={!!errors.phone}
                     helperText={errors.phone?.message}
+                    sx={inputStyle}
                   />
                 )}
               />
@@ -158,6 +162,7 @@ export default function CreateAccountPage() {
                     fullWidth
                     error={!!errors.citizenID}
                     helperText={errors.citizenID?.message}
+                    sx={inputStyle}
                   />
                 )}
               />
@@ -198,6 +203,7 @@ export default function CreateAccountPage() {
                     fullWidth
                     error={!!errors.password}
                     helperText={errors.password?.message}
+                    sx={inputStyle}
                   />
                 )}
               />
