@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 import { Box, CircularProgress } from "@mui/material"
 
-export default function protectedRoute({
+export default function ProtectedRoute({
   children,
   allowedRoles
 }: {

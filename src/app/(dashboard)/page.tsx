@@ -1,3 +1,5 @@
+"use client"
+
 import { Typography } from "@mui/material";
 import { useCommonTranslations } from "@/lib/hook/useTranslations";
 

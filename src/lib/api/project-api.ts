@@ -1,6 +1,5 @@
 import { createProjectDto, ProjectResponse, updateProjectDto } from "@/interface/project";
 import apiClient from "@/lib/api/api";
-import { AddTask } from "@mui/icons-material";
 
 export const projectApi = {
   createProject: async (data: createProjectDto): Promise<ProjectResponse> => {

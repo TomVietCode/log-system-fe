@@ -10,7 +10,7 @@ interface AppNotification {
   id: string
   title: string
   content: string
-  isRead: Boolean
+  isRead: boolean
   createdAt: string
 }
 

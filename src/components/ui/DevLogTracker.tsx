@@ -1,8 +1,9 @@
+"use client"
+
 import { useNotification } from "@/context/notification.context"
 import { useProjectTranslations } from "@/lib/hook/useTranslations"
 import { Dialog, Typography, DialogContent, DialogTitle, Button, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, Chip, DialogActions } from "@mui/material"
 import dayjs from "dayjs"
-import { useState } from "react"
 
 interface DevLogTrackerProps {
   open: boolean
@@ -12,8 +13,7 @@ interface DevLogTrackerProps {
 
 export default function DevLogTracker({ open, onClose, project }: DevLogTrackerProps) {
   const t = useProjectTranslations()
-  const [data, setData] = useState<any[]>(project.members)
-  const [loading, setLoading] = useState(false)
+  const data = project.members
   const today = dayjs().format("DD/MM/YYYY")
   const { sendReminder } = useNotification()
 
@@ -60,20 +60,14 @@ export default function DevLogTracker({ open, onClose, project }: DevLogTrackerP
               </TableRow>
             </TableHead>
             <TableBody>
-              {loading ? (
-                <TableRow>
-                  <TableCell colSpan={5} align="center">
-                    {t("loading")}
-                  </TableCell>
-                </TableRow>
-              ) : data.length === 0 ? (
+              {data.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={5} align="center">
                     {t("messages.noData")}
                   </TableCell>
                 </TableRow>
               ) : (
-                data.map((member, index) => (
+                data.map((member: any) => (
                   <TableRow key={member.id}>
                     <TableCell>{member.employeeCode}</TableCell>
                     <TableCell>{member.fullName}</TableCell>

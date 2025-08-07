@@ -55,7 +55,7 @@ class ToastService {
   }
 
 
-  info(message: string, duration: number = 3000) {
+  info(message: string) {
     toast((t) => (
       <div className="flex items-center justify-between">
         <span>{message}</span>
@@ -73,7 +73,7 @@ class ToastService {
     ), { icon: 'ℹ️' })
   }
 
-  loading(message: string, duration: number = 3000) {
+  loading(message: string) {
     return toast.loading(message)
   }
 }

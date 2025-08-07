@@ -26,7 +26,6 @@ export default function CreateProjectPage() {
     control,
     setValue,
     reset,
-    getValues,
     formState: { errors },
   } = useForm<ProjectFormData>({
     resolver: zodResolver(projectSchema),
@@ -69,7 +68,7 @@ export default function CreateProjectPage() {
 
     try { 
       setLoading(true)
-      const response = await projectApi.createProject(submitData)
+      await projectApi.createProject(submitData)
       Toast.success(t("messages.createSuccess"))
       // Reset form values
       reset()
@@ -121,7 +120,7 @@ export default function CreateProjectPage() {
             <Controller
               control={control}
               name="memberIds"
-              render={({ field: { onChange, value } }) => (
+              render={({ field: { onChange } }) => (
                 <Autocomplete
                   multiple
                   options={users}

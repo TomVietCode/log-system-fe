@@ -74,7 +74,7 @@ export default function DevLogsPage() {
   const onSubmit = async (data: any) => {
     try {
       setLoading(true)
-      const response = await devLogApi.addDevLog(data)
+      await devLogApi.addDevLog(data)
       Toast.success(t("create.messages.success"))
     } catch (error: any) {
       Toast.error(

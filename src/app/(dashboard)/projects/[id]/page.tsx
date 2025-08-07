@@ -88,7 +88,7 @@ export default function UpdateProjectPage() {
 
     try { 
       setLoading(true)
-      const response = await projectApi.updateProject(projectId, submitData)
+      await projectApi.updateProject(projectId, submitData)
       Toast.success(t("messages.updateSuccess"))
       // Reset form values
       setLoading(false)
@@ -138,7 +138,7 @@ export default function UpdateProjectPage() {
             <Controller
               control={control}
               name="memberIds"
-              render={({ field: { onChange, value } }) => (
+              render={({ field: { onChange } }) => (
                 <Autocomplete
                   multiple
                   options={users}

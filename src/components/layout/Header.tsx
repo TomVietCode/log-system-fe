@@ -13,7 +13,6 @@ import LanguageSwitcher from "../ui/LanguageSwitcher"
 
 export default function Header({ user, logout }: { user: User | null, logout: () => void }) {
   const menuItems = user && getMenuByRole(user.role)
-  const labelNames = menuItems?.map((item) => item.label)
   const pathname = usePathname()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)

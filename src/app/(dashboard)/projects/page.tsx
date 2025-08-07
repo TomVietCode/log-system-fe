@@ -7,11 +7,10 @@ import {
   Paper,
   IconButton,
   Stack,
-  CircularProgress,
   Tooltip,
 } from "@mui/material"
 import { DataGrid, GridColDef } from "@mui/x-data-grid"
-import { EditNote, Delete, VisibilityOutlined, AddTask } from "@mui/icons-material"
+import { EditNote, VisibilityOutlined, AddTask } from "@mui/icons-material"
 import { useEffect, useState } from "react"
 import { projectApi } from "@/lib/api/project-api"
 import Link from "next/link"
@@ -128,6 +127,7 @@ export default function ProjectsPage() {
         <Paper sx={{ height: 400, width: "100%" }}>
           <DataGrid
             rows={data}
+            loading={loading}
             columns={columns}
             initialState={{ pagination: { paginationModel } }}
             pageSizeOptions={[5, 10]}

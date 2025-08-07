@@ -1,12 +1,10 @@
 "use client"
 
 import {
-  Alert,
   Avatar,
   Box,
   Button,
   CircularProgress,
-  Collapse,
   Container,
   Dialog,
   DialogActions,
@@ -17,9 +15,8 @@ import {
   OutlinedInput,
   Typography,
 } from "@mui/material"
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import { useAuth } from "@/context/auth.context"
-import { profileSchema } from "@/lib/validation"
 import { authAPI } from "@/lib/api/auth-api"
 import Toast from "@/components/ui/alert"
 import { useUserTranslations } from "@/lib/hook/useTranslations"
