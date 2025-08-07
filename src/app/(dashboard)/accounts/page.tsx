@@ -190,7 +190,7 @@ export default function AccountsPage() {
           />
         </Grid>
         <Grid sx={{ xs: 12, md: 3 }}>
-          <FormControl fullWidth size="small">
+          <FormControl fullWidth size="small" sx={{ width: "130px" }}>
             <Select value={roleFilter} onChange={(e) => handleRoleFilter(e)} displayEmpty>
               <MenuItem value="ALL">{t("actions.filter.all")}</MenuItem>
               <MenuItem value="DEV">Developer</MenuItem>
@@ -200,7 +200,6 @@ export default function AccountsPage() {
             </Select>
           </FormControl>
         </Grid>
-        <Grid sx={{ xs: 12, md: 3 }}></Grid>
 
         {selectedUsers.length > 0 && (
           <Grid sx={{ xs: 12, md: 6, display: "flex", justifyContent: "flex-end" }}>

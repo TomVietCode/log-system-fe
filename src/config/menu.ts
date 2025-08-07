@@ -6,6 +6,7 @@ import {
   PersonOutlineOutlined,
   AddOutlined,
   Group,
+  AlternateEmail,
 } from "@mui/icons-material"
 
 export interface MenuItem {
@@ -64,6 +65,13 @@ export const menuItems: MenuItem[] = [
     icon: Group,
     path: "/accounts",
     roles: ["ADMIN", "HCNS"],
+    status: "show"
+  },
+  {
+    label: "navigation.whitelist",
+    icon: AlternateEmail,
+    path: "/whitelists",
+    roles: ["ADMIN"],
     status: "show"
   }
 ]

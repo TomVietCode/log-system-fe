@@ -5,7 +5,8 @@
     "devlogHistory": "Dev Logs List", 
     "projects": "Projects",
     "accounts": "Accounts",
-    "profile": "Profile"
+    "profile": "Profile",
+    "whitelist": "Whitelist"
   },
   "actions": {
     "create": "Create",

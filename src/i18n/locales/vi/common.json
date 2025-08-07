@@ -5,7 +5,8 @@
     "devlogHistory": "Devlogs List",
     "projects": "Dự án",
     "accounts": "Tài khoản",
-    "profile": "Thông tin cá nhân"
+    "profile": "Thông tin cá nhân",
+    "whitelist": "Quản lý whitelist"
   },
   "actions": {
     "create": "Tạo mới",
