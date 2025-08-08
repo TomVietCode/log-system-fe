@@ -1,0 +1,40 @@
+{
+  "title": "Whitelist Domain Management",
+  "buttons": {
+    "addNew": "Add new"
+  },
+  "table": {
+    "domain": "Domain",
+    "createdAt": "Created at",
+    "updatedAt": "Updated at",
+    "actions": "Actions"
+  },
+  "actions": {
+    "edit": "Edit",
+    "delete": "Delete"
+  },
+  "dialogs": {
+    "add": {
+      "title": "Add new domain",
+      "domainLabel": "Domain",
+      "placeholder": "example.com",
+      "cancel": "Cancel",
+      "confirm": "Add"
+    },
+    "edit": {
+      "title": "Edit domain",
+      "cancel": "Cancel",
+      "confirm": "Update"
+    }
+  },
+  "toasts": {
+    "fetchError": "Unable to load domain list",
+    "addSuccess": "Added domain {domain} to whitelist",
+    "addError": "Unable to add domain to whitelist",
+    "updateSuccess": "Updated domain to {domain}",
+    "updateError": "Unable to update domain",
+    "deleteSuccess": "Deleted domain from whitelist",
+    "deleteError": "Unable to delete domain"
+  }
+}
+

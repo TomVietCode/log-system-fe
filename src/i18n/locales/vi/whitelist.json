@@ -1,0 +1,40 @@
+{
+  "title": "Quản lý Domain Whitelist",
+  "buttons": {
+    "addNew": "Thêm mới"
+  },
+  "table": {
+    "domain": "Domain",
+    "createdAt": "Ngày tạo",
+    "updatedAt": "Ngày cập nhật",
+    "actions": "Thao tác"
+  },
+  "actions": {
+    "edit": "Sửa",
+    "delete": "Xóa"
+  },
+  "dialogs": {
+    "add": {
+      "title": "Thêm Domain mới",
+      "domainLabel": "Domain",
+      "placeholder": "example.com",
+      "cancel": "Hủy",
+      "confirm": "Thêm"
+    },
+    "edit": {
+      "title": "Sửa Domain",
+      "cancel": "Hủy",
+      "confirm": "Cập nhật"
+    }
+  },
+  "toasts": {
+    "fetchError": "Không thể tải danh sách domain",
+    "addSuccess": "Đã thêm domain {domain} vào whitelist",
+    "addError": "Không thể thêm domain vào whitelist",
+    "updateSuccess": "Đã cập nhật domain thành {domain}",
+    "updateError": "Không thể cập nhật domain",
+    "deleteSuccess": "Đã xóa domain khỏi whitelist",
+    "deleteError": "Không thể xóa domain"
+  }
+}
+

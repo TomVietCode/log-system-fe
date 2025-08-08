@@ -20,9 +20,8 @@ import {
 import { DataGrid, GridColDef } from "@mui/x-data-grid"
 import { Add, Delete, Edit } from "@mui/icons-material"
 import Toast from "@/components/ui/alert"
-import { useAuth } from "@/context/auth.context"
-import { useRouter } from "next/navigation"
 import { inputStyle } from "@/styles/common"
+import { useWhitelistTranslations } from "@/lib/hook/useTranslations"
 import { adminApi } from "@/lib/api/admin-api"
 import dayjs from "dayjs"
 
@@ -34,6 +33,7 @@ interface WhitelistDomain {
 }
 
 export default function WhitelistManagementPage() {
+  const t = useWhitelistTranslations()
   const [loading, setLoading] = useState(true)
   const [domains, setDomains] = useState<WhitelistDomain[]>([])
   
@@ -52,7 +52,7 @@ export default function WhitelistManagementPage() {
       const response = await adminApi.getWhitelist()
       setDomains(response.data)
     } catch (error: any) {
-      Toast.error(error.response?.data?.message || "Không thể tải danh sách domain")
+      Toast.error(error.response?.data?.message || t("toasts.fetchError"))
     } finally {
       setLoading(false)
     }
@@ -92,11 +92,11 @@ export default function WhitelistManagementPage() {
     try {
       setProcessingAction(true)
       await adminApi.addWhitelist(domainInput)
-      Toast.success(`Đã thêm domain ${domainInput} vào whitelist`)
+      Toast.success(t("toasts.addSuccess", { domain: domainInput }))
       fetchDomains()
       handleCloseAddDialog()
     } catch (error: any) {
-      Toast.error(error.response?.data?.message || "Không thể thêm domain vào whitelist")
+      Toast.error(error.response?.data?.message || t("toasts.addError"))
     } finally {
       setProcessingAction(false)
     }
@@ -108,11 +108,11 @@ export default function WhitelistManagementPage() {
     try {
       setProcessingAction(true)
       await adminApi.updateWhiteList(id, domainInput)
-      Toast.success(`Đã cập nhật domain thành ${domainInput}`)
+      Toast.success(t("toasts.updateSuccess", { domain: domainInput }))
       fetchDomains()
       handleCloseEditDialog()
     } catch (error: any) {
-      Toast.error(error.response?.data?.message || "Không thể cập nhật domain")
+      Toast.error(error.response?.data?.message || t("toasts.updateError"))
     } finally {
       setProcessingAction(false)
     }
@@ -121,10 +121,10 @@ export default function WhitelistManagementPage() {
   const handleDeleteDomain = async (id: string) => {
     try {
       await adminApi.deleteWhitelist(id)
-      Toast.success("Đã xóa domain khỏi whitelist")
+      Toast.success(t("toasts.deleteSuccess"))
       fetchDomains()
     } catch (error: any) {
-      Toast.error(error.response?.data?.message || "Không thể xóa domain")
+      Toast.error(error.response?.data?.message || t("toasts.deleteError"))
     }
   }
 
@@ -132,29 +132,29 @@ export default function WhitelistManagementPage() {
   const columns: GridColDef[] = [
     { 
       field: 'domain',
-      headerName: 'Domain',
+      headerName: t('table.domain'),
       flex: 1 
     },
     { 
       field: 'createdAt', 
-      headerName: 'Ngày tạo',
+      headerName: t('table.createdAt'),
       flex: 1,
       valueFormatter: (params: any) => dayjs(params.value).format('DD/MM/YYYY HH:mm')
     },
     { 
       field: 'updatedAt', 
-      headerName: 'Ngày cập nhật',
+      headerName: t('table.updatedAt'),
       flex: 1,
       valueFormatter: (params: any) => dayjs(params.value).format('DD/MM/YYYY HH:mm')
     },
     {
       field: 'actions',
-      headerName: 'Thao tác',
+      headerName: t('table.actions'),
       flex: 0.5,
       sortable: false,
       renderCell: (params) => (
         <Box sx={{ display: 'flex' }}>
-          <Tooltip title="Sửa">
+          <Tooltip title={t('actions.edit')}>
             <IconButton
               color="primary"
               onClick={() => handleOpenEditDialog(params.row)}
@@ -162,7 +162,7 @@ export default function WhitelistManagementPage() {
               <Edit />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Xóa">
+          <Tooltip title={t('actions.delete')}>
             <IconButton
               color="error"
               onClick={() => handleDeleteDomain(params.row.id)}
@@ -178,13 +178,13 @@ export default function WhitelistManagementPage() {
   return (
     <Container sx={{ backgroundColor: "background.paper", p: 3, borderRadius: 2 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h5">Quản lý Domain Whitelist</Typography>
+        <Typography variant="h5">{t('title')}</Typography>
         <Button 
           variant="contained" 
           startIcon={<Add />}
           onClick={handleOpenAddDialog}
         >
-          Thêm mới
+          {t('buttons.addNew')}
         </Button>
       </Box>
       
@@ -208,13 +208,13 @@ export default function WhitelistManagementPage() {
 
       {/* Add New Domain Dialog */}
       <Dialog open={openAddDialog} onClose={handleCloseAddDialog} maxWidth="sm" fullWidth>
-        <DialogTitle>Thêm Domain mới</DialogTitle>
+        <DialogTitle>{t('dialogs.add.title')}</DialogTitle>
         <DialogContent>
           <Box sx={{ mt: 2 }}>
             <TextField
               fullWidth
-              label="Domain"
-              placeholder="example.com"
+              label={t('dialogs.add.domainLabel')}
+              placeholder={t('dialogs.add.placeholder')}
               value={domainInput}
               onChange={(e) => {
                 setDomainInput(e.target.value)
@@ -227,26 +227,26 @@ export default function WhitelistManagementPage() {
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseAddDialog}>Hủy</Button>
+          <Button onClick={handleCloseAddDialog}>{t('dialogs.add.cancel')}</Button>
           <Button 
             onClick={handleAddDomain}
             variant="contained"
             disabled={processingAction || !domainInput.trim()}
           >
-            {processingAction ? <CircularProgress size={24} /> : "Thêm"}
+            {processingAction ? <CircularProgress size={24} /> : t('dialogs.add.confirm')}
           </Button>
         </DialogActions>
       </Dialog>
 
       {/* Edit Domain Dialog */}
       <Dialog open={openEditDialog} onClose={handleCloseEditDialog} maxWidth="sm" fullWidth>
-        <DialogTitle>Sửa Domain</DialogTitle>
+        <DialogTitle>{t('dialogs.edit.title')}</DialogTitle>
         <DialogContent>
           <Box sx={{ mt: 2 }}>
             <TextField
               fullWidth
-              label="Domain"
-              placeholder="example.com"
+              label={t('dialogs.add.domainLabel')}
+              placeholder={t('dialogs.add.placeholder')}
               value={domainInput}
               onChange={(e) => {
                 setDomainInput(e.target.value)
@@ -259,13 +259,13 @@ export default function WhitelistManagementPage() {
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseEditDialog}>Hủy</Button>
+          <Button onClick={handleCloseEditDialog}>{t('dialogs.edit.cancel')}</Button>
           <Button 
             onClick={() => handleEditDomain(currentDomain?.id || "")}
             variant="contained"
             disabled={processingAction || !domainInput.trim()}
           >
-            {processingAction ? <CircularProgress size={24} /> : "Cập nhật"}
+            {processingAction ? <CircularProgress size={24} /> : t('dialogs.edit.confirm')}
           </Button>
         </DialogActions>
       </Dialog>

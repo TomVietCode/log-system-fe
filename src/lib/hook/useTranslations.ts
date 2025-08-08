@@ -32,6 +32,10 @@ export function useNotificationTranslations() {
   return useNextIntlTranslations('notification');
 }
 
+export function useWhitelistTranslations() {
+  return useNextIntlTranslations('whitelist');
+}
+
 export function useCurrentLocale() {
   return useLocale() as 'vi' | 'en';
 }

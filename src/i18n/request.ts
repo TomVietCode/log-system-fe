@@ -19,6 +19,7 @@ export default getRequestConfig(async () => {
         project: (await import(`./locales/${defaultLocale}/project.json`)).default,
         account: (await import(`./locales/${defaultLocale}/account.json`)).default,
         notification: (await import(`./locales/${defaultLocale}/notification.json`)).default,
+        whitelist: (await import(`./locales/${defaultLocale}/whitelist.json`)).default,
       }
     }
   }
@@ -34,6 +35,7 @@ export default getRequestConfig(async () => {
       project: (await import(`./locales/${locale}/project.json`)).default,
       account: (await import(`./locales/${locale}/account.json`)).default,
       notification: (await import(`./locales/${locale}/notification.json`)).default,
+      whitelist: (await import(`./locales/${locale}/whitelist.json`)).default,
     }
   }
 })
