@@ -1,6 +1,6 @@
 "use client"
 
-import { ProjectFormData, projectSchema } from "@/lib/validation"
+import { ProjectFormData } from "@/lib/validation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Autocomplete, Box, Button, Container, Grid, TextField, IconButton, CircularProgress } from "@mui/material"
 import Link from "next/link"
@@ -13,6 +13,7 @@ import Toast from "@/components/ui/alert"
 import { Task } from "@/interface/project"
 import { useProjectTranslations } from "@/lib/hook/useTranslations"
 import { inputStyle } from "@/styles/common"
+import { useValidationSchemas } from "@/lib/hook/useValidation"
 
 export default function CreateProjectPage() {
   const t = useProjectTranslations()
@@ -20,7 +21,7 @@ export default function CreateProjectPage() {
   const [tasks, setTasks] = useState<Array<Task>>([])
   const [loading, setLoading] = useState(false)
   const [selectedMembers, setSelectedMembers] = useState<any[]>([])
-
+  const { projectSchema } = useValidationSchemas()
   const {
     register,
     handleSubmit,
@@ -30,6 +31,12 @@ export default function CreateProjectPage() {
     formState: { errors },
   } = useForm<ProjectFormData>({
     resolver: zodResolver(projectSchema),
+    defaultValues: {
+      name: '',
+      description: '',
+      memberIds: [],
+      tasks: []
+    }
   })
   
   useEffect(() => {
@@ -66,7 +73,6 @@ export default function CreateProjectPage() {
       ...data,
       tasks: filteredTasks
     }
-
     try { 
       setLoading(true)
       await projectApi.createProject(submitData)
@@ -122,6 +128,7 @@ export default function CreateProjectPage() {
             <Controller
               control={control}
               name="memberIds"
+              defaultValue={[]}
               render={({ field: { onChange } }) => (
                 <Autocomplete
                   multiple

@@ -35,6 +35,12 @@ export default function UpdateProjectPage() {
     formState: { errors },
   } = useForm<ProjectFormData>({
     resolver: zodResolver(projectSchema),
+    defaultValues: {
+      name: '',
+      description: '',
+      memberIds: [],
+      tasks: []
+    }
   })
   
   useEffect(() => {

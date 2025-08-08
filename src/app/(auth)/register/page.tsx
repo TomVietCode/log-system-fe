@@ -4,17 +4,18 @@ import Toast from "@/components/ui/alert"
 import { useAuth } from "@/context/auth.context"
 import { RegisterDto } from "@/interface/auth"
 import { useAuthTranslations } from "@/lib/hook/useTranslations"
-import { registerSchema } from "@/lib/validation"
 import { inputStyle } from "@/styles/common"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Box, CircularProgress, Button, TextField, Typography, Link } from "@mui/material"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { useRouter } from "next/navigation"
+import { useValidationSchemas } from "@/lib/hook/useValidation"
 
 export default function RegisterPage() {
   const [loading, setLoading] = useState(false)
   const { register: signUp } = useAuth()
+  const { registerSchema } = useValidationSchemas()
   const router = useRouter()
   const {
     register,

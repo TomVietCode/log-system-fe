@@ -22,13 +22,14 @@ import { useUserTranslations } from "@/lib/hook/useTranslations"
 import { useValidationSchemas } from "@/lib/hook/useValidation"
 import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { ChangePasswordFormData, changePasswordSchema, ProfileFormData } from "@/lib/validation"
+import { ChangePasswordFormData, ProfileFormData } from "@/lib/validation"
 import { profileInputStyle } from "@/styles/common"
 
 export default function ProfilePage() {
   const t = useUserTranslations()
-  const { profileSchema } = useValidationSchemas()
-  const { user } = useAuth()
+  const { profileSchema, changePasswordSchema } = useValidationSchemas()
+  const { user: userData } = useAuth()
+  const [user, setUser] = useState<any>(userData)
   const [loading, setLoading] = useState<boolean>(false)
   const [showChangePassword, setShowChangePassword] = useState<boolean>(false)
   const [passwordLoading, setPasswordLoading] = useState<boolean>(false)
@@ -39,7 +40,14 @@ export default function ProfilePage() {
     formState: { errors },
   } = useForm<any>({
     resolver: zodResolver(profileSchema),
-    defaultValues: user,
+    defaultValues: {
+      phone: user?.phone ?? '',
+      citizenID: user?.citizenID ?? '',
+      personalEmail: user?.personalEmail ?? '',
+      dob: user?.dob ?? '',
+      accountNumber: user?.accountNumber ?? '',
+      licensePlate: user?.licensePlate ?? '',
+    },
   })
 
   const {
@@ -60,6 +68,7 @@ export default function ProfilePage() {
     try {
       await authAPI.updateProfile(data)
       Toast.success(t("messages.updateSuccess"))
+      setUser(data)
     } catch (error: any) {
       Toast.error(error.response?.data?.message || t("messages.updateError"))
     } finally {
