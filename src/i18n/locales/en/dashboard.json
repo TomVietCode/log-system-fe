@@ -8,6 +8,7 @@
     "hours": "Hours"
   },
   "errors": {
-    "chart": "Cannot get data"
+    "chart": "Cannot get data",
+    "noProject": "This user is not a member of any project"
   }
 }

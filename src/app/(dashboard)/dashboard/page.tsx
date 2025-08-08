@@ -31,7 +31,9 @@ export default function DashboardPage() {
       setData(result.data as StatisticDto)
       setLoading(false)
     } catch (error: any) {
-      Toast.error(error.response?.data?.message || t("errors.chart"))
+      if (error.response?.data?.message === "User is not a member of any project")
+        Toast.info(t("errors.noProject"))
+      else Toast.error(error.response?.data?.message || t("errors.chart"))
     } finally {
       setLoading(false)
     }

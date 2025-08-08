@@ -117,13 +117,15 @@ export default function ProjectsPage() {
   return (
     <>
       <Container sx={{ backgroundColor: "background.paper", p: 3, borderRadius: 2 }}>
-        <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
-          <Link href="/projects/create">
-            <Button variant="contained" size="large" color="primary">
-              {t("actions.create")}
-            </Button>
-          </Link>
-        </Box>
+        {user?.role === "LEADER" && (
+          <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
+            <Link href="/projects/create">
+              <Button variant="contained" size="large" color="primary">
+                {t("actions.create")}
+              </Button>
+            </Link>
+          </Box>
+        )}
         <Paper sx={{ height: 400, width: "100%" }}>
           <DataGrid
             rows={data}
