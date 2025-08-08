@@ -16,7 +16,12 @@ interface StatisticDto {
 }
 export default function DashboardPage() {
   const [loading, setLoading] = useState<boolean>(true)
-  const [data, setData] = useState<StatisticDto>()
+  const [data, setData] = useState<StatisticDto>({
+    year: 0,
+    month: 0,
+    daysInMonth: [],
+    hours: []
+  })
 
   const t = useDashboardTranslations()
   const fetchData = async () => {
@@ -27,6 +32,8 @@ export default function DashboardPage() {
       setLoading(false)
     } catch (error: any) {
       Toast.error(error.response?.data?.message || t("errors.chart"))
+    } finally {
+      setLoading(false)
     }
   }
 

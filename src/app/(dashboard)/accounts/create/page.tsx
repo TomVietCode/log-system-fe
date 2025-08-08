@@ -48,6 +48,10 @@ export default function CreateAccountPage() {
   } = useForm<CreateUserFormData>({
     resolver: zodResolver(createUserSchema),
     defaultValues: {
+      fullName: "",
+      email: "",
+      phone: "",
+      citizenID: "",
       role: "DEV",
       password: ""
     }

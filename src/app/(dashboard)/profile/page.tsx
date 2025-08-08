@@ -44,7 +44,7 @@ export default function ProfilePage() {
       phone: user?.phone ?? '',
       citizenID: user?.citizenID ?? '',
       personalEmail: user?.personalEmail ?? '',
-      dob: user?.dob ?? '',
+      dob: user?.dob ?? '',                 // for type="date" TextField
       accountNumber: user?.accountNumber ?? '',
       licensePlate: user?.licensePlate ?? '',
     },
