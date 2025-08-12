@@ -15,6 +15,7 @@
       "all": "Tất cả vai trò"
     },
     "createAccount": "Tạo tài khoản",
+    "editAccount": "Sửa tài khoản",
     "cancel": "Huỷ",
     "update": "Cập nhật",
     "save": "Lưu",
@@ -27,7 +28,8 @@
     "citizenId": "CCCD/CMND",
     "role": "Chức vụ",
     "password": "Mật khẩu",
-    "newPassword": "Mật khẩu mới"
+    "newPassword": "Mật khẩu mới",
+    "passwordPlaceholder": "Nhập mật khẩu"
   },
   "validate": {
     "fullNameRequired": "Họ tên là bắt buộc",
@@ -47,6 +49,14 @@
     "exportSuccess": "Xuất file thành công",
     "exportError": "Xuất file thất bại",
     "fetchError": "Không thể lấy dữ liệu",
-    "noData": "Không có dữ liệu"
+    "noData": "Không có dữ liệu"  
+  },
+  "errors": {
+    "Email already exists": "Email đã tồn tại",
+    "Invalid password": "Mật khẩu không hợp lệ",
+    "User not found": "Không tìm thấy người dùng",
+    "Unauthorized": "Không có quyền truy cập",
+    "Email is not valid": "Email không hợp lệ", 
+    "Email is not in the white list": "Email không nằm trong Whitelist"
   }
 }

@@ -15,6 +15,7 @@
       "all": "All roles"
     },
     "createAccount": "Create account",
+    "editAccount": "Edit account",
     "cancel": "Cancel",
     "update": "Update",
     "save": "Save",
@@ -27,7 +28,8 @@
     "citizenId": "Citizen ID",
     "role": "Role",
     "password": "Password",
-    "newPassword": "New password"
+    "newPassword": "New password",
+    "passwordPlaceholder": "Enter password"
   },
   "validate": {
     "fullNameRequired": "Full name is required",
@@ -48,5 +50,13 @@
     "exportError": "Failed to export",
     "fetchError": "Unable to fetch data",
     "noData": "No data"
+  },
+  "errors": {
+    "Email already exists": "Email already exists",
+    "Invalid password": "Invalid password",
+    "User not found": "User not found",
+    "Unauthorized": "Unauthorized access",
+    "Email is not valid": "Email is not valid",
+    "Email is not in the white list": "Email is not in the white list"
   }
 }

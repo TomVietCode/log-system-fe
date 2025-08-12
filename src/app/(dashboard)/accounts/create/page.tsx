@@ -71,7 +71,8 @@ export default function CreateAccountPage() {
         password: ""
       })
     } catch (error: any) {
-      Toast.error(t("messages.createError"))
+      const errorMessage = error.response?.data?.message || t("messages.createError");
+      Toast.error(t(`errors.${errorMessage}`, { defaultValue: errorMessage }))
     } finally {
       setLoading(false)
     }

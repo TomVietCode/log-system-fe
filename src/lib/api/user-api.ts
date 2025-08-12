@@ -2,9 +2,12 @@ import apiClient from "./api"
 import { CreateUserDto, UpdateUserAdminDto } from "@/interface/auth"
 
 export const userApi = {
-  getListUser: async (role: string = "all") => {
+  getListUser: async (
+    params: { role?: string; page?: number; limit?: number; q?: string } = {}
+  ) => {
     try {
-      const response = await apiClient.get('/users', { params: { role } })
+      const { role = 'all', page = 1, limit = 10, q = '' } = params
+      const response = await apiClient.get('/users', { params: { role, page, limit, q } })
       return response.data
     } catch (error) {
       throw error

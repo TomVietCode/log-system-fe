@@ -1,10 +1,10 @@
 "use client"
 import Toast from "@/components/ui/alert"
 import { useAuth } from "@/context/auth.context"
-import { User } from "@/interface/auth"
+import { User, UpdateUserAdminDto } from "@/interface/auth"
 import { devLogApi } from "@/lib/api/devlog-api"
 import { userApi } from "@/lib/api/user-api"
-import { Download, Search } from "@mui/icons-material"
+import { Download } from "@mui/icons-material"
 import {
   Box,
   Container,
@@ -20,42 +20,55 @@ import {
   Checkbox,
   TextField,
   FormControl,
+  InputLabel,
   Select,
   MenuItem,
   CircularProgress,
   InputAdornment,
   Grid,
   Divider,
-  IconButton,
+
   SelectChangeEvent,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TablePagination,
 } from "@mui/material"
 import Link from "next/link"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useAccountTranslations } from "@/lib/hook/useTranslations"
 
 export default function AccountsPage() {
   const t = useAccountTranslations()
   const { user } = useAuth()
   const [users, setUsers] = useState<User[]>([])
-  const [filteredUsers, setFilteredUsers] = useState<User[]>([])
+  const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(true)
-  const [editMode, setEditMode] = useState<{ [key: string]: boolean }>({})
-  const [editData, setEditData] = useState<{ [key: string]: any }>({})
+  const [page, setPage] = useState(0)
+  const [rowsPerPage, setRowsPerPage] = useState(5)
+  const [editDialogOpen, setEditDialogOpen] = useState(false)
+  const [currentUser, setCurrentUser] = useState<User | null>(null)
+  const [editData, setEditData] = useState<UpdateUserAdminDto>({ email: "", role: "DEV" })
   const [selectedUsers, setSelectedUsers] = useState<string[]>([])
   const [searchTerm, setSearchTerm] = useState("")
   const [roleFilter, setRoleFilter] = useState("ALL")
   const isAdmin = user?.role === "ADMIN"
 
-  const fetchUsers = async () => {
+  const fetchUsers = async (args?: { p?: number; l?: number; q?: string; role?: string }) => {
     try {
       setLoading(true)
-      const response = await userApi.getListUser()
-      const filteredUsers = response.data.filter((item: User) => item.id !== user?.id)
-      setUsers(filteredUsers)
-      setFilteredUsers(filteredUsers)
-      setLoading(false)
+      const currentPage = args?.p ?? page + 1
+      const limit = args?.l ?? rowsPerPage
+      const q = args?.q ?? searchTerm
+      const role = args?.role ?? (roleFilter === "ALL" ? "all" : roleFilter)
+      const response = await userApi.getListUser({ page: currentPage, limit, q, role })
+      const { users: list, total } = response.data
+      setUsers(list)
+      setTotal(total)
     } catch (error: any) {
-      Toast.error(t("messages.fetchError"))
+      const errorMessage = error.response?.data?.message
+      Toast.error(t(`errors.${errorMessage}`, { defaultValue: errorMessage }))
     } finally {
       setLoading(false)
     }
@@ -66,46 +79,56 @@ export default function AccountsPage() {
   }, [])
 
   const handleEdit = (userId: string) => {
-    setEditMode({ ...editMode, [userId]: true })
-    setEditData({ ...editData, [userId]: users.find((u) => u.id === userId) })
+    const userToEdit = users.find((u) => u.id === userId) || null
+    setCurrentUser(userToEdit)
+    if (userToEdit) {
+      setEditData({
+        email: userToEdit.email,
+        role: userToEdit.role,
+        password: ""
+      })
+    }
+    setEditDialogOpen(true)
   }
 
-  const handleInputChange = (userId: string, field: string, value: any) => {
+  const handleInputChange = (field: string, value: any) => {
     setEditData({
       ...editData,
-      [userId]: {
-        ...editData[userId],
-        [field]: value,
-      },
+      [field]: value,
     })
   }
 
-  const handleCancel = (userId: string) => {
-    setEditMode({ ...editMode, [userId]: false })
-    delete editData[userId]
+  const handleCancel = () => {
+    setEditDialogOpen(false)
+    setCurrentUser(null)
+    setEditData({ email: "", role: "DEV" })
   }
 
-  const handleSave = async (userId: string) => {
+  const handleSave = async () => {
+    if (!currentUser?.id) return
+    
     try {
       setLoading(true)
       const updateData: any = {
-        email: editData[userId].email,
-        role: editData[userId].role,
+        email: editData.email,
+        role: editData.role,
       }
 
       // Only include password if it was changed and not empty
-      if (editData[userId].password) {
-        updateData.password = editData[userId].password
+      if (editData.password) {
+        updateData.password = editData.password
       }
 
-      const response = await userApi.updateUser(userId, updateData)
+      const response = await userApi.updateUser(currentUser.id, updateData)
 
-      setUsers(users.map((u) => (u.id === userId ? response.data : u)))
-      setEditMode({ ...editMode, [userId]: false })
-      delete editData[userId]
+      setUsers(users.map((u) => (u.id === currentUser.id ? response.data : u)))
+      setEditDialogOpen(false)
+      setCurrentUser(null)
+      setEditData({ email: "", role: "DEV" })
       Toast.success(t("messages.updateSuccess"))
     } catch (error: any) {
-      Toast.error(t("messages.updateError"))
+      const errorMessage = error.response?.data?.message
+      Toast.error(t(`errors.${errorMessage}`, { defaultValue: errorMessage }))
     } finally {
       setLoading(false)
     }
@@ -124,37 +147,41 @@ export default function AccountsPage() {
       await devLogApi.exportDevLogs(selectedUsers)
       Toast.success(t("messages.exportSuccess"))
     } catch (error: any) {
-      Toast.error(t("messages.exportError"))
+      const errorMessage = error.response?.data?.message || t("messages.exportError");
+      Toast.error(t(`errors.${errorMessage}`, { defaultValue: errorMessage }))
     } finally {
       setLoading(false)
     }
   }
 
-  const handleSearch = () => {
-    const filtered = users.filter((user) => {
-      const matchesSearch =
-        searchTerm.trim() === "" ||
-        user.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.employeeCode?.toLowerCase().includes(searchTerm.toLowerCase())
-
-      const matchesRole = roleFilter === "ALL" || user.role === roleFilter
-
-      return matchesSearch && matchesRole
-    })
-
-    setFilteredUsers(filtered)
+  // Debounced server search without useEffect
+  const searchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value)
+    if (searchTimerRef.current) clearTimeout(searchTimerRef.current)
+    searchTimerRef.current = setTimeout(() => {
+      setPage(0)
+      fetchUsers({ p: 1, q: value.trim() })
+    }, 500)
   }
 
   const handleRoleFilter = (e: SelectChangeEvent<string>) => {
     const role = e.target.value
     setRoleFilter(role)
-    if (role === "ALL") {
-      setFilteredUsers(users)
-    } else {
-      const result = users.filter((user) => user.role === role)
-      setFilteredUsers(result)
-    }
+    setPage(0)
+    fetchUsers({ p: 1, role: role === "ALL" ? "all" : role })
+  }
+
+  const handleChangePage = (_: unknown, newPage: number) => {
+    setPage(newPage)
+    fetchUsers({ p: newPage + 1 })
+  }
+
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const next = parseInt(event.target.value, 10)
+    setRowsPerPage(next)
+    setPage(0)
+    fetchUsers({ p: 1, l: next })
   }
 
   return (
@@ -171,21 +198,7 @@ export default function AccountsPage() {
             fullWidth
             placeholder={t("actions.search")}
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                handleSearch();
-              }
-            }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton onClick={handleSearch} size="small">
-                    <Search />
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
+            onChange={(e) => handleSearchChange(e.target.value)}
             size="small"
           />
         </Grid>
@@ -225,16 +238,16 @@ export default function AccountsPage() {
         )}
       </Grid>
 
-      <TableContainer component={Paper}>
-        <Table>
+      <TableContainer component={Paper} sx={{ minHeight: "449px", position: 'relative' }}>
+        <Table stickyHeader size="medium" sx={{ tableLayout: 'fixed' }}>
           <TableHead>
             <TableRow>
-              <TableCell>
+              <TableCell width="5%">
                 <Checkbox
                   onChange={(e) => {
                     if (e.target.checked) {
                       setSelectedUsers(
-                        filteredUsers.map((u) => {
+                        users.map((u) => {  
                           if (u.role === "ADMIN" || u.role === "HCNS") {
                             return ""
                           }
@@ -246,44 +259,44 @@ export default function AccountsPage() {
                     }
                   }}
                   indeterminate={
-                    selectedUsers.length > 0 && selectedUsers.length < filteredUsers.length
+                     selectedUsers.length > 0 && selectedUsers.length < users.length
                   }
                   checked={
-                    filteredUsers.length > 0 && selectedUsers.length === filteredUsers.length
+                     users.length > 0 && selectedUsers.length === users.length
                   }
                 />
               </TableCell>
-              <TableCell>
+              <TableCell width="10%">
                 <strong>{t("table.code")}</strong>
               </TableCell>
-              <TableCell>
+              <TableCell width="25%">
                 <strong>{t("table.name")}</strong>
               </TableCell>
-              <TableCell>
+              <TableCell width="20%">
                 <strong>{t("table.email")}</strong>
               </TableCell>
-              <TableCell>
+              <TableCell width="10%">
                 <strong>{t("table.password")}</strong>
               </TableCell>
-              <TableCell>
+              <TableCell width="10%">
                 <strong>{t("table.role")}</strong>
               </TableCell>
               {isAdmin && (
-                <TableCell>
+                <TableCell width="10%">
                   <strong>{t("table.action")}</strong>
                 </TableCell>
               )}
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredUsers.length === 0 ? (
+            {users.length === 0 && !loading ? (
               <TableRow>
                 <TableCell colSpan={7} align="center">
                   <Typography variant="body1">{t("messages.noData")}</Typography>
                 </TableCell>
               </TableRow>
             ) : (
-              filteredUsers.map((user) => (
+              users.map((user) => (
                 <TableRow key={user.id}>
                   <TableCell>
                     <Checkbox
@@ -294,86 +307,21 @@ export default function AccountsPage() {
                   </TableCell>
                   <TableCell>{user.employeeCode}</TableCell>
                   <TableCell>{user.fullName}</TableCell>
-                  <TableCell>
-                    {editMode[user.id] ? (
-                      <TextField
-                        value={editData[user.id]?.email || ""}
-                        onChange={(e) => handleInputChange(user.id, "email", e.target.value)}
-                        size="small"
-                        sx={{ maxWidth: 150 }}
-                      />
-                    ) : (
-                      user.email
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {editMode[user.id] ? (
-                      <TextField
-                        onChange={(e) => handleInputChange(user.id, "password", e.target.value)}
-                        size="small"
-                        sx={{ maxWidth: 150 }}
-                        type="password"
-                        placeholder={t("form.newPassword")}
-                      />
-                    ) : (
-                      "********"
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {editMode[user.id] ? (
-                      <FormControl fullWidth size="small">
-                        <Select
-                          value={editData[user.id]?.role || ""}
-                          onChange={(e) => handleInputChange(user.id, "role", e.target.value)}
-                          disabled={!isAdmin}
-                        >
-                          <MenuItem value="DEV">Developer</MenuItem>
-                          <MenuItem value="LEADER">Leader</MenuItem>
-                          <MenuItem value="HCNS">HCNS</MenuItem>
-                          <MenuItem value="ADMIN">Admin</MenuItem>
-                        </Select>
-                      </FormControl>
-                    ) : (
-                      user.role
-                    )}
-                  </TableCell>
+                  <TableCell>{user.email}</TableCell>
+                  <TableCell>********</TableCell>
+                  <TableCell>{user.role}</TableCell>
                   {isAdmin && (
                     <TableCell>
-                      {editMode[user.id] ? (
-                        <Box className="flex gap-2">
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={() => handleSave(user.id)}
-                            size="small"
-                          >
-                            {loading ? (
-                              <CircularProgress color="inherit" size={20} />
-                            ) : (
-                              t("actions.save")
-                            )}
-                          </Button>
-                          <Button
-                            variant="outlined"
-                            color="error"
-                            onClick={() => handleCancel(user.id)}
-                            size="small"
-                          >
-                            {t("actions.cancel")}
-                          </Button>
-                        </Box>
-                      ) : (
-                        <Box>
-                          <Button
-                            variant="outlined"
-                            color="primary"
-                            onClick={() => handleEdit(user.id)}
-                            size="small"
-                          >
-                            {t("table.edit")}
-                          </Button>
-                        </Box>
-                      )}
+                      <Box>
+                        <Button
+                          variant="outlined"
+                          color="primary"
+                          onClick={() => handleEdit(user.id)}
+                          size="small"
+                        >
+                          {t("table.edit")}
+                        </Button>
+                      </Box>
                     </TableCell>
                   )}
                 </TableRow>
@@ -381,7 +329,92 @@ export default function AccountsPage() {
             )}
           </TableBody>
         </Table>
+        {loading && (
+          <Box
+            sx={{
+              position: 'absolute',
+              inset: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              bgcolor: 'rgba(255,255,255,0.6)',
+              zIndex: 1,
+            }}
+          >
+            <CircularProgress />
+          </Box>
+        )}
       </TableContainer>
+
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+        <TablePagination
+          component="div"
+          count={total}
+          page={page}
+          onPageChange={handleChangePage}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          rowsPerPageOptions={[5, 10, 25, 50]}
+          labelDisplayedRows={({from, to, count}) => `${page + 1}/${Math.ceil(count/rowsPerPage)}`}
+        />
+      </Box>
+
+      {/* Edit User Dialog */}
+      <Dialog open={editDialogOpen} onClose={handleCancel} maxWidth="sm" fullWidth>
+        <DialogTitle>{t("actions.editAccount")}</DialogTitle>
+        <DialogContent>
+          <Box sx={{ pt: 2, display: "flex", flexDirection: "column", gap: 2 }}>
+            <TextField
+              label={t("table.name")}
+              value={currentUser?.fullName || ""}
+              disabled
+              fullWidth
+            />
+            
+            <TextField
+              label={t("table.email")}
+              value={editData.email || ""}
+              onChange={(e) => handleInputChange("email", e.target.value)}
+              fullWidth
+              required
+            />
+            
+            <TextField
+              label={t("form.newPassword")}
+              type="password"
+              value={editData.password || ""}
+              onChange={(e) => handleInputChange("password", e.target.value)}
+              fullWidth
+              placeholder={t("form.passwordPlaceholder")}
+            />
+            
+            <FormControl fullWidth>
+              <InputLabel>{t("table.role")}</InputLabel>
+              <Select
+                value={editData.role || ""}
+                onChange={(e) => handleInputChange("role", e.target.value)}
+                label={t("table.role")}
+                disabled={!isAdmin}
+              >
+                <MenuItem value="DEV">Developer</MenuItem>
+                <MenuItem value="LEADER">Leader</MenuItem>
+                <MenuItem value="HCNS">HCNS</MenuItem>
+                <MenuItem value="ADMIN">Admin</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancel}>{t("actions.cancel")}</Button>
+          <Button 
+            onClick={handleSave} 
+            variant="contained" 
+            disabled={loading}
+          >
+            {loading ? <CircularProgress size={24} /> : t("actions.save")}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   )
 }
