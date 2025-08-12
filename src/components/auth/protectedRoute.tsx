@@ -15,19 +15,14 @@ export default function ProtectedRoute({
   const { user, loading, isAuthenticated } = useAuth()
   const router = useRouter()
   
-  useEffect(() => {
-    if (!loading) {
-      if (!isAuthenticated) {
-        router.push("/login")
-        return
-      }
+  if (!loading) {
+    const noAccess = !isAuthenticated || (allowedRoles && user && !allowedRoles.includes(user.role))
 
-      if (allowedRoles && user && !allowedRoles.includes(user.role)) {
-        router.push("/login")
-        return
-      }
+    if (noAccess) {
+      router.replace("/login")
+      return
     }
-  }, [loading, isAuthenticated, user, allowedRoles, router])
+  }
 
   if (loading) {
     return (

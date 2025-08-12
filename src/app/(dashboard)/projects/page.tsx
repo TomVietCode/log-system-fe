@@ -9,7 +9,7 @@ import {
   Stack,
   Tooltip,
 } from "@mui/material"
-import { DataGrid, GridColDef } from "@mui/x-data-grid"
+import { DataGrid, GridColDef, useGridApiContext } from "@mui/x-data-grid"
 import { EditNote, VisibilityOutlined, AddTask } from "@mui/icons-material"
 import { useEffect, useState } from "react"
 import { projectApi } from "@/lib/api/project-api"
@@ -137,6 +137,13 @@ export default function ProjectsPage() {
             disableRowSelectionOnClick
             disableColumnSelector
             disableColumnMenu
+            localeText={{
+              paginationDisplayedRows: ({ from, to, count }: { from: number; to: number; count: number }) => {
+                const api = useGridApiContext();
+                const pageSize = api.current.state.pagination.paginationModel.pageSize;
+                return `${from}/${Math.ceil(count/pageSize)}`;
+              }
+            }}
           />
         </Paper>
       </Container>

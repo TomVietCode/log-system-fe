@@ -17,7 +17,7 @@ import {
   IconButton,
   Tooltip
 } from "@mui/material"
-import { DataGrid, GridColDef } from "@mui/x-data-grid"
+import { DataGrid, GridColDef, useGridApiContext } from "@mui/x-data-grid"
 import { Add, Delete, Edit } from "@mui/icons-material"
 import Toast from "@/components/ui/alert"
 import { inputStyle } from "@/styles/common"
@@ -196,13 +196,17 @@ export default function WhitelistManagementPage() {
           columns={columns}
           initialState={{
             pagination: { paginationModel: { pageSize: 10 } },
-            sorting: {
-              sortModel: [{ field: 'updatedAt', sort: 'desc' }],
-            },
           }}
-          pageSizeOptions={[10, 25, 50]}
+          pageSizeOptions={[1, 10, 25, 50]}
           loading={loading}
           disableRowSelectionOnClick
+          localeText={{
+            paginationDisplayedRows: ({ from, to, count }: { from: number; to: number; count: number }) => {
+              const api = useGridApiContext();
+              const pageSize = api.current.state.pagination.paginationModel.pageSize;
+              return `${from}/${Math.ceil(count/pageSize)}`;
+            }
+          }}
         />
       </Paper>
 
