@@ -2,7 +2,22 @@
 
 import { useNotification } from "@/context/notification.context"
 import { useProjectTranslations } from "@/lib/hook/useTranslations"
-import { Dialog, Typography, DialogContent, DialogTitle, Button, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, Chip, DialogActions } from "@mui/material"
+import {
+  Dialog,
+  Typography,
+  DialogContent,
+  DialogTitle,
+  Button,
+  TableContainer,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  Paper,
+  Chip,
+  DialogActions,
+} from "@mui/material"
 import dayjs from "dayjs"
 
 interface DevLogTrackerProps {
@@ -16,13 +31,14 @@ export default function DevLogTracker({ open, onClose, project }: DevLogTrackerP
   const data = project.members
   const today = dayjs().format("DD/MM/YYYY")
   const { sendReminder } = useNotification()
-
+  console.log(data)
   const handleSendReminder = async (userId: string) => {
     await sendReminder(userId, project.id)
   }
+
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
-      <DialogTitle component="div"> 
+      <DialogTitle component="div">
         <Typography className="text-center" variant="h5">
           {t("track.title")}
         </Typography>
@@ -83,7 +99,11 @@ export default function DevLogTracker({ open, onClose, project }: DevLogTrackerP
                       <Button
                         variant="contained"
                         size="small"
-                        disabled={member.logDate || member.role === "LEADER"}
+                        disabled={
+                          (member.logDate &&
+                            dayjs(member.logDate).format("DD/MM/YYYY") === today) ||
+                          member.role === "LEADER"
+                        }
                         onClick={() => handleSendReminder(member.id)}
                       >
                         {t("actions.sendNoti")}
