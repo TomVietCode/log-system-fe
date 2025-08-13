@@ -117,8 +117,8 @@ export default function DevLogsHistoryPage() {
         {canViewOtherUsersLogs && (
           <Autocomplete
             options={users}
-            getOptionLabel={(option) => option.fullName}
-            sx={{ width: 250, alignSelf: "flex-end", marginLeft: "auto" }}
+            getOptionLabel={(option) => `${option.fullName} - ${option.employeeCode}`}
+            sx={{ width: 270, alignSelf: "flex-end", marginLeft: "auto" }}
             renderInput={(params) => <TextField {...params} label={t("history.filters.selectDev")} />}
             onChange={(_event, newValue) => handleUserChange(newValue)}
             value={selectedUser}
