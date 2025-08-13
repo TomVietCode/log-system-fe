@@ -1,3 +1,4 @@
+import { CreateUserDto } from "@/interface/auth"
 import apiClient from "@/lib/api/api"
 
 export const adminApi = {
@@ -21,4 +22,12 @@ export const adminApi = {
     return response.data
   },
   
+  createUser: async (dto: CreateUserDto) => {
+    try {
+      const response = await apiClient.post('/users/create', dto)
+      return response.data
+    } catch (error) {
+      throw error
+    }
+  }
 }

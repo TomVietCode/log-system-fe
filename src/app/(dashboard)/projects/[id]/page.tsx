@@ -49,15 +49,12 @@ export default function UpdateProjectPage() {
         userApi.getListUser({ role: "DEV" }),
         projectApi.getProject(projectId)
       ])
-      
-      setUsers(userResponse.data)
+      setUsers(userResponse.data.users)
       const projectData = projectResponse.data
-
       setValue("name", projectData.name)
       setValue("description", projectData.description)
-      const selectedMems = userResponse.data.filter((user: any) =>
-        projectData.members.some((member: any) => member.id === user.id)
-      )
+      const selectedMems = projectData.members
+      console.log(userResponse.data.users)  
       setSelectedMembers(selectedMems)
 
       setValue("memberIds", selectedMems.map((member: any) => member.id))
@@ -66,7 +63,7 @@ export default function UpdateProjectPage() {
     fetchData()
     
   }, [])  
-   
+  
   const addTask = () => {
     const newTasks = [...tasks, { id: null, name: "" }]
     setTasks(newTasks)

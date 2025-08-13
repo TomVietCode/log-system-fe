@@ -12,32 +12,35 @@ export function AuthProvider({ children }: { children: React.ReactNode}) {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
   const router = useRouter()
-
-  useEffect(() => {
-    checkAuthStatus()
-  }, [])
-
-  async function checkAuthStatus() {
+  
+  async function getProfile() {
     try {
-      setLoading(true)
-      const response = await authAPI.checkAuth()
-      
-      if (response.isAuthenticated) {
-        setUser(response.user)
-      } else {
-        setUser(null)
+      const profile = await authAPI.profile()
+      if(profile) {
+        setUser(profile.data)
       }
+      setLoading(false)
     } catch (error) {
       setUser(null)
+      setLoading(false)
     } finally {
       setLoading(false)
-    } 
+    }
   }
   
+  useEffect(() => {
+    const token = sessionStorage.getItem("accessToken")
+    if(token) {
+      getProfile()
+    }
+  }, [])
+
   async function login(data: LoginDto) {
     try {
       const response = await authAPI.login(data)
+      sessionStorage.setItem("accessToken", response.data.accessToken)
       setUser(response.data.user)
+      setLoading(false)
       return response.data.user
     } catch (error) {
       setUser(null)
@@ -48,7 +51,9 @@ export function AuthProvider({ children }: { children: React.ReactNode}) {
   async function register(data: RegisterDto) {
     try {
       const response = await authAPI.register(data)
+      sessionStorage.setItem("accessToken", response.data.accessToken)
       setUser(response.data.user)
+      setLoading(false)
       return response.data.user
     } catch (error) {
       setUser(null)
@@ -59,6 +64,7 @@ export function AuthProvider({ children }: { children: React.ReactNode}) {
   async function logout() {
     try {
       await authAPI.logout()
+      sessionStorage.removeItem("accessToken")
       setUser(null)
       router.replace('/login')
     } catch (error) {

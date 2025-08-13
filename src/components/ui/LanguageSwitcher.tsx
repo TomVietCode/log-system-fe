@@ -3,12 +3,15 @@
 import { Locale, localeNames, localeFlags, locales } from "@/i18n/config";
 import { Box, Button, ListItemText, ListItemIcon, Menu, MenuItem } from "@mui/material";
 import { useLocale } from "next-intl";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import LanguageIcon from '@mui/icons-material/Language';
+import { useRouter } from "next/navigation";
 
 export default function LanguageSwitcher() {
   const locale = useLocale() as Locale
+  const router = useRouter()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const [isPending, startTransition] = useTransition()
   const open = Boolean(anchorEl)
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -19,12 +22,20 @@ export default function LanguageSwitcher() {
     setAnchorEl(null);
   };
 
-  const handleLanguageChange = async (newLocale: Locale) => {
-    // Set cookie for locale
-    document.cookie = `locale=${newLocale}; path=/; max-age=31536000;`
+  const handleLanguageChange = (newLocale: Locale) => {
+    if (newLocale === locale) {
+      handleClose()
+      return
+    }
 
-    // Reload page to apply new locale
-    window.location.reload()
+    // ✅ Sử dụng startTransition để thay đổi mượt mà
+    startTransition(() => {
+      // Set cookie for locale
+      document.cookie = `locale=${newLocale}; path=/; max-age=31536000; SameSite=lax`
+      
+      // ✅ Refresh router thay vì reload page
+      router.refresh()
+    })
 
     handleClose()
   }
@@ -35,6 +46,7 @@ export default function LanguageSwitcher() {
         variant="outlined"
         onClick={handleClick}
         startIcon={<LanguageIcon/>}
+        disabled={isPending}
         sx={{ 
           minWidth: 120,
           color: 'white',

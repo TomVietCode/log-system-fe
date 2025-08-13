@@ -13,15 +13,6 @@ export const userApi = {
       throw error
     }
   },
-
-  createUser: async (data: CreateUserDto) => {
-    try {
-      const response = await apiClient.post('/auth/register', data)
-      return response.data
-    } catch (error) {
-      throw error
-    }
-  },
   
   updateUser: async (userId: string, data: UpdateUserAdminDto) => {
     try {

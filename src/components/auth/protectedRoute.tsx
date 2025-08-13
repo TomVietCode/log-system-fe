@@ -7,21 +7,21 @@ import { Box, CircularProgress } from "@mui/material"
 
 export default function ProtectedRoute({
   children,
-  allowedRoles
+  isAllowed
 }: {
   children: React.ReactNode,
-  allowedRoles?: string[]
+  isAllowed?: boolean
 }) {
   const { user, loading } = useAuth()
   const router = useRouter()
-
+  
   useEffect(() => {
-    if (!loading) {
-      if (!user) {
-        router.replace("/login")
-      }
+    const token = sessionStorage.getItem("accessToken")
+    if(!token) {
+      router.replace("/login")
+      return
     }
-  }, [loading, user, router])
+  }, [isAllowed, router])
 
   if (loading) {
     return (

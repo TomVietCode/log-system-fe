@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { userApi } from "@/lib/api/user-api"
 import { 
   Container, 
   Paper,
@@ -23,6 +22,7 @@ import Toast from "@/components/ui/alert"
 import Link from "next/link"
 import { useAccountTranslations } from "@/lib/hook/useTranslations"
 import { inputStyle } from "@/styles/common"
+import { adminApi } from "@/lib/api/admin-api"
 
 export default function CreateAccountPage() {
   const t = useAccountTranslations()
@@ -60,7 +60,7 @@ export default function CreateAccountPage() {
   const onSubmit = async (data: CreateUserFormData) => {
     try {
       setLoading(true)
-      await userApi.createUser(data)
+      await adminApi.createUser(data)
       Toast.success(t("messages.createSuccess"))
       reset({
         fullName: "",
