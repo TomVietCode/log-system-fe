@@ -46,15 +46,16 @@ export default function UpdateProjectPage() {
   useEffect(() => {
     const fetchData = async () => {
       const [userResponse, projectResponse] = await Promise.all([
-        userApi.getListUser({ role: "DEV" }),
+        userApi.getListDev(),
         projectApi.getProject(projectId)
       ])
-      setUsers(userResponse.data.users)
+      setUsers(userResponse.data)
       const projectData = projectResponse.data
       setValue("name", projectData.name)
       setValue("description", projectData.description)
-      const selectedMems = projectData.members
-      console.log(userResponse.data.users)  
+      const selectedMems = userResponse.data.filter((user: any) =>
+        projectData.members.some((member: any) => member.id === user.id)
+      )
       setSelectedMembers(selectedMems)
 
       setValue("memberIds", selectedMems.map((member: any) => member.id))

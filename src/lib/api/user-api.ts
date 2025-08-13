@@ -14,6 +14,15 @@ export const userApi = {
     }
   },
   
+  getListDev: async () => {
+    try {
+      const response = await apiClient.get('/users/dev')
+      return response.data
+    } catch (error) {
+      throw error
+    }
+  },
+
   updateUser: async (userId: string, data: UpdateUserAdminDto) => {
     try {
       const response = await apiClient.patch(`/users/${userId}`, data)
