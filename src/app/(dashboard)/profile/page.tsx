@@ -45,7 +45,7 @@ export default function ProfilePage() {
       phone: user?.phone ?? '',
       citizenID: user?.citizenID ?? '',
       personalEmail: user?.personalEmail ?? '',
-      dob: dayjs(user?.dob).format("YYYY-MM-DD") ?? '',                
+      dob: user?.dob ? dayjs(user?.dob).format("YYYY-MM-DD") : '',                
       accountNumber: user?.accountNumber ?? '',
       licensePlate: user?.licensePlate ?? '',
     },

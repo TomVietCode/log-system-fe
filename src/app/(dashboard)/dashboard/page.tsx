@@ -26,23 +26,24 @@ export default function DashboardPage() {
   const t = useDashboardTranslations()
   const fetchData = async () => {
     try {
-      setLoading(true)
       const result = await dashboardApi.getDashboardData() 
       setData(result.data as StatisticDto)
-      setLoading(false)
     } catch (error: any) {
-      if (error.response?.data?.message === "User is not a member of any project")
+      if (error.response?.data?.message === "User is not a member of any project"){
         Toast.info(t("errors.noProject"))
-      else Toast.error(error.response?.data?.message || t("errors.chart"))
+      } else {
+        Toast.error(error.response?.data?.message || t("errors.chart"))
+      }
     } finally {
       setLoading(false)
     }
   }
 
   useEffect(() => {
+    console.log("hello")
     fetchData()
   }, [])
-
+  
   const chartOptions: Highcharts.Options = {
     chart: {
       type: "column",
