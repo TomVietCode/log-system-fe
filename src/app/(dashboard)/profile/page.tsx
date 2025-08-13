@@ -24,6 +24,7 @@ import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ChangePasswordFormData, ProfileFormData } from "@/lib/validation"
 import { profileInputStyle } from "@/styles/common"
+import dayjs from "dayjs"
 
 export default function ProfilePage() {
   const t = useUserTranslations()
@@ -44,7 +45,7 @@ export default function ProfilePage() {
       phone: user?.phone ?? '',
       citizenID: user?.citizenID ?? '',
       personalEmail: user?.personalEmail ?? '',
-      dob: user?.dob ?? '',                 // for type="date" TextField
+      dob: dayjs(user?.dob).format("YYYY-MM-DD") ?? '',                
       accountNumber: user?.accountNumber ?? '',
       licensePlate: user?.licensePlate ?? '',
     },
@@ -68,7 +69,8 @@ export default function ProfilePage() {
     try {
       await authAPI.updateProfile(data)
       Toast.success(t("messages.updateSuccess"))
-      setUser(data)
+      setUser({ ...user, ...data })
+      console.log(data)
     } catch (error: any) {
       Toast.error(error.response?.data?.message || t("messages.updateError"))
     } finally {
