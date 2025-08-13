@@ -46,7 +46,7 @@ export default function DevLogsHistoryPage() {
     if (canViewOtherUsersLogs) {
       const fetchUsers = async () => {
         try {
-          const response = await userApi.getListUser("DEV")
+          const response = await userApi.getListUser({ role: "DEV" })
           setUsers(response.data)
         } catch (error: any) {
           Toast.error(error.response?.data?.message || t("history.messages.error"))

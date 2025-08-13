@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { AuthContextType, LoginDto, RegisterDto, User } from "@/interface/auth";
 import { authAPI } from "@/lib/api/auth-api";
+import { useRouter } from "next/navigation";
 
 const AuthContext = createContext<AuthContextType | undefined> (undefined)
 
@@ -10,41 +11,35 @@ const AuthContext = createContext<AuthContextType | undefined> (undefined)
 export function AuthProvider({ children }: { children: React.ReactNode}) {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
+  const router = useRouter()
 
-  // Check if user is authenticated
   useEffect(() => {
     checkAuthStatus()
   }, [])
 
   async function checkAuthStatus() {
     try {
-      const token = localStorage.getItem("accessToken")
-      if (!token) {
-        setLoading(false)
-        return
+      setLoading(true)
+      const response = await authAPI.checkAuth()
+      
+      if (response.isAuthenticated) {
+        setUser(response.user)
+      } else {
+        setUser(null)
       }
-
-      const response = await authAPI.profile()
-      setUser(response.data)
-      setLoading(false)
     } catch (error) {
-      localStorage.removeItem("accessToken")
       setUser(null)
+    } finally {
       setLoading(false)
-    }
+    } 
   }
-
+  
   async function login(data: LoginDto) {
     try {
       const response = await authAPI.login(data)
-      const { accessToken } = response.data
-
-      localStorage.setItem("accessToken", accessToken)
-      const userResponse = await authAPI.profile()
-      setUser(userResponse.data)
-      return userResponse.data
+      setUser(response.data.user)
+      return response.data.user
     } catch (error) {
-      localStorage.removeItem("accessToken")
       setUser(null)
       throw error
     }
@@ -53,32 +48,32 @@ export function AuthProvider({ children }: { children: React.ReactNode}) {
   async function register(data: RegisterDto) {
     try {
       const response = await authAPI.register(data)
-      const { accessToken } = response.data
-      localStorage.setItem("accessToken", accessToken)
-      const userResponse = await authAPI.profile()
-      setUser(userResponse.data)
+      setUser(response.data.user)
+      return response.data.user
     } catch (error) {
-      localStorage.removeItem("accessToken")
       setUser(null)
       throw error
     }
   }
 
-  function logout() {
-    localStorage.removeItem("accessToken")
-    setUser(null)
+  async function logout() {
+    try {
+      await authAPI.logout()
+      setUser(null)
+      router.replace('/login')
+    } catch (error) {
+      setUser(null)
+      router.replace('/login')
+    }
   }
-
-  const isAuthenticated = !!user
 
   return (
     <AuthContext.Provider value={{
       user,
-      loading,
       login,
+      loading,
       register,
       logout,
-      isAuthenticated
     }}>
       {children}
     </AuthContext.Provider>

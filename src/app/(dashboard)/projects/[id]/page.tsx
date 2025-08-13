@@ -46,7 +46,7 @@ export default function UpdateProjectPage() {
   useEffect(() => {
     const fetchData = async () => {
       const [userResponse, projectResponse] = await Promise.all([
-        userApi.getListUser("DEV"),
+        userApi.getListUser({ role: "DEV" }),
         projectApi.getProject(projectId)
       ])
       

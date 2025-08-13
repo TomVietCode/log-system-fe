@@ -4,6 +4,19 @@ import { ChangePasswordFormData, ProfileFormData } from "@/lib/validation"
 
 // Auth API functions
 export const authAPI = {
+  checkAuth: async () => {
+    try {
+      const response = await apiClient.get('/auth/check')
+      return response.data
+    } catch (error) {
+      return {
+        isAuthenticated: false,
+        user: null,
+        message: 'Not authenticated'
+      }
+    }
+  },
+  
   login: async (data: LoginDto): Promise<AuthResponse> => {
     try {
       const response = await apiClient.post('/auth/login', data)
@@ -16,6 +29,10 @@ export const authAPI = {
   register: async (data: RegisterDto): Promise<AuthResponse> => {
     const response = await apiClient.post('/auth/register', data)
     return response.data
+  },
+
+  logout: async (): Promise<void> => {
+    await apiClient.post('/auth/logout')
   },
 
   profile: async (): Promise<ProfileResponse> => {

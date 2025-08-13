@@ -13,6 +13,7 @@ export interface RegisterDto {
 export interface AuthResponse {
   data: {
     accessToken: string
+    user: User
   },
   message: string
 }
@@ -55,9 +56,9 @@ export interface ProfileResponse {
 
 export interface AuthContextType {
   user: User | null
-  isAuthenticated: boolean
   loading: boolean
+  // isAuthenticated: boolean
   login: (dto: LoginDto) => Promise<User>
-  register: (dto: RegisterDto) => Promise<void>
-  logout: () => void
+  register: (dto: RegisterDto) => Promise<User>
+  logout: () => Promise<void>
 }

@@ -8,16 +8,12 @@ const apiClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 10000
+  timeout: 10000,
+  withCredentials: true
 })
 
 // Request Interceptor - Auto add token to headers
 apiClient.interceptors.request.use((config) => {
-  const token = localStorage.getItem('accessToken')
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`
-  }
-
   return config
 }, (error) => {
   return Promise.reject(error)
@@ -28,7 +24,6 @@ apiClient.interceptors.response.use(
   (response) => response, 
   (error) => {
     if (error.response?.status === 401 && typeof window !== 'undefined') {
-      localStorage.removeItem('accessToken')
       window.location.href = '/login'
     }
 

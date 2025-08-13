@@ -12,20 +12,22 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const menuItems = user && getMenuByRole(user.role)
   return (
     <ProtectedRoute>
-      <Box sx={{ display: 'flex', minHeight: '100vh', backgroundColor: "background.default" }}>
-        <Header user={user} logout={logout}/>
-        <Sidebar menuItems={menuItems || []} />
-        <Box
-          component="main"
-          sx={{
-            flexGrow: 1,
-            p: 3,
-            mt: 8
-          }}
-        >
-          {children}
+      {user && (
+        <Box sx={{ display: "flex", minHeight: "100vh", backgroundColor: "background.default" }}>
+          <Header user={user} logout={logout} />
+          <Sidebar menuItems={menuItems || []} />
+          <Box
+            component="main"
+            sx={{
+              flexGrow: 1,
+              p: 3,
+              mt: 8,
+            }}
+          >
+            {children}
+          </Box>
         </Box>
-      </Box>
+      )}
     </ProtectedRoute>
   )
 }

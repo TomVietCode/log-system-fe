@@ -41,7 +41,7 @@ export default function CreateProjectPage() {
   
   useEffect(() => {
     const fetchUsers = async () => {
-      const response = await userApi.getListUser("DEV")
+      const response = await userApi.getListUser({ role: "DEV" })
       setUsers(response.data)
     }
     fetchUsers()
