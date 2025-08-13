@@ -4,6 +4,7 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { AuthContextType, LoginDto, RegisterDto, User } from "@/interface/auth";
 import { authAPI } from "@/lib/api/auth-api";
 import { useRouter } from "next/navigation";
+import { ProfileFormData } from "@/lib/validation";
 
 const AuthContext = createContext<AuthContextType | undefined> (undefined)
 
@@ -73,6 +74,20 @@ export function AuthProvider({ children }: { children: React.ReactNode}) {
     }
   }
 
+  async function update(data: ProfileFormData) {
+    setUser(prevUser => {
+      if (!prevUser) return null;
+      // Create a new user object with the updated data, ensuring types match
+      const updatedUser: User = {
+        ...prevUser,
+        ...data,
+        accountNumber: data.accountNumber === null ? undefined : data.accountNumber,
+        dob: data.dob === null ? undefined : data.dob
+      };
+      return updatedUser;
+    });
+  }
+
   return (
     <AuthContext.Provider value={{
       user,
@@ -80,6 +95,7 @@ export function AuthProvider({ children }: { children: React.ReactNode}) {
       loading,
       register,
       logout,
+      update
     }}>
       {children}
     </AuthContext.Provider>

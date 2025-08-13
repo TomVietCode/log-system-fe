@@ -1,3 +1,5 @@
+import { ProfileFormData } from "@/lib/validation"
+
 export interface LoginDto {
   email: string
   password: string
@@ -61,4 +63,5 @@ export interface AuthContextType {
   login: (dto: LoginDto) => Promise<User>
   register: (dto: RegisterDto) => Promise<User>
   logout: () => Promise<void>
+  update: (data: ProfileFormData) => Promise<void>
 }

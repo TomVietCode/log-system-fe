@@ -29,7 +29,7 @@ import dayjs from "dayjs"
 export default function ProfilePage() {
   const t = useUserTranslations()
   const { profileSchema, changePasswordSchema } = useValidationSchemas()
-  const { user: userData } = useAuth()
+  const { user: userData, update } = useAuth()
   const [user, setUser] = useState<any>(userData)
   const [loading, setLoading] = useState<boolean>(false)
   const [showChangePassword, setShowChangePassword] = useState<boolean>(false)
@@ -69,8 +69,7 @@ export default function ProfilePage() {
     try {
       await authAPI.updateProfile(data)
       Toast.success(t("messages.updateSuccess"))
-      setUser({ ...user, ...data })
-      console.log(data)
+      update(data)
     } catch (error: any) {
       Toast.error(error.response?.data?.message || t("messages.updateError"))
     } finally {
