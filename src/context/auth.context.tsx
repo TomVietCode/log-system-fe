@@ -77,7 +77,7 @@ export function AuthProvider({ children }: { children: React.ReactNode}) {
   async function update(data: ProfileFormData) {
     setUser(prevUser => {
       if (!prevUser) return null;
-      // Create a new user object with the updated data, ensuring types match
+      
       const updatedUser: User = {
         ...prevUser,
         ...data,
