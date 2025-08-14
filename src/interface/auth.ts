@@ -32,6 +32,7 @@ export interface User {
   accountNumber?: string
   dob?: string,
   role: 'ADMIN' | 'HCNS' | 'LEADER' | 'DEV'
+  isHasDevLog?: boolean
   createdAt: string
   updatedAt: string
 }

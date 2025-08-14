@@ -27,13 +27,13 @@ import {
   InputAdornment,
   Grid,
   Divider,
-
   SelectChangeEvent,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
   TablePagination,
+  Tooltip,
 } from "@mui/material"
 import Link from "next/link"
 import { useEffect, useRef, useState } from "react"
@@ -85,7 +85,7 @@ export default function AccountsPage() {
       setEditData({
         email: userToEdit.email,
         role: userToEdit.role,
-        password: ""
+        password: "",
       })
     }
     setEditDialogOpen(true)
@@ -106,7 +106,7 @@ export default function AccountsPage() {
 
   const handleSave = async () => {
     if (!currentUser?.id) return
-    
+
     try {
       setLoading(true)
       const updateData: any = {
@@ -147,7 +147,7 @@ export default function AccountsPage() {
       await devLogApi.exportDevLogs(selectedUsers)
       Toast.success(t("messages.exportSuccess"))
     } catch (error: any) {
-      const errorMessage = error.response?.data?.message || t("messages.exportError");
+      const errorMessage = error.response?.data?.message || t("messages.exportError")
       Toast.error(t(`errors.${errorMessage}`, { defaultValue: errorMessage }))
     } finally {
       setLoading(false)
@@ -214,19 +214,17 @@ export default function AccountsPage() {
           </FormControl>
         </Grid>
 
-        {selectedUsers.length > 0 && (
-          <Grid sx={{ xs: 12, md: 6, display: "flex", justifyContent: "flex-end" }}>
-            <Button
-              variant="contained"
-              color="primary"
-              startIcon={<Download />}
-              onClick={() => handleExport()}
-              disabled={loading}
-            >
-              {t("actions.export")}
-            </Button>
-          </Grid>
-        )}
+        <Grid sx={{ xs: 12, md: 6, display: "flex", justifyContent: "flex-end" }}>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<Download />}
+            onClick={() => handleExport()}
+            disabled={loading || selectedUsers.length === 0}
+          >
+            {t("actions.export")} ({selectedUsers.length})
+          </Button>
+        </Grid>
         {isAdmin && (
           <Grid sx={{ xs: 12, md: 6, display: "flex", justifyContent: "flex-end" }}>
             <Link href="/accounts/create">
@@ -238,31 +236,38 @@ export default function AccountsPage() {
         )}
       </Grid>
 
-      <TableContainer component={Paper} sx={{ minHeight: "449px", position: 'relative' }}>
-        <Table stickyHeader size="medium" sx={{ tableLayout: 'fixed' }}>
+      {/* Table */}
+      <TableContainer component={Paper} sx={{ minHeight: "449px", position: "relative" }}>
+        <Table stickyHeader size="medium" sx={{ tableLayout: "fixed" }}>
           <TableHead>
             <TableRow>
               <TableCell width="5%">
                 <Checkbox
                   onChange={(e) => {
                     if (e.target.checked) {
-                      setSelectedUsers(
-                        users.map((u) => {  
-                          if (u.role === "ADMIN" || u.role === "HCNS") {
-                            return ""
-                          }
-                          return u.id
-                        })
-                      )
+                      setSelectedUsers([
+                        ...selectedUsers,
+                        ...users.filter((u) => u.isHasDevLog).map((u) => u.id),
+                      ])
                     } else {
-                      setSelectedUsers([])
+                      setSelectedUsers(
+                        selectedUsers.filter(
+                          (id) => !users.some((u) => u.id === id && u.isHasDevLog)
+                        )
+                      )
                     }
                   }}
                   indeterminate={
-                     selectedUsers.length > 0 && selectedUsers.length < users.length
+                    selectedUsers.length > 0 &&
+                    users.some((u) => u.isHasDevLog && selectedUsers.includes(u.id)) &&
+                    users.filter((u) => u.isHasDevLog).length > 0 &&
+                    selectedUsers.filter((id) => users.some((u) => u.id === id && u.isHasDevLog))
+                      .length < users.filter((u) => u.isHasDevLog).length
                   }
+                  disabled={users.every((u) => !u.isHasDevLog)}
                   checked={
-                     users.length > 0 && selectedUsers.length === users.length
+                    users.filter((u) => u.isHasDevLog).length > 0 &&
+                    users.filter((u) => u.isHasDevLog).every((u) => selectedUsers.includes(u.id))
                   }
                 />
               </TableCell>
@@ -299,11 +304,15 @@ export default function AccountsPage() {
               users.map((user) => (
                 <TableRow key={user.id}>
                   <TableCell>
-                    <Checkbox
-                      checked={selectedUsers.includes(user.id)}
-                      onChange={() => handleSelectUser(user.id)}
-                      disabled={user.role === "ADMIN" || user.role === "HCNS"}
-                    />
+                    <Tooltip title={!user.isHasDevLog ? t("messages.userHasNoDevLog") : ""} arrow>
+                      <span>
+                        <Checkbox
+                          checked={selectedUsers.includes(user.id)}
+                          onChange={() => handleSelectUser(user.id)}
+                          disabled={!user.isHasDevLog}
+                        />
+                      </span>
+                    </Tooltip>
                   </TableCell>
                   <TableCell>{user.employeeCode}</TableCell>
                   <TableCell>{user.fullName}</TableCell>
@@ -329,15 +338,17 @@ export default function AccountsPage() {
             )}
           </TableBody>
         </Table>
+
+        {/* Loading */}
         {loading && (
           <Box
             sx={{
-              position: 'absolute',
+              position: "absolute",
               inset: 0,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              bgcolor: 'rgba(255,255,255,0.6)',
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              bgcolor: "rgba(255,255,255,0.6)",
               zIndex: 1,
             }}
           >
@@ -346,7 +357,8 @@ export default function AccountsPage() {
         )}
       </TableContainer>
 
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+      {/* Pagination */}
+      <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
         <TablePagination
           component="div"
           count={total}
@@ -355,7 +367,9 @@ export default function AccountsPage() {
           rowsPerPage={rowsPerPage}
           onRowsPerPageChange={handleChangeRowsPerPage}
           rowsPerPageOptions={[5, 10, 25, 50]}
-          labelDisplayedRows={({from, to, count}) => `${page + 1}/${Math.ceil(count/rowsPerPage)}`}
+          labelDisplayedRows={({ from, to, count }) =>
+            `${page + 1}/${Math.ceil(count / rowsPerPage)}`
+          }
         />
       </Box>
 
@@ -370,7 +384,7 @@ export default function AccountsPage() {
               disabled
               fullWidth
             />
-            
+
             <TextField
               label={t("table.email")}
               value={editData.email || ""}
@@ -378,7 +392,7 @@ export default function AccountsPage() {
               fullWidth
               required
             />
-            
+
             <TextField
               label={t("form.newPassword")}
               type="password"
@@ -387,7 +401,7 @@ export default function AccountsPage() {
               fullWidth
               placeholder={t("form.passwordPlaceholder")}
             />
-            
+
             <FormControl fullWidth>
               <InputLabel>{t("table.role")}</InputLabel>
               <Select
@@ -406,11 +420,7 @@ export default function AccountsPage() {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCancel}>{t("actions.cancel")}</Button>
-          <Button 
-            onClick={handleSave} 
-            variant="contained" 
-            disabled={loading}
-          >
+          <Button onClick={handleSave} variant="contained" disabled={loading}>
             {loading ? <CircularProgress size={24} /> : t("actions.save")}
           </Button>
         </DialogActions>

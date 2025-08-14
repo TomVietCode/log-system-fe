@@ -21,22 +21,17 @@ export const devLogApi = {
 
   exportDevLogs: async (userIds: string[]): Promise<void> => {
     try {
-      const month = new Date().getMonth() + 1
-      const year = new Date().getFullYear()
-
       const response = await apiClient.post(`/devlogs/export`, {
         userIds,
-        month,
-        year
       }, {
         responseType: "blob"
       })
-
+      console.log(response)
       // create download link
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', `devlogs_${month}_${year}.csv`);
+      link.setAttribute('download', `devlog_data.csv`);
       document.body.appendChild(link);
       link.click();
       link.remove();
