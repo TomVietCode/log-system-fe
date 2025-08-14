@@ -3,20 +3,7 @@ import apiClient from "@/lib/api/api"
 import { ChangePasswordFormData, ProfileFormData } from "@/lib/validation"
 
 // Auth API functions
-export const authAPI = {
-  checkAuth: async () => {
-    try {
-      const response = await apiClient.get('/auth/check')
-      return response.data
-    } catch (error) {
-      return {
-        isAuthenticated: false,
-        user: null,
-        message: 'Not authenticated'
-      }
-    }
-  },
-  
+export const authAPI = { 
   login: async (data: LoginDto): Promise<AuthResponse> => {
     try {
       const response = await apiClient.post('/auth/login', data)

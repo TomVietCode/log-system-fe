@@ -51,13 +51,10 @@ export function AuthProvider({ children }: { children: React.ReactNode}) {
 
   async function register(data: RegisterDto) {
     try {
-      const response = await authAPI.register(data)
-      sessionStorage.setItem("accessToken", response.data.accessToken)
-      setUser(response.data.user)
+      await authAPI.register(data)
       setLoading(false)
-      return response.data.user
+      return true
     } catch (error) {
-      setUser(null)
       throw error
     }
   }

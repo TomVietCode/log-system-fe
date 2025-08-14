@@ -32,7 +32,7 @@ export default function RegisterPage() {
       await signUp(rest)
       setLoading(false)
       Toast.success(t("register.success"))
-      router.push("/profile")
+      router.replace("/login")
     } catch (error: any) {
       Toast.error(error.response.data.message)
     } finally {

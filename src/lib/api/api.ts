@@ -9,11 +9,16 @@ const apiClient = axios.create({
     'Content-Type': 'application/json',
   },
   timeout: 10000,
-  withCredentials: true
+  withCredentials: false, // Explicitly disable credentials
 })
 
 // Request Interceptor - Auto add token to headers
 apiClient.interceptors.request.use((config) => {
+  // Get token from sessionStorage and add to Authorization header
+  const token = sessionStorage.getItem('accessToken')
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
   return config
 }, (error) => {
   return Promise.reject(error)

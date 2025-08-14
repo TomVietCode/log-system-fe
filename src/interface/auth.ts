@@ -61,7 +61,7 @@ export interface AuthContextType {
   loading: boolean
   // isAuthenticated: boolean
   login: (dto: LoginDto) => Promise<User>
-  register: (dto: RegisterDto) => Promise<User>
+  register: (dto: RegisterDto) => Promise<boolean>
   logout: () => Promise<void>
   update: (data: ProfileFormData) => Promise<void>
 }

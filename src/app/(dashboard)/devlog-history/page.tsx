@@ -59,12 +59,19 @@ export default function DevLogsHistoryPage() {
   const fetchDevLogs = async (month: number, year: number) => {
     try {
       setLoading(true)
-      const response = await devLogApi.getDevLogs(selectedUser?.id || user?.id, month, year)
+      const targetUserId = selectedUser?.id || user?.id
+      if (!targetUserId) {
+        setDevLogs(null)
+        setLoading(false)
+        return
+      }
+      const response = await devLogApi.getDevLogs(targetUserId, month, year)
       setDevLogs(response.data)
     } catch (error: any) {
-      if (error.response?.data?.message === "User is not a member of any project")
+      setDevLogs(null)
+      if(user?.role !== "HCNS" || selectedUser) {
         Toast.info(t("history.messages.noProject"))
-      else Toast.error(error.response?.data?.message || t("history.messages.error"))
+      }
     } finally {
       setLoading(false)
     }
@@ -72,10 +79,18 @@ export default function DevLogsHistoryPage() {
 
   useEffect(() => {
     // Load current month data by default
+    // For HCNS: only fetch when a user is selected
+    // For other roles: fetch immediately
     const currentMonth = selectedDate.month() + 1
     const currentYear = selectedDate.year()
+    
+    if (user?.role === "HCNS" && !selectedUser) {
+      // HCNS hasn't selected a user yet, don't fetch data
+      return
+    }
+    
     fetchDevLogs(currentMonth, currentYear)
-  }, [selectedDate, selectedUser])
+  }, [selectedDate, selectedUser, user?.role])
 
   const handleSelectMonth = (date: dayjs.Dayjs) => {
     if (date) {
@@ -119,20 +134,30 @@ export default function DevLogsHistoryPage() {
             options={users}
             getOptionLabel={(option) => `${option.fullName} - ${option.employeeCode}`}
             sx={{ width: 270, alignSelf: "flex-end", marginLeft: "auto" }}
-            renderInput={(params) => <TextField {...params} label={t("history.filters.selectDev")} />}
+            renderInput={(params) => (
+              <TextField {...params} label={t("history.filters.selectDev")} />
+            )}
             onChange={(_event, newValue) => handleUserChange(newValue)}
             value={selectedUser}
           />
         )}
       </Box>
       {/* Data table */}
-      {devLogs && (
-        <div className={`mt-5 h-[80%] grid grid-cols-[20%_120%_6%] overflow-x-auto relative`}>
-          {loading ? (
-            <CircularProgress sx={{ position: "absolute", top: "50%", left: "50%" }} size={70} />
-          ) : (
-            <>
-              {/* Name and Task Name Col*/}
+      {loading ? (
+        <CircularProgress sx={{ position: "absolute", top: "50%", left: "50%" }} size={70} />
+      ) : (!devLogs ? (
+          <div className="flex justify-center items-center h-[80%]">
+            <div className="text-2xl">
+              {user?.role === "HCNS" && !selectedUser 
+                ? t("history.messages.selectUserFirst", { defaultValue: "Vui lòng chọn người dùng để xem lịch sử devlog" })
+                : t("history.messages.noData")
+              }
+            </div>
+          </div>
+        ) : (
+          <>
+          {/* Name and Task Name Col*/}
+            <div className={`mt-5 h-[80%] grid grid-cols-[20%_120%_6%] overflow-x-auto relative`}>
               <div className={`grid grid-rows-${rowCount} sticky left-0 z-10`}>
                 <div className="flex justify-center items-center text-red-600 font-semibold px-5 bg-blue-300 border border-black">
                   {devLogs?.userName}
@@ -202,7 +227,9 @@ export default function DevLogsHistoryPage() {
 
               {/* Summary Col */}
               <div className={`grid grid-rows-${rowCount}  sticky right-0 z-10 bg-gray-400`}>
-                <div className="flex justify-center items-center border font-semibold">{t("history.table.total")}</div>
+                <div className="flex justify-center items-center border font-semibold">
+                  {t("history.table.total")}
+                </div>
                 <div className="flex justify-center items-center border">&nbsp;</div>
                 {devLogs &&
                   devLogs?.tasks.map((task) => (
@@ -212,9 +239,9 @@ export default function DevLogsHistoryPage() {
                   ))}
                 <div className="flex justify-center items-center border">{devLogs?.grandTotal}</div>
               </div>
-            </>
-          )}
-        </div>
+            </div>
+          </>
+        )
       )}
     </Paper>
   )

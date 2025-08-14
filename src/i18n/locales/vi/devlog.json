@@ -37,7 +37,9 @@
     },
     "messages": {
       "error": "Không thể lấy danh sách người dùng",
-      "noProject": "Nhân viên này chưa tham gia dự án nào"
+      "noProject": "Nhân viên này chưa tham gia dự án nào",
+      "noData": "Không có dữ liệu",
+      "selectUserFirst": "Vui lòng chọn người dùng để xem lịch sử devlog"
     }
   },
   "export": {

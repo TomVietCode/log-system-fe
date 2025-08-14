@@ -163,8 +163,7 @@ export default function ProjectsPage() {
           }}
           project={selectedProject}
           onTasksAdded={() => {
-            fetchData() // ✅ Refresh data after adding tasks
-            Toast.success(t("messages.tasksAddedSuccess"))
+            fetchData()
           }}
         />
       )}

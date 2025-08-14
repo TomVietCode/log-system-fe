@@ -38,7 +38,9 @@
     },
     "messages": {
       "error": "Cannot get user list",
-      "noProject": "This user is not a member of any project"
+      "noProject": "This user is not a member of any project",
+      "noData": "No data",
+      "selectUserFirst": "Please select a user to view devlog history"
     }
   },
   "export": {
