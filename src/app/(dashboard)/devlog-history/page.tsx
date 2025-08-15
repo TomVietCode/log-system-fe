@@ -35,8 +35,8 @@ export default function DevLogsHistoryPage() {
   const [users, setUsers] = useState<any[]>([])
   const [selectedUser, setSelectedUser] = useState<any>(null)
   const rowCount = (devLogs && devLogs?.tasks.length + 3) || 2
-  const colCount = dayjs().daysInMonth()
-  const router = useRouter()
+  const colCount = dayjs(selectedDate).daysInMonth()
+  const router = useRouter()  
 
   const canViewOtherUsersLogs =
     user?.role === "ADMIN" || user?.role === "LEADER" || user?.role === "HCNS"
@@ -55,7 +55,7 @@ export default function DevLogsHistoryPage() {
       fetchUsers()
     }
   }, [canViewOtherUsersLogs])
-
+  console.log(colCount)
   const fetchDevLogs = async (month: number, year: number) => {
     try {
       setLoading(true)
