@@ -7,10 +7,8 @@ import { Box, CircularProgress } from "@mui/material"
 
 export default function ProtectedRoute({
   children,
-  isAllowed
 }: {
   children: React.ReactNode,
-  isAllowed?: boolean | undefined
 }) {
   const { loading } = useAuth()
   const router = useRouter()
@@ -21,12 +19,7 @@ export default function ProtectedRoute({
       router.replace("/login")
       return
     }
-
-    if(!isAllowed) {
-      router.replace("/not-found")
-      return
-    }
-  }, [isAllowed, router])
+  }, [router])
 
   if (loading) {
     return (
