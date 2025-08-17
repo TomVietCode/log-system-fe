@@ -1,6 +1,6 @@
 import axios from "axios"
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL
+const API_URL = 'http://128.199.248.87/api'
 
 //Axios instance
 const apiClient = axios.create({
