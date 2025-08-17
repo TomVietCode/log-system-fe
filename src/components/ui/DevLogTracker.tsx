@@ -31,7 +31,6 @@ export default function DevLogTracker({ open, onClose, project }: DevLogTrackerP
   const data = project.members
   const today = dayjs().format("DD/MM/YYYY")
   const { sendReminder } = useNotification()
-  console.log(data)
   const handleSendReminder = async (userId: string) => {
     await sendReminder(userId, project.id)
   }

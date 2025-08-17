@@ -41,7 +41,7 @@ export default function CreateProjectPage() {
   
   useEffect(() => {
     const fetchUsers = async () => {
-      const response = await userApi.getListUser({ role: "DEV" })
+      const response = await userApi.getListDev()
       setUsers(response.data)
     }
     fetchUsers()
@@ -94,6 +94,7 @@ export default function CreateProjectPage() {
     >
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid container columns={{ xs: 12, md: 12 }} rowSpacing={3} columnSpacing={10}>
+          {/* Project name & description*/}
           <Grid size={{ xs: 12, md: 5 }} className="flex flex-col gap-6">
             <TextField
               fullWidth

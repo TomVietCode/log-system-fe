@@ -10,7 +10,7 @@ import { getMenuByRole } from "@/config/menu"
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { user, logout } = useAuth()
   const menuItems = user && getMenuByRole(user.role)
-
+  
   return (
     <ProtectedRoute>
       <Box sx={{ display: "flex", minHeight: "100vh", backgroundColor: "background.default" }}>

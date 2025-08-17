@@ -40,7 +40,6 @@ export default function DashboardPage() {
   }
 
   useEffect(() => {
-    console.log("hello")
     fetchData()
   }, [])
   

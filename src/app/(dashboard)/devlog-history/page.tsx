@@ -55,7 +55,6 @@ export default function DevLogsHistoryPage() {
       fetchUsers()
     }
   }, [canViewOtherUsersLogs])
-  console.log(colCount)
   const fetchDevLogs = async (month: number, year: number) => {
     try {
       setLoading(true)

@@ -10,15 +10,20 @@ export default function ProtectedRoute({
   isAllowed
 }: {
   children: React.ReactNode,
-  isAllowed?: boolean
+  isAllowed?: boolean | undefined
 }) {
-  const { user, loading } = useAuth()
+  const { loading } = useAuth()
   const router = useRouter()
   
   useEffect(() => {
     const token = sessionStorage.getItem("accessToken")
     if(!token) {
       router.replace("/login")
+      return
+    }
+
+    if(!isAllowed) {
+      router.replace("/not-found")
       return
     }
   }, [isAllowed, router])
