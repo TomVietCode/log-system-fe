@@ -49,6 +49,7 @@
     "updateError": "Cập nhật dự án thất bại",
     "deleteSuccess": "Xóa dự án thành công",
     "deleteError": "Xóa dự án thất bại",
+    "noTasksToAdd": "Không có công việc để thêm",
     "tasksAddedSuccess": "Thêm công việc thành công",
     "tasksAddedError": "Thêm công việc thất bại",
     "noData": "Không có dữ liệu"

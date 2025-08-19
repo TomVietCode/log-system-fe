@@ -49,6 +49,7 @@
     "updateError": "Failed to update project",
     "deleteSuccess": "Project deleted successfully",
     "deleteError": "Failed to delete project",
+    "noTasksToAdd": "No tasks to add",
     "tasksAddedSuccess": "Tasks added successfully",
     "tasksAddedError": "Failed to add tasks",
     "noData": "No Data"

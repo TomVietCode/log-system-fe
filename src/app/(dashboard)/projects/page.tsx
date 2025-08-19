@@ -73,7 +73,7 @@ export default function ProjectsPage() {
           {user?.role === "LEADER" && (
             <Tooltip title={t("actions.trackDevlog")}>
               <IconButton
-                size="small"
+                size="small"  
                 color="default"
                 aria-label="edit"
                 onClick={() => {
